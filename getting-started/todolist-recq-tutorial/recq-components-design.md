@@ -46,7 +46,7 @@ In the end, we need a way to forge Commands and Queries accessible from the outs
 
 ## [Service](../../recq-patterns/recq-component-pattern/service.md), [Saga ](../../recq-patterns/recq-component-pattern/saga.md)and [Observer](../../recq-patterns/recq-component-pattern/observer.md)
 
-In this tutorial we do not need to handle cross-domain logic or do particular behaviour extensions, we will dedicate a specific tutorial to handle complex scenarios in RECQ Architectures. [extend-todolist-handle-complexity-tutorial.md](../extend-todolist-handle-complexity-tutorial.md "mention")
+In this tutorial we do not need to handle cross-domain logic or do particular behaviour extensions, we will dedicate a specific tutorial to handle complex scenarios in RECQ Architectures. [extend-todolist-handle-complexity-tutorial](../extend-todolist-handle-complexity-tutorial/ "mention")
 
 ## Final Architecture
 

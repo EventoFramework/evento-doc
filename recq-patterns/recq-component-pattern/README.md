@@ -4,26 +4,25 @@ description: Behavioral pattern that defines seven types of components.
 
 # RECQ Component Pattern
 
-This is a set of definitions with distinct and minimal semantics to implement any application, where minimality is not rigorous, but empirical deriving from the fact that most use cases can be designed with only the components described below.
+The RECQ architecture establishes a set of fundamental building blocks, known as RECQ components, designed to implement various functionalities within event-driven microservices. These components are defined with clear yet minimal semantics, enabling the construction of diverse applications without excessive complexity. This minimality is based on empirical observations, as most use cases can be effectively addressed with the component types described below.
 
 <figure><img src="../../.gitbook/assets/image (21).png" alt=""><figcaption><p>RECQ Components Big Picture</p></figcaption></figure>
 
-### Capability Table
+**Understanding RECQ Component Capabilities**
 
-In the following sections, the types will be defined, for each of which will be summarized capacity and scalability properties according to the [CAP theorem ](https://en.wikipedia.org/wiki/CAP\_theorem)using a defined table such as the "Capability Table", of which there is a generic version in Table 1. The first five entries refer to message handlers they can react to and the invocations they can make. By type of state we mean if a handler to be executed requires, in addition to the input message, also a state of some sort kept consistent by component;&#x20;
+A crucial aspect of RECQ components is their capability table. This table summarizes the specific actions each component type can perform, along with their scalability and consistency properties in accordance with the CAP theorem. Table 1 provides a generic template for this capability table.
 
-There are two types of status:
+**Table 1: Generic Capability Table for RECQ Components**
 
-* **Instance**: A type of state that is based on a single instance of a domain object or a particular resource. So there can be multiple Handlers at the same time running in this component as long as they are handling resource requests or different objects.
-* **Component**: There can be no more than one handler for this particular component active that handles a request.
-
-The last entry refers to the properties of the CAP theorem respected by the component:
-
-* C: component implements strong consistency, it happens in components that have a state that must be kept consistent regardless of the type of message handled.&#x20;
-* c: the component implements weak consistency, so the consistency is only in managed message function.&#x20;
-* A: The component implements strong availability, and the response time is known a priori.&#x20;
-* a: the component implements weak availability, the response time is known a priori provided that the requests do not refer to the same resource.&#x20;
-* P: partitioning tolerance, being a distributed system this constraint must always be present.
+* Message Handlers - List of message handlers the component can react to.&#x20;
+* Invocations - List of invocations the component can make to other components.&#x20;
+* State Type - Indicates if the handler requires a component or instance state.&#x20;
+* Consistency (CAP) - Properties of the CAP theorem respected by the component:
+  * C: Strong consistency
+  * c: Weak consistency within managed message functions
+  * A: Strong availability
+  * a: Weak availability (except for same resource requests)
+  * P: Partitioning tolerance (always present)
 
 | Capability                  |                       |
 | --------------------------- | --------------------- |
@@ -34,3 +33,22 @@ The last entry refers to the properties of the CAP theorem respected by the comp
 | Can Send Query Messages     | Yes/No                |
 | State type                  | Instance/Component/No |
 | CAP Properties              | C/c/A/a/P             |
+
+**State Types in RECQ Components**
+
+There are two primary state types associated with RECQ components:
+
+* **Instance State:** This state represents a single instance of a domain object or a specific resource. Multiple handlers within the same component can operate concurrently, as long as they handle requests for different objects or resources.
+* **Component State:** This state is unique to the entire component. Only one handler can be active within a component at any given time when processing a request related to this state.
+
+**Understanding CAP Theorem Properties**
+
+The capability table utilizes specific terms derived from the CAP theorem to define the consistency and availability guarantees of each component type. Here's a breakdown of these terms:
+
+* **C (Strong Consistency):** Components with this property ensure consistency across all replicas, regardless of the message handled. This typically applies to components managing critical data that requires strict consistency.
+* **c (Weak Consistency):** These components guarantee consistency only within the context of a managed message function. Data consistency across replicas might have a slight delay, but will eventually converge.
+* **A (Strong Availability):** Components with strong availability offer a predictable response time regardless of the request.
+* **a (Weak Availability):** These components provide predictable response times except for situations where requests target the same resource concurrently.
+* **P (Partitioning Tolerance):** Being a fundamental characteristic of distributed systems, partitioning tolerance is always present in RECQ components, ensuring functionality even if network partitions occur.
+
+In the following sections, we'll delve deeper into each specific RECQ component type, exploring their unique capabilities and limitations within the capability table framework. This analysis will provide a comprehensive understanding of how these components enable the development of scalable and robust event-driven microservices in a RECQ architecture.

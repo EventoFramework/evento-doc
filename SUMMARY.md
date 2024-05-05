@@ -32,8 +32,11 @@
     * [TodoList Invoker](getting-started/todolist-recq-tutorial/recq-components-evento-implementation-with-spring-data/todolist-invoker.md)
   * [Expose the RECQ architecture with Spring Web](getting-started/todolist-recq-tutorial/expose-the-recq-architecture-with-spring-web.md)
   * [Test Your App](getting-started/todolist-recq-tutorial/test-your-app.md)
-  * [Functional Analysis - Event Storming Approach (Bonus Chapter)](getting-started/todolist-recq-tutorial/functional-analysis-event-storming-approach-bonus-chapter.md)
-* [Extend TodoList - Handle Complexity Tutorial](getting-started/extend-todolist-handle-complexity-tutorial.md)
+* [Extend TodoList - Handle Complexity Tutorial](getting-started/extend-todolist-handle-complexity-tutorial/README.md)
+  * [Unique identifier generation](getting-started/extend-todolist-handle-complexity-tutorial/unique-identifier-generation.md)
+  * [Extends behaviors with Observer and Services](getting-started/extend-todolist-handle-complexity-tutorial/extends-behaviors-with-observer-and-services.md)
+  * [Cross Domain Consistency with Sagas](getting-started/extend-todolist-handle-complexity-tutorial/cross-domain-consistency-with-sagas.md)
+  * [Handle Real time data updates with MQTT and Save-Notify Pattern](getting-started/extend-todolist-handle-complexity-tutorial/handle-real-time-data-updates-with-mqtt-and-save-notify-pattern.md)
 
 ## RECQ Patterns
 

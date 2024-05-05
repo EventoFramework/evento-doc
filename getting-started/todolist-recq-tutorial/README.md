@@ -16,4 +16,3 @@ In this tutorial, you will explore how to design and implement a RECQ Applicatio
 * RECQ Components Evento Implementation with Spring Data
 * Expose the RECQ architecture with Spring Web
 * Test Your App
-* Functional Analysis - Event Storming Approach (Bonus Chapter)
