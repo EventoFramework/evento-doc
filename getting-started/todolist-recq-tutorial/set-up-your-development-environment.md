@@ -15,7 +15,7 @@ Create a Spring Boot Application using Spring Initializr and assign Spring Web, 
 Then add your Evento Framework Bundle Dependency and follow the [Quick Start](../quick-start.md) section to set up an Evento Server Instance.
 
 ```gradle
-implementation group: 'com.eventoframework', name: 'evento-bundle', version: 'ev1.8.0'
+implementation group: 'com.eventoframework', name: 'evento-bundle', version: 'ev1.8.1'
 ```
 
 ### Evento Config

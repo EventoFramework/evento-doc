@@ -22,9 +22,11 @@ Aggregates boast a single "handle" method – the command handler. This handler 
 1. **Command Message:** This message encapsulates the specific action to be performed on the Aggregate.
 2. **Aggregate State:** Represented as a sequence of events retrieved from the SSS, this provides the current state of the Aggregate necessary for the command handler to make informed decisions.
 
+<figure><img src="../../.gitbook/assets/image (23).png" alt=""><figcaption><p>Aggregate Structure</p></figcaption></figure>
+
 **Transformation Through Commands:**
 
-The command handler acts as the brains of the Aggregate. It analyzes the incoming command message in the context of the current state (event history). Based on this analysis, it performs two possible actions:
+The command handler acts as the brain of the Aggregate. It analyzes the incoming command message in the context of the current state (event history). Based on this analysis, it performs two possible actions:
 
 * **Generate a State Change Event:** If the command is valid, the handler generates a new event that reflects the state change resulting from the command execution.
 * **Return an Error:** If the command violates any business rules or constraints, the handler returns an error message indicating the failure.
@@ -60,5 +62,3 @@ In essence, RECQ Aggregates are powerful building blocks that provide a well-def
 | Can Send Query Messages     | No                          |
 | State type                  | Instance (Bu Aggregate Key) |
 | CAP Properties              | CaP                         |
-
-<figure><img src="../../.gitbook/assets/image (23).png" alt=""><figcaption><p>Aggregate Structure</p></figcaption></figure>
