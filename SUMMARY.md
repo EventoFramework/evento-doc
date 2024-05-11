@@ -67,7 +67,7 @@
     * [Service Command](evento-framework/payload-and-messages/command/service-command.md)
   * [Event](evento-framework/payload-and-messages/event/README.md)
     * [Domain and Service Event](evento-framework/payload-and-messages/event/domain-and-service-event.md)
-  * [Query and View](evento-framework/payload-and-messages/query-and-view.md)
+  * [Query and View](evento-framework/payload-and-messages/view.md)
 * [@Component](evento-framework/component/README.md)
   * [@Aggregate](evento-framework/component/aggregate/README.md)
     * [Aggregate State](evento-framework/component/aggregate/aggregate-state.md)
