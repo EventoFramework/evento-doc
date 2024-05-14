@@ -77,12 +77,13 @@
     * [Projector @EventHandler](evento-framework/component/projector/projector-eventhandler.md)
   * [@Projection](evento-framework/component/projection/README.md)
     * [@QueryHandler](evento-framework/component/projection/queryhandler.md)
-  * [@Service](evento-framework/component/service.md)
+  * [@Service](evento-framework/component/service/README.md)
+    * [@CommandHandler](evento-framework/component/service/commandhandler.md)
   * [@Invoker](evento-framework/component/invoker.md)
   * [@Saga](evento-framework/component/saga.md)
   * [@Observer](evento-framework/component/observer.md)
 * [Bundle](evento-framework/bundle/README.md)
-  * [Consumer State Store](evento-framework/bundle/consumer-state-store.md)
+  * [Consumer State Stores and Contexts](evento-framework/bundle/consumer-state-stores-and-contexts.md)
   * [Autoscaling Protocol](evento-framework/bundle/autoscaling-protocol.md)
 
 ## Evento Server

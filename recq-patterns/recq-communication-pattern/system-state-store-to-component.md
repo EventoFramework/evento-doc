@@ -6,7 +6,7 @@ description: Asynchronous Event Distribution with Pub/Sub and Consumer State Sto
 
 In a RECQ architecture, the System State Store (SSS) utilizes a pub/sub (publish/subscribe) protocol for distributing information about state changes to interested components. This approach decouples the SSS from individual components and enables efficient event delivery.
 
-**The Role of** [**Consumer State Stores**](../../evento-framework/bundle/consumer-state-store.md) **(CSS):**
+**The Role of** [**Consumer State Stores**](../../evento-framework/bundle/consumer-state-stores-and-contexts.md) **(CSS):**
 
 * **Persistent Event Consumption Progress:** CSS modules are introduced to maintain the state of event consumption by individual components. This persistence allows for:
   * **Retry Logic:** If a component fails to process an event, the CSS can track the consumed events and enable retries upon recovery.
