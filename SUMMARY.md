@@ -88,6 +88,7 @@
   * [EventoServerMessageBusConfiguration](evento-framework/eventobundle/eventoservermessagebusconfiguration.md)
   * [ConsumerStateStore](evento-framework/eventobundle/consumerstatestore/README.md)
     * [InMemoryConsumerStateStore](evento-framework/eventobundle/consumerstatestore/inmemoryconsumerstatestore.md)
+    * [PostgresConsumerStateStore](evento-framework/eventobundle/consumerstatestore/postgresconsumerstatestore.md)
   * [Context](evento-framework/eventobundle/context.md)
   * [TracingAgend and @Track](evento-framework/eventobundle/tracingagend-and-track.md)
   * [Autoscaling Protocol](evento-framework/eventobundle/autoscaling-protocol.md)
