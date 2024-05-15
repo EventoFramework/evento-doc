@@ -84,12 +84,14 @@
     * [SagaState](evento-framework/component/saga/sagastate.md)
     * [@SagaEventHandler](evento-framework/component/saga/sagaeventhandler.md)
   * [@Observer](evento-framework/component/observer.md)
-* [Bundle](evento-framework/bundle/README.md)
-  * [EventoServerMessageBusConfiguration](evento-framework/bundle/eventoservermessagebusconfiguration.md)
-  * [Consumer State Stores and Contexts](evento-framework/bundle/consumer-state-stores-and-contexts.md)
-  * [TracingAgend and @Track](evento-framework/bundle/tracingagend-and-track.md)
-  * [Autoscaling Protocol](evento-framework/bundle/autoscaling-protocol.md)
-  * [Injector and @Component](evento-framework/bundle/injector-and-component.md)
+* [EventoBundle](evento-framework/eventobundle/README.md)
+  * [EventoServerMessageBusConfiguration](evento-framework/eventobundle/eventoservermessagebusconfiguration.md)
+  * [Context](evento-framework/eventobundle/context.md)
+  * [ConsumerStateStore](evento-framework/eventobundle/consumerstatestore/README.md)
+    * [InMemoryConsumerStateStore](evento-framework/eventobundle/consumerstatestore/inmemoryconsumerstatestore.md)
+  * [TracingAgend and @Track](evento-framework/eventobundle/tracingagend-and-track.md)
+  * [Autoscaling Protocol](evento-framework/eventobundle/autoscaling-protocol.md)
+  * [Injector and @Component](evento-framework/eventobundle/injector-and-component.md)
 
 ## Evento Server
 
