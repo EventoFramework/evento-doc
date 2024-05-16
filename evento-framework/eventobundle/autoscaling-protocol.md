@@ -1,3 +1,0 @@
-# Autoscaling Protocol
-
-WIP
