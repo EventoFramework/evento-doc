@@ -100,8 +100,9 @@
 ## Evento Server
 
 * [Evento Server Introduction](evento-server/evento-server-introduction.md)
-* [Bundle Deploy Plugin](evento-server/bundle-deploy-plugin.md)
-* [Message BUS](evento-server/message-bus.md)
+* [SetUp Evento Server](evento-server/setup-evento-server.md)
+* [Evento Server Cluster](evento-server/evento-server-cluster.md)
+* [Bundle Deploy Script](evento-server/bundle-deploy-script.md)
 
 ## EVENTO GUI
 
