@@ -15,9 +15,18 @@ Evento Server acts as a central message gateway, facilitating the exchange of me
 
 This publish-subscribe pattern decouples applications, promoting loose coupling. Applications don't need to be aware of each other's location or implementation details, simplifying development and deployment.
 
+#### Bundle Registration: The Foundation for Execution
+
+Evento Server acts as the central registry for deployable units within your distributed system. These units are known as **bundles**. A bundle is essentially a JAR archive containing the executable code (typically written in Java) and a descriptor file. This descriptor file provides crucial information about the bundle, including:
+
+* **Description:** Json explanation of the bundle's purpose and functionality.
+* **RECQ Components and Invocations:** Details about the specific RECQcomponents encapsulated within the bundle. This section of the descriptor file outlines the available components and how they can be invoked.
+
+By registering bundles with Evento Server, you essentially make them available for deployment and execution within the cluster. Evento Server utilizes the information gleaned from the bundle descriptor during deployment to configure and manage the bundle instances.
+
 #### Beyond Messaging: Event Store and the Power of History
 
-Evento Server goes beyond basic message routing by offering an Event Store. This functionality is particularly valuable in the context of the REQQ (Read Event Executed Query) architecture. The Event Store acts as a central repository for a chronologically ordered sequence of events. This enables applications to:
+Evento Server goes beyond basic message routing by offering an Event Store. This functionality is particularly valuable in the context of the REQQ architecture. The Event Store acts as a central repository for a chronologically ordered sequence of events captured by running bundles. This enables applications to:
 
 * **Record Events:** Capture significant changes in the system state as events.
 * **Replay Events:** Re-execute a sequence of events to recreate a specific system state or for debugging purposes.
@@ -28,9 +37,9 @@ This ability to record and replay events empowers developers to build robust and
 
 Evento Server acts as the central registry for all running application bundles within the cluster. It maintains critical information about each bundle, including its:
 
-* **Status:** Monitors the health and operational state of each bundle.
+* **Status:** Monitors the health and operational state of each bundle instance.
 * **Configuration:** Stores bundle-specific configuration details.
-* **Location:** Tracks where each bundle is currently running within the cluster.
+* **Location:** Tracks where each bundle instance is currently running within the cluster.
 
 This centralized management simplifies monitoring and troubleshooting within the distributed system.
 
@@ -55,4 +64,4 @@ By dynamically adjusting the number of running bundles based on real-time needs,
 
 #### In Conclusion
 
-Evento Server acts as the central nervous system of a distributed system built with the Evento framework. It facilitates communication between applications, provides a mechanism for recording and replaying events, manages the cluster of running bundles, gathers telemetry data, and enables dynamic scaling. By leveraging these functionalities, developers can build robust, scalable, and maintainable distributed applications. As you delve deeper into the Evento framework, you'll discover how each component interacts with Evento Server to create a coordinated and responsive application ecosystem.
+Evento Server acts as the central nervous system of a distributed system built with the Evento framework. It facilitates communication between applications, provides a mechanism for recording and replaying events, manages the cluster of running bundles (registered with their descriptions), gathers telemetry data, and enables dynamic scaling. By leveraging these functionalities, developers can build robust, scalable, and maintainable distributed applications. As you delve deeper into the Evento framework, you'll discover how each component interacts with Evento Server to create a coordinated and responsive application ecosystem.

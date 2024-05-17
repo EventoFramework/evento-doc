@@ -44,4 +44,4 @@ The RECQ System Pattern provides a solid foundation for building event-driven, s
 
 > RECQ system is a set of computational units called components which they communicate with each other by exchanging messages; if a component has a consequence the system state changes, this information is published as an event in the System State Store, and components can listen for changes of the system state to change their internal state without an explicit message from of another component.
 
-<figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption><p>Sample interaction of modules in a RECQ System</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption><p>Sample interaction of modules in a RECQ System</p></figcaption></figure>

@@ -106,6 +106,8 @@
 
 ## EVENTO GUI
 
+* [Explore RECQ Systems Visually](evento-gui/explore-recq-systems-visually.md)
+* [GUI Auth](evento-gui/gui-auth.md)
 * [Payload Catalog](evento-gui/payload-catalog.md)
 * [Component Catalog](evento-gui/component-catalog.md)
 * [Bundle Catalog](evento-gui/bundle-catalog.md)
