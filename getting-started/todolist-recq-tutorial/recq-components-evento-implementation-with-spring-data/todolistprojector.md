@@ -37,8 +37,7 @@ public class TodoListProjector{
                 null,
                 timestamp.atZone(ZoneId.systemDefault()),
                 null,
-                new ArrayList<>(),
-                null
+                new ArrayList<>()
         ));
     }
 

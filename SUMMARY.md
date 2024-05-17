@@ -25,7 +25,7 @@
     * [Views](getting-started/todolist-recq-tutorial/recq-payload-evento-implementation/views.md)
     * [Queries](getting-started/todolist-recq-tutorial/recq-payload-evento-implementation/queries.md)
   * [RECQ Components Evento Implementation with Spring Data](getting-started/todolist-recq-tutorial/recq-components-evento-implementation-with-spring-data/README.md)
-    * [TosoListAggregate](getting-started/todolist-recq-tutorial/recq-components-evento-implementation-with-spring-data/tosolistaggregate.md)
+    * [TodoListAggregate](getting-started/todolist-recq-tutorial/recq-components-evento-implementation-with-spring-data/todolistaggregate.md)
     * [TodoList Model with Spring Data](getting-started/todolist-recq-tutorial/recq-components-evento-implementation-with-spring-data/todolist-model-with-spring-data.md)
     * [TodoListProjector](getting-started/todolist-recq-tutorial/recq-components-evento-implementation-with-spring-data/todolistprojector.md)
     * [TodoListProjection](getting-started/todolist-recq-tutorial/recq-components-evento-implementation-with-spring-data/todolistprojection.md)

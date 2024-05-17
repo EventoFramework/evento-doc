@@ -2,7 +2,7 @@
 
 To handle Query Messages we need to implement a Projection.&#x20;
 
-In EVento Framework a projection is a standard class annotated with @Projection (com.evento.common.modeling.annotations.component.Projection). It contains Query Handlers, methods annotated with `@QueryHandler (com.evento.common.modeling.annotations.handler.QueryHandler)` with the Query as a parameter and returning a Single or a Multiple of a particular View.
+In Evento Framework a projection is a standard class annotated with @Projection (com.evento.common.modeling.annotations.component.Projection). It contains Query Handlers, methods annotated with `@QueryHandler (com.evento.common.modeling.annotations.handler.QueryHandler)` with the Query as a parameter and returning a Single or a Multiple of a particular View.
 
 ```java
 import com.eventoframework.demo.todo.api.todo.query.TodoListListItemViewSearchQuery;

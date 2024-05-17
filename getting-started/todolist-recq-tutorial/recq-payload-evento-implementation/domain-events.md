@@ -6,7 +6,7 @@ description: System State Change Events
 
 For each Domain Command, we need to create a Domain Event representing the System Change State.
 
-Domain Events in Evetno Framework are implemented by extending the abstract class `com.evento.common.modeling.messaging.payload.DomainEvent`. This class has no required method to implement but extends the generic Event class that includes a property called _Context_ which we will discuss later.
+Domain Events in Evento Framework are implemented by extending the abstract class `com.evento.common.modeling.messaging.payload.DomainEvent`. This class has no required method to implement but extends the generic Event class that includes a property called _Context_ which we will discuss later.
 
 {% hint style="info" %}
 Use Past verbs to indicate Events and Present for Commands.
@@ -14,7 +14,7 @@ Use Past verbs to indicate Events and Present for Commands.
 Events can contain more information than the relative command for optimization purposes. (See TodoListTodoCheckedEvent)
 {% endhint %}
 
-Usually, each vent has a very similar name to the relative command but with an ending Event and a Part verbal time.
+Usually, each event has a very similar name to the relative command but with an ending Event and a Partial verbal time.
 
 ```java
 import lombok.AllArgsConstructor;

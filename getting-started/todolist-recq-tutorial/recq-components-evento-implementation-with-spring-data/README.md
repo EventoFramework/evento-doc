@@ -8,9 +8,9 @@ We suggest developing Aggregates and Services first, then Projector and Projecti
 
 We will proceed with this order:
 
-* TodoListAggrgeate
+* TodoListAggregate
 * TodoList Domain in Spring Data
 * TodoListProjector
 * TodoListProjection
 * TodoListInvoker
-* Todo List COntroller in Spring Web
+* Todo List Controller in Spring Web
