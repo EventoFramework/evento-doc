@@ -2,7 +2,7 @@
 
 <figure><img src="../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
 
-The realm of distributed systems, with its intricate web of interconnected applications, can be both fascinating and challenging to navigate. Fortunately, the Evento framework empowers developers with a robust set of tools to design, implement, and manage these complex architectures. As an integral part of this ecosystem, Evento GUI serves as a user-friendly interface, offering a window into the inner workings of your RECQ (Read Event Executed Query) applications built with Evento.
+The realm of distributed systems, with its intricate web of interconnected applications, can be both fascinating and challenging to navigate. Fortunately, the Evento framework empowers developers with a robust set of tools to design, implement, and manage these complex architectures. As an integral part of this ecosystem, Evento GUI serves as a user-friendly interface, offering a window into the inner workings of your RECQ applications built with Evento.
 
 **Exploring the Cluster: A Bird's-Eye View**
 

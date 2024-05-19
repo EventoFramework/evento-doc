@@ -111,12 +111,13 @@
 * [Payload Catalog](evento-gui/payload-catalog.md)
 * [Component Catalog](evento-gui/component-catalog.md)
 * [Bundle Catalog](evento-gui/bundle-catalog.md)
-* [Cluster Status](evento-gui/cluster-status.md)
+* [Cluster Status (Experimental)](evento-gui/cluster-status-experimental.md)
 * [Flows](evento-gui/flows/README.md)
   * [Performance Evaluation](evento-gui/flows/performance-evaluation.md)
 * [Application Graph](evento-gui/application-graph.md)
 
 ## Evento CLI
 
+* [Evento CLI Introduction](evento-cli/evento-cli-introduction.md)
 * [Update Version](evento-cli/update-version.md)
 * [Publish](evento-cli/publish.md)
