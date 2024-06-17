@@ -50,7 +50,7 @@ In the end, we need to identify non-functional fields and technical ones.
   * <mark style="color:orange;">updatedAt</mark> - update audit
   * <mark style="color:orange;">updatedBy</mark> - update audit
 * Todo
-  * <mark style="color:blue;">identifier</mark> <mark style="color:purple;">-</mark> the list UUID
+  * <mark style="color:blue;">identifier</mark> <mark style="color:purple;">-</mark> the todo UUID
   * <mark style="color:blue;">description</mark> -the todo description
   * <mark style="color:blue;">checked</mark> - the flag indicating the completion
   * <mark style="color:orange;">createdAt</mark> - creation audit
