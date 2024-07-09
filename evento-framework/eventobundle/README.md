@@ -63,6 +63,7 @@ Advanced Configuration Options:
 * `sssFetchDelay` (Optional - Defaults to 1000): This property defines the delay (in milliseconds) between subsequent fetches from the consumer state store. This value can be used to optimize event processing based on workload characteristics.
 * `tracingAgent` (Optional - Defaults to a new `TracingAgent` instance with bundleId and bundleVersion): This property allows you to set a custom tracing agent for the bundle. Tracing agents help track the execution flow of events and commands within your application. By default, a new `TracingAgent` instance is created with the bundle's ID and version.
 * `injector` (Optional - Defaults to a function returning null): This property allows you to define a custom function for injecting dependencies into your components. This advanced option provides flexibility for configuring specific injection behavior for your bundle.
+* `instanceId` (Optional - Defaults to UUID): This property allows is used to identify a particular instance of that bundle, used for telemetry purpose, autoscaling and tracing.
 
 **Additional Notes:**
 

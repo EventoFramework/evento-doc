@@ -24,6 +24,9 @@ public @interface SagaEventHandler {
      * @return The name of the association property as a {@code String}.
      */
     String associationProperty();
+    
+    public int retry() default -1;
+    public int retryDelay() default 1000;
 }
 ```
 
@@ -33,6 +36,20 @@ Here's a breakdown of the key aspects of `@SagaEventHandler`:
 * **State Management:** Sagas leverage `@SagaEventHandler` methods to process events, update their state (`SagaState`), and potentially trigger actions based on the event data and current saga state.
 * **`init` (Optional):** This boolean flag indicates whether the method is an initialization handler. When set to `true` (default is `false`), the method is called when the saga is first created in response to a starting event.
 * **`associationProperty` (Mandatory):** This attribute specifies the name of the property within the handled event that should be used to associate the event with a saga instance. The saga framework uses this property to link incoming events with the appropriate saga instances.
+
+**Optional Retry Functionality:**
+
+* **`public int retry() default -1;`**: This attribute empowers you to define the number of retries the framework should attempt if an exception occurs while executing the event handler. By default, the retry count is set to `-1`, indicating no specific limit on retries.
+* **`public int retryDelay() default 1000;`**: This attribute allows you to specify the delay (in milliseconds) between each retry attempt. The default delay is `1000` milliseconds (1 second). These optional features enhance the robustness of your event handling logic by enabling automatic retries in case of transient errors.
+
+**Handling Persistent Errors: Dead Event Queues (DEQs)**
+
+While retries can help overcome temporary hiccups, there may be situations where event handling consistently fails even after retry attempts. To prevent such events from getting stuck in limbo, the Evento Framework utilizes [**Dead Event Queues (DEQs)**](../../dead-event-queues.md).
+
+* After exceeding the configured retry limit, the event is automatically routed to a dedicated DLQ.
+* DLQs act as a safety net, storing these unprocessed events for potential future intervention.
+
+By employing DLQs, Evento ensures efficient processing of most events while providing a mechanism to handle persistent failures and prevent data loss.
 
 #### Requirements for `@SagaEventHandler` Methods
 

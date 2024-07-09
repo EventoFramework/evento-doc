@@ -25,6 +25,9 @@ public @interface Observer {
      * @return the version of the observer
      */
     int version();
+    
+    public int retry() default -1;
+    public int retryDelay() default 1000;
 }
 ```
 
@@ -34,6 +37,20 @@ The definition of `@Observer` shares similarities with annotations for other eve
 * **`@Retention(RetentionPolicy.RUNTIME)`:** Ensures the annotation information is retained at runtime for Evento to identify observer classes.
 * **`@Target(ElementType.TYPE)`:** Specifies that the annotation can only be applied to class declarations.
 * **`version` (Attribute):** Defines the version of the observer logic. Similar to `@Saga`, versioning helps manage changes to the observer's behavior over time.
+
+**Optional Retry Functionality:**
+
+* **`public int retry() default -1;`**: This attribute empowers you to define the number of retries the framework should attempt if an exception occurs while executing the event handler. By default, the retry count is set to `-1`, indicating no specific limit on retries.
+* **`public int retryDelay() default 1000;`**: This attribute allows you to specify the delay (in milliseconds) between each retry attempt. The default delay is `1000` milliseconds (1 second). These optional features enhance the robustness of your event handling logic by enabling automatic retries in case of transient errors.
+
+**Handling Persistent Errors: Dead Event Queues (DEQs)**
+
+While retries can help overcome temporary hiccups, there may be situations where event handling consistently fails even after retry attempts. To prevent such events from getting stuck in limbo, the Evento Framework utilizes [**Dead Event Queues (DEQs)**](../dead-event-queues.md).
+
+* After exceeding the configured retry limit, the event is automatically routed to a dedicated DLQ.
+* DLQs act as a safety net, storing these unprocessed events for potential future intervention.
+
+By employing DLQs, Evento ensures efficient processing of most events while providing a mechanism to handle persistent failures and prevent data loss.
 
 #### Key Differences from `@Saga`
 

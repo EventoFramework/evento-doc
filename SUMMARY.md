@@ -84,6 +84,7 @@
     * [SagaState](evento-framework/component/saga/sagastate.md)
     * [@SagaEventHandler](evento-framework/component/saga/sagaeventhandler.md)
   * [@Observer](evento-framework/component/observer.md)
+* [Dead Event Queues](evento-framework/dead-event-queues.md)
 * [EventoBundle](evento-framework/eventobundle/README.md)
   * [EventoServerMessageBusConfiguration](evento-framework/eventobundle/eventoservermessagebusconfiguration.md)
   * [ConsumerStateStore](evento-framework/eventobundle/consumerstatestore/README.md)
