@@ -29,7 +29,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class TodoListCreateCommand implements DomainCommand {
+public class TodoListCreateCommand extends DomainCommand {
     
     // The TodoList identifier
     private String identifier;
@@ -56,7 +56,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class TodoListDeleteCommand  implements DomainCommand {
+public class TodoListDeleteCommand  extends DomainCommand {
 
     // Identifier of the TodoList to delete
     private String identifier;
@@ -81,7 +81,7 @@ import com.evento.common.modeling.messaging.payload.DomainCommand;
 @AllArgsConstructor
 @Getter
 @Setter
-public class TodoListAddTodoCommand implements DomainCommand {
+public class TodoListAddTodoCommand extends DomainCommand {
 
     // Identifier of the TodoList to update
     private String identifier;
@@ -109,7 +109,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class TodoListRemoveTodoCommand implements DomainCommand {
+public class TodoListRemoveTodoCommand extends DomainCommand {
 
     // Identifier of the TodoList to update
     private String identifier;
@@ -135,7 +135,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class TodoListCheckTodoCommand implements DomainCommand {
+public class TodoListCheckTodoCommand extends DomainCommand {
 
     // Identifier of the TodoList to update
     private String identifier;
