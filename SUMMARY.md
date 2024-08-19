@@ -103,6 +103,7 @@
 * [Evento Server Introduction](evento-server/evento-server-introduction.md)
 * [SetUp Evento Server](evento-server/setup-evento-server/README.md)
   * [Advanced Options](evento-server/setup-evento-server/advanced-options.md)
+  * [Evento Event Store Modes: APES and CPES](evento-server/setup-evento-server/evento-event-store-modes-apes-and-cpes.md)
 * [Evento Server Cluster](evento-server/evento-server-cluster.md)
 * [Bundle Deploy Script](evento-server/bundle-deploy-script.md)
 
