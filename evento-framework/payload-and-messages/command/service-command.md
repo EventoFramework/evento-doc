@@ -23,41 +23,42 @@ Utilizing service commands offers several advantages:
 
 #### Implementing a Service Command
 
-Similar to Domain Commands, Evento Framework utilizes interfaces to define the structure of Service Commands. Here's a breakdown of a typical Service Command interface:
+Similar to Domain Commands, Evento Framework utilizes abstract classes to define the structure of Service Commands. Here's a breakdown of a typical Service Command class:
 
 ```java
 package com.evento.common.modeling.messaging.payload;
 
 
 /**
- * The ServiceCommand interface represents a command that can be sent to a service.
+ * The ServiceCommand abstract class represents a command that can be sent to a service.
  * It extends the Command interface and defines an additional method to retrieve the lock ID associated with the command.
  */
-public interface ServiceCommand extends Command {
+public abstract class ServiceCommand extends Command {
 
 	@SuppressWarnings("SameReturnValue")
-   	default String getLockId(){
+	@Override
+    public String getLockId(){
 		return null;
 	}
 
 	@Override
-	default String getAggregateId() {
+	public String getAggregateId() {
 		return getLockId();
 	}
 }
 
 ```
 
-* **`Command` Extension:** This interface inherits functionalities from the base `Command` interface, likely including a method to access the payload object.
+* **`Command` Extension:** This abstract class inherits functionalities from the base `Command` class, likely including a method to access the payload object.
 * **Optional `getLockId()`:** This method might be used for locking purposes specific to the service. By default, it might return `null` indicating that locking isn't mandatory for service commands.
 * **Override of `getAggregateId()`:** This method overrides the behavior inherited from `Command`. It retrieves the aggregate ID by calling `getLockId()`. This suggests a potential approach where the aggregate ID might be derived from the lock ID if one exists, but it's not the primary target for routing service commands.
 
 **Concrete Service Command Implementations:**
 
-As with Domain Commands, you'll create concrete implementations extending the `ServiceCommand` interface for specific service interactions. Here's an example:
+As with Domain Commands, you'll create concrete implementations extending the `ServiceCommand` class for specific service interactions. Here's an example:
 
 ```java
-public class SendWelcomeEmailCommand implements ServiceCommand {
+public class SendWelcomeEmailCommand extends ServiceCommand {
 
     private final String customerId;
 

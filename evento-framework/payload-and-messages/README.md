@@ -37,6 +37,8 @@ By grasping how Messages and Payloads work together, you can effectively design 
 package com.evento.common.modeling.messaging.message.application;
 
 import com.evento.common.modeling.messaging.payload.Payload;
+import com.evento.common.modeling.messaging.payload.TrackablePayload;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -50,120 +52,145 @@ import java.time.Instant;
  */
 public abstract class Message<T extends Payload> implements Serializable {
 
-    private SerializedPayload<T> serializedPayload;
+	private SerializedPayload<T> serializedPayload;
 
-    private long timestamp;
+	private long timestamp;
 
-    private Metadata metadata;
+	private Metadata metadata;
 
-    /**
-     * Constructs a new Message object with the given payload.
-     *
-     * @param payload The payload of the Message.
+	private boolean forceTelemetry = false;
+
+	/**
+	 * Constructs a new Message object with the given payload.
+	 *
+	 * @param payload The payload of the Message.
      */
-    public Message(T payload) {
-       this.serializedPayload = new SerializedPayload<>(payload);
-       this.timestamp = Instant.now().toEpochMilli();
-    }
+	public Message(T payload) {
+		this.serializedPayload = new SerializedPayload<>(payload);
+		this.timestamp = Instant.now().toEpochMilli();
+		if(payload instanceof TrackablePayload pc){
+			setForceTelemetry(pc.isForceTelemetry());
+		}
+	}
 
-    /**
-     * The Message class represents a message with a serialized payload, timestamp, and metadata.
-     *
+	/**
+	 * The Message class represents a message with a serialized payload, timestamp, and metadata.
+	 *
      */
-    public Message() {
-    }
+	public Message() {
+	}
 
-    /**
-     * Retrieves the payload of the message.
-     *
-     * @return the payload of the message
-     */
-    public T getPayload() {
-       return serializedPayload.getObject();
-    }
+	/**
+	 * Retrieves the payload of the message.
+	 *
+	 * @return the payload of the message
+	 */
+	@JsonIgnore
+	public T getPayload() {
+		return serializedPayload.getObject();
+	}
 
-    /**
-     * Sets the payload of the message.
-     *
-     * @param payload The payload to be set.
+	/**
+	 * Sets the payload of the message.
+	 *
+	 * @param payload The payload to be set.
      */
-    public void setPayload(T payload) {
-       this.serializedPayload = new SerializedPayload<>(payload);
-    }
+	public void setPayload(T payload) {
+		this.serializedPayload = new SerializedPayload<>(payload);
+	}
 
-    /**
-     * Retrieves the serialized payload of the message.
-     *
-     * @return the serialized payload of the message
-     */
-    public SerializedPayload<T> getSerializedPayload() {
-       return serializedPayload;
-    }
+	/**
+	 * Retrieves the serialized payload of the message.
+	 *
+	 * @return the serialized payload of the message
+	 */
+	public SerializedPayload<T> getSerializedPayload() {
+		return serializedPayload;
+	}
 
-    /**
-     * Sets the serialized payload of the Message.
-     *
-     * @param serializedPayload The serialized payload to be set.
+	/**
+	 * Sets the serialized payload of the Message.
+	 *
+	 * @param serializedPayload The serialized payload to be set.
      */
-    public void setSerializedPayload(SerializedPayload<T> serializedPayload) {
-       this.serializedPayload = serializedPayload;
-    }
+	public void setSerializedPayload(SerializedPayload<T> serializedPayload) {
+		this.serializedPayload = serializedPayload;
+	}
 
-    /**
-     * Retrieves the metadata of the message.
-     *
-     * @return The metadata object associated with the message.
-     */
-    public Metadata getMetadata() {
-       return metadata;
-    }
+	/**
+	 * Retrieves the metadata of the message.
+	 *
+	 * @return The metadata object associated with the message.
+	 */
+	public Metadata getMetadata() {
+		return metadata;
+	}
 
-    /**
-     * Sets the metadata of the message.
-     *
-     * @param metadata The metadata to be set.
-     */
-    public void setMetadata(Metadata metadata) {
-       this.metadata = metadata;
-    }
+	/**
+	 * Sets the metadata of the message.
+	 *
+	 * @param metadata The metadata to be set.
+	 */
+	public void setMetadata(Metadata metadata) {
+		this.metadata = metadata;
+	}
 
-    /**
-     * Retrieves the type of the message.
-     *
-     * @return the type of the message as a String.
-     */
-    public String getType() {
-       return serializedPayload.getObjectClass();
-    }
+	/**
+	 * Retrieves the type of the message.
+	 *
+	 * @return the type of the message as a String.
+	 */
+	public String getType() {
+		return serializedPayload.getObjectClass();
+	}
 
-    /**
-     * Retrieves the name of the payload.
-     *
-     * @return the name of the payload as a String.
-     */
-    public String getPayloadName() {
-       var parts = getType().split("\\.");
-       return parts[parts.length - 1];
-    }
+	/**
+	 * Retrieves the name of the payload.
+	 *
+	 * @return the name of the payload as a String.
+	 */
+	public String getPayloadName() {
+		var parts = getType().split("\\.");
+		return parts[parts.length - 1];
+	}
 
-    /**
-     * Retrieves the timestamp of the message.
-     *
-     * @return The timestamp of the message.
-     */
-    public long getTimestamp() {
-       return timestamp;
-    }
+	/**
+	 * Retrieves the timestamp of the message.
+	 *
+	 * @return The timestamp of the message.
+	 */
+	public long getTimestamp() {
+		return timestamp;
+	}
 
-    /**
-     * Sets the timestamp of the message.
-     *
-     * @param timestamp The timestamp to be set.
-     */
-    public void setTimestamp(long timestamp) {
-       this.timestamp = timestamp;
-    }
+	/**
+	 * Sets the timestamp of the message.
+	 *
+	 * @param timestamp The timestamp to be set.
+	 */
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	/**
+	 * Retrieves the value indicating whether force telemetry is enabled for the message.
+	 *
+	 * @return True if force telemetry is enabled, False otherwise.
+	 */
+	public boolean isForceTelemetry() {
+		return forceTelemetry;
+	}
+
+	/**
+	 * Sets the value indicating whether force telemetry is enabled for the message.
+	 *
+	 * @param forceTelemetry True to enable force telemetry, False to disable it.
+	 */
+	public void setForceTelemetry(boolean forceTelemetry) {
+		this.forceTelemetry = forceTelemetry;
+	}
 }
+
 ```
 
 **Methods:**
@@ -183,6 +210,9 @@ public abstract class Message<T extends Payload> implements Serializable {
   * `public void setTimestamp(long timestamp)`: Allows setting a custom timestamp for the message, potentially for testing or specific use cases.
 * **Metadata (Optional):**
   * The provided code snippet doesn't explicitly show methods for accessing or manipulating metadata. However, the `Message` class might have getter and setter methods for a `Metadata` object (not provided) to attach and retrieve additional information associated with the message.
+* **Force Telemetry (Optional):**
+  * **Purpose:** By setting `forceTelemetry` to `true`, you explicitly instruct the [Evento framework to collect and store telemetry data](../../evento-gui/component-catalog.md#telemetry) for this particular message, regardless of the system's default telemetry settings. This can be useful for troubleshooting critical events or monitoring performance of specific message types.
+  * **Default Behavior:** When `forceTelemetry` is `false` (the default setting), telemetry collection adheres to the overall system configuration for the message type.
 
 **Key Points:**
 

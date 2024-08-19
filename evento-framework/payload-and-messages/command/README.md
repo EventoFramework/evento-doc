@@ -1,24 +1,25 @@
 # Command
 
-**Understanding CommandMessage and Command Interface is crucial for sending instructions and triggering actions within your event-driven applications built with Evento Framework.** These concepts allow you to define commands with target aggregates, potentially leverage locking mechanisms, and structure them within messages for effective communication.
+**Understanding CommandMessage and Command Abstract Class is crucial for sending instructions and triggering actions within your event-driven applications built with Evento Framework.** These concepts allow you to define commands with target aggregates, potentially leverage locking mechanisms, and structure them within messages for effective communication.
 
-**Command Interface:**
+**Command Abstract Class:**
 
 ```java
-package com.evento.common.modeling.messaging.payload;
-
-
 /**
- * The Command interface represents a command object that can be used in a software system.
- * It extends the Payload interface, which represents a payload object that can be used in a software system.
+ * The Command class is an abstract class representing a command that can be sent to a service.
+ * It extends the TrackablePayload class and defines additional methods to retrieve the ID of the
+ * aggregate entity and the lock ID associated with the command.
  */
-public interface Command extends Payload {
+public abstract class Command extends TrackablePayload {
+
     /**
-     * Retrieves the ID of the aggregate that the command is targeting.
+     * Retrieves the ID of the aggregate entity.
+     * The aggregate entity represents a group of related objects that are treated as a single unit.
+     * This method should be implemented by subclasses to provide the aggregate ID.
      *
-     * @return The aggregate ID as a string.
+     * @return The ID of the aggregate entity.
      */
-    String getAggregateId();
+    public abstract String getAggregateId();
 
     /**
      * Retrieves the lock ID associated with the ServiceCommand.
@@ -26,13 +27,14 @@ public interface Command extends Payload {
      * @return The lock ID associated with the ServiceCommand.
      */
     @SuppressWarnings("SameReturnValue")
-    String getLockId();
+    public abstract String getLockId();
 
 }
+
 ```
 
-* **Purpose:** This interface defines the core functionalities expected of a command object.
-* **Inheritance:** It typically extends the `Payload` interface, ensuring commands adhere to basic payload functionalities (carrying data).
+* **Purpose:** This class defines the core functionalities expected of a command object.
+* **Inheritance:** It typically extends the `TrackablePayload` class, ensuring commands adhere to basic payload functionalities (carrying data).
 * **Methods:**
   * `getAggregateId()`: Retrieves the ID of the aggregate that the command targets. This is crucial for routing the command to the appropriate aggregate for handling.
   * `getLockId()` (with potential `@SuppressWarnings` annotation): Might retrieve a lock ID associated with the command for data consistency during execution (implementation details might vary).
@@ -147,18 +149,18 @@ public abstract class CommandMessage<T extends Command> extends Message<T> {
 * **Abstract Concept:** There might not be a concrete `CommandMessage` class in Evento Framework.
 * **Functionality:** The concept likely refers to the usage of the `Message` abstract class (discussed earlier) to create messages specifically for commands.
 * **Implementation:** When sending a command, a developer would likely:
-  1. Create a concrete command object implementing the `Command` interface (e.g., `UpdateCustomerCommand`).
+  1. Create a concrete command object extending the `Command` class (e.g., `UpdateCustomerCommand`).
   2. Use this command object as the payload when constructing a `Message` object using the `Message` class constructor (`new Message(commandObject)`).
 
 **Understanding the Relationship:**
 
-* The `Command` interface defines the expected structure and behavior of a command object.
+* The `Command` class defines the expected structure and behavior of a command object.
 * The `Message` class provides a way to encapsulate the command object (as the payload) along with other message details (type, timestamp, etc.) within a message structure.
 
 **Benefits of this approach:**
 
-* **Separation of Concerns:** The `Command` interface focuses on the command itself, while the `Message` class handles the overall message structure.
-* **Flexibility:** Different command types can be implemented while adhering to the core functionalities defined in the `Command` interface.
+* **Separation of Concerns:** The `Command` class focuses on the command itself, while the `Message` class handles the overall message structure.
+* **Flexibility:** Different command types can be implemented while adhering to the core functionalities defined in the `Command` class.
 * **Structured Communication:** The `Message` class ensures commands are sent with additional context (type, timestamp) for better processing within the event-driven system.
 
 **Additional Considerations:**

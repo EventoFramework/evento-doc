@@ -22,7 +22,7 @@ Let's start from the Domain logic handling aspects of the application, we have p
 
 The component and also the pattern used to manage Domain Change Request is Aggregate which collect a group of entities in a Tree Relational Structure with a root representing the Consistency Constraint Boundaries and branches or leaves representing functional depending entities. A <mark style="color:blue;background-color:blue;">**TodoListAggregate**</mark> is needed to handle <mark style="color:blue;">TodoListCreateCommands</mark>, <mark style="color:blue;">TodoListDeleteCommand</mark>, <mark style="color:blue;">TodoListAddTodoCommand</mark>, <mark style="color:blue;">TodoListRemoveTodoCommand</mark>, <mark style="color:blue;">TodoListCheckTodoCommand</mark> and produce the related <mark style="color:orange;">events</mark> to communicate to the entire system that the state is changed.
 
-<figure><img src="../../.gitbook/assets/image (2).png" alt=""><figcaption><p>TodoList Aggregate (Pattern View)</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (2) (1).png" alt=""><figcaption><p>TodoList Aggregate (Pattern View)</p></figcaption></figure>
 
 <figure><img src="../../.gitbook/assets/image (3).png" alt=""><figcaption><p>TodoList Aggregate Handlers</p></figcaption></figure>
 

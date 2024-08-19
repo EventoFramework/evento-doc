@@ -101,7 +101,8 @@
 ## Evento Server
 
 * [Evento Server Introduction](evento-server/evento-server-introduction.md)
-* [SetUp Evento Server](evento-server/setup-evento-server.md)
+* [SetUp Evento Server](evento-server/setup-evento-server/README.md)
+  * [Advanced Options](evento-server/setup-evento-server/advanced-options.md)
 * [Evento Server Cluster](evento-server/evento-server-cluster.md)
 * [Bundle Deploy Script](evento-server/bundle-deploy-script.md)
 
@@ -116,6 +117,7 @@
 * [Flows](evento-gui/flows/README.md)
   * [Performance Evaluation](evento-gui/flows/performance-evaluation.md)
 * [Application Graph](evento-gui/application-graph.md)
+* [System State Store](evento-gui/system-state-store.md)
 
 ## Evento CLI
 

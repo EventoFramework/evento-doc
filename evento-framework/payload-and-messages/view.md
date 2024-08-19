@@ -8,21 +8,19 @@ By leveraging these concepts, you can design a clear separation between your que
 
 The following code snippets showcase the key Evento classes involved in query handling:
 
-**1. Query Interface (Query.java):**
+**1. Query Class (Query.java):**
 
 ```java
-import com.evento.common.modeling.messaging.query.QueryResponse;
-
-import java.lang.reflect.ParameterizedType;
-
-
 /**
- * The Query interface represents a query object that can be sent to a system to retrieve a response.
- * It extends the Payload interface.
+ * The Query class is an abstract class that represents a query object. It extends the TrackablePayload class.
+ * It is generic, with a type parameter T that must extend the QueryResponse class.
  *
- * @param <T> The type of QueryResponse expected as the response.
+ * @param <T> The type of the response object that the Query returns.
+ *
+ * @see TrackablePayload
+ * @see QueryResponse
  */
-public interface Query<T extends QueryResponse<?>> extends Payload {
+public abstract class Query<T extends QueryResponse<?>> extends TrackablePayload {
 
 	/**
 	 * Returns the response type of the Query.
@@ -30,14 +28,14 @@ public interface Query<T extends QueryResponse<?>> extends Payload {
 	 * @return The Class object representing the response type.
 	 */
 	@SuppressWarnings("unchecked")
-	public default Class<T> getResponseType() {
+	public Class<T> getResponseType() {
 		return (Class<T>) ((ParameterizedType) ((ParameterizedType) getClass()
 				.getGenericSuperclass()).getActualTypeArguments()[0]).getRawType();
 	}
 }
 ```
 
-The `Query` interface establishes the foundation for building queries. It enforces the `Payload` interface, indicating that queries carry data. The generic type parameter `T` allows you to specify the expected response type (`QueryResponse`). The `getResponseType()` method leverages generics to determine the Class object representing the expected response data structure.
+The `Query` class establishes the foundation for building queries. It enforces the `TrackablePayload` class, indicating that queries carry data. The generic type parameter `T` allows you to specify the expected response type (`QueryResponse`). The `getResponseType()` method leverages generics to determine the Class object representing the expected response data structure.
 
 **2. QueryMessage (QueryMessage.java):**
 
@@ -258,7 +256,7 @@ Java
 
 ```java
 // Define a Query to retrieve all Todo items
-public class GetAllTodosQuery implements Query<Multiple<TodoView>> {
+public class GetAllTodosQuery extends Query<Multiple<TodoView>> {
   // ... query logic
 }
 
