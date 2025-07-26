@@ -71,7 +71,7 @@ You can find the library on [Maven Central](https://central.sonatype.com/):  [ht
 #### Gradle
 
 ```gradle
-implementation group: 'com.eventoframework', name: 'evento-bundle', version: 'ev1.10.0'
+implementation group: 'com.eventoframework', name: 'evento-bundle', version: 'ev1.13.0'
 ```
 
 #### Maven&#x20;
@@ -80,14 +80,14 @@ implementation group: 'com.eventoframework', name: 'evento-bundle', version: 'ev
 <dependency>
     <groupId>com.eventoframework</groupId>
     <artifactId>evento-bundle</artifactId>
-    <version>ev1.10.0</version>
+    <version>ev1.13.0</version>
 </dependency>
 ```
 
 
 
 {% hint style="info" %}
-Evento framework is independent of any other structured known framework like [Spring](https://spring.io/), [Micronaut ](https://micronaut.io/)or [Quarkus](https://quarkus.io/), so you can implement a RECQ application using your preferred technology even plain [JavaEE](https://it.wikipedia.org/wiki/Jakarta\_EE).
+Evento framework is independent of any other structured known framework like [Spring](https://spring.io/), [Micronaut ](https://micronaut.io/)or [Quarkus](https://quarkus.io/), so you can implement a RECQ application using your preferred technology even plain [JavaEE](https://it.wikipedia.org/wiki/Jakarta_EE).
 {% endhint %}
 
 ***
