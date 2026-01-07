@@ -64,7 +64,7 @@ DemoCreatedEvent handle(DemoCreateCommand command,
                    CommandGateway commandGateway,
                    CommandMessage<DemoCreateCommand> commandMessage) {
     Utils.logMethodFlow(this, "handle", command, "BEGIN");
-    commandGateway.sendAndWait(new NotificationSendCommand(command.getName()));
+    commandGateway.send(new NotificationSendCommand(command.getName())).get();
     Assert.isTrue(command.getDemoId() != null, "error.command.not.valid.id");
     Assert.isTrue(command.getName() != null, "error.command.not.valid.name");
     Assert.isTrue(command.getValue() >= 0, "error.command.not.valid.value");

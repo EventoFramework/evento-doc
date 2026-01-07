@@ -99,7 +99,7 @@ public class DemoSaga {
     }
 
     public NotificationSentEvent sendNotification(CommandGateway commandGateway, String msg) {
-       return commandGateway.sendAndWait(new NotificationSendCommand(msg));
+       return commandGateway.send(new NotificationSendCommand(msg)).get();
     }
 
 

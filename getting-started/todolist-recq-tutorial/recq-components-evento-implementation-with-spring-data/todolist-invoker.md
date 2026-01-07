@@ -27,30 +27,30 @@ public class TodoListInvoker extends InvokerWrapper {
     @InvocationHandler
     public String createTodoList(String name, String user){
         var identifier = "TDLS_" + UUID.randomUUID();
-        getCommandGateway().sendAndWait(new TodoListCreateCommand(identifier, name), toUserMetadata(user));
+        getCommandGateway().send(new TodoListCreateCommand(identifier, name), toUserMetadata(user)).get();
         return identifier;
     }
 
     @InvocationHandler
     public void deleteTodoList(String identifier, String user){
-        getCommandGateway().sendAndWait(new TodoListDeleteCommand(identifier), toUserMetadata(user));
+        getCommandGateway().send(new TodoListDeleteCommand(identifier), toUserMetadata(user)).get();
     }
     
     @InvocationHandler
     public String addTodo(String identifier, String content, String user){
         var todoIdentifier = "TODO_" + UUID.randomUUID();
-        getCommandGateway().sendAndWait(new TodoListAddTodoCommand(identifier, todoIdentifier, content), toUserMetadata(user));
+        getCommandGateway().send(new TodoListAddTodoCommand(identifier, todoIdentifier, content), toUserMetadata(user)).get();
         return todoIdentifier;
     }
     
     @InvocationHandler
     public void checkTodo(String identifier, String todoIdentifier, String user){
-        getCommandGateway().sendAndWait(new TodoListCheckTodoCommand(identifier, todoIdentifier), toUserMetadata(user));
+        getCommandGateway().send(new TodoListCheckTodoCommand(identifier, todoIdentifier), toUserMetadata(user)).get();
     }
     
     @InvocationHandler
     public void removeTodo(String identifier, String todoIdentifier, String user){
-        getCommandGateway().sendAndWait(new TodoListRemoveTodoCommand(identifier, todoIdentifier), toUserMetadata(user));
+        getCommandGateway().send(new TodoListRemoveTodoCommand(identifier, todoIdentifier), toUserMetadata(user)).get();
     }
 
     @InvocationHandler

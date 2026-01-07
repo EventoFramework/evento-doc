@@ -4,7 +4,7 @@ description: Design and Implement a RECQ Todo List App
 
 # TodoList - RECQ Tutorial
 
-In this tutorial, you will explore how to design and implement a RECQ Application starting from the Requirement Gathering straight to the REST API implementation in Java using [Evento Framework](broken-reference) and [Spring Boot](https://spring.io/projects/spring-boot).
+In this tutorial, you will explore how to design and implement a RECQ Application starting from the Requirement Gathering straight to the REST API implementation in Java using [Evento Framework](/broken/pages/nTG67pbLHFvPaevz3gWh) and [Spring Boot](https://spring.io/projects/spring-boot).
 
 ### Structure
 
