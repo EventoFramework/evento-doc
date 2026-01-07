@@ -6,7 +6,7 @@ description: Evento Server and Evento Framework
 
 ## Evento Server
 
-To start building a RECQ based Architecture you need a Message Gateway to handle and manage message communication between components (microservices). To do this we use [Broken link](broken-reference "mention").
+To start building a RECQ based Architecture you need a Message Gateway to handle and manage message communication between components (microservices). To do this we use [Broken link](/broken/pages/vuFNKWmUWtRvyxrOO67p "mention").
 
 To start using Evento Server you need a [Postgres Database](https://www.postgresql.org/) and an instance of Evento Server that you can find on [Docker Hub](https://hub.docker.com/):  [https://hub.docker.com/r/eventoframework/evento-server](https://hub.docker.com/r/eventoframework/evento-server)
 
@@ -60,7 +60,7 @@ You need to specify a Script for the automatic bundle deployment, add an empty P
 
 ## Evento Framework
 
-To develop RECQ components you need the [Broken link](broken-reference "mention") Bundle Library.
+To develop RECQ components you need the [Broken link](/broken/pages/nTG67pbLHFvPaevz3gWh "mention") Bundle Library.
 
 {% hint style="danger" %}
 Evento Framework is compatible with[ Java 21](https://openjdk.org/projects/jdk/21/) or more.
@@ -71,7 +71,7 @@ You can find the library on [Maven Central](https://central.sonatype.com/):  [ht
 #### Gradle
 
 ```gradle
-implementation group: 'com.eventoframework', name: 'evento-bundle', version: 'ev1.13.0'
+implementation group: 'com.eventoframework', name: 'evento-bundle', version: 'ev1.15.0'
 ```
 
 #### Maven&#x20;
@@ -80,7 +80,7 @@ implementation group: 'com.eventoframework', name: 'evento-bundle', version: 'ev
 <dependency>
     <groupId>com.eventoframework</groupId>
     <artifactId>evento-bundle</artifactId>
-    <version>ev1.13.0</version>
+    <version>ev1.15.0</version>
 </dependency>
 ```
 
