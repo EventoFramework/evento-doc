@@ -39,7 +39,6 @@ In this example, `DemoProjector` is a component requiring a `DemoRepository` ins
 ```java
 EventoBundle.Builder.builder()
   .setBasePackage(DemoQueryApplication.class.getPackage())
-  .setConsumerStateStoreBuilder(InMemoryConsumerStateStore::new)
   .setInjector(factory::getBean) // Spring's getBean function as injector
   .setBundleId(bundleId)
   // 

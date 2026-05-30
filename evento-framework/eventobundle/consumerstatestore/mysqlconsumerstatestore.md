@@ -1,49 +1,60 @@
-# MysqlConsumerStateStore
+# MySQL Consumer State Store (JDBC)
 
-The `MysqlConsumerStateStore` class in the Evento Framework extends `ConsumerStateStore` and provides a solution for storing and managing consumer state information within a MySQL database. This chapter explores the functionalities and usage of `MysqlConsumerStateStore` for persistent state handling in Evento applications.
+For durable consumer state on MySQL, use the JDBC implementations of the five consumer SPIs from the `evento-consumer-state-store-jdbc` module, selecting the `MYSQL` SQL dialect. It is the same module used for PostgreSQL — only the `SqlDialect` differs.
 
-**MySQL Storage:**
+{% hint style="warning" %}
+**Rewritten in Evento v2.** The v1 single-class `MysqlConsumerStateStore` (with its `init()` DDL and `evento__consumer_state` tables) no longer exists. MySQL support now lives in the `evento-consumer-state-store-jdbc` module, shared with Postgres via a `SqlDialect`. Schema is created by Flyway migrations (tables `evento_v2_consumer_state`, `evento_v2_saga_state`, `evento_v2_dead_event`, `evento_v2_dedupe`) — there is no manual `init()` call.
+{% endhint %}
 
-* Leverages MySQL, a popular open-source relational database management system, to store consumer state data.
-* Offers a familiar and widely adopted alternative to PostgreSQL for persistent state management.
-* Ensures that saga state and consumer progress are preserved across application restarts.
+## Dependency
 
-**Key Methods:**
+```gradle
+implementation group: 'com.eventoframework', name: 'evento-consumer-state-store-jdbc', version: '2.0.0'
+```
 
-* **Constructors:**
-  * Similar to `PostgresConsumerStateStore`, the primary constructor accepts an `EventoServer` instance, a `PerformanceService` instance, a `Connection` object for connecting to the MySQL database, an `ObjectMapper` for serialization/deserialization, and an `Executor` for handling observer execution concurrently.
-* **`init()`**: This method is crucial and should be called once before using the consumer state store. It executes Data Definition Language (DDL) statements to create the necessary tables (`evento__consumer_state` and `evento__saga_state`) within the MySQL database if they don't already exist.
-* **`removeSagaState(Long sagaId)`**: Deletes the state associated with a specific saga identified by its ID.
-* **`leaveExclusiveZone(String consumerId)`**: Releases the lock on the consumer, signifying it has exited the exclusive zone.
-* **`enterExclusiveZone(String consumerId)`**: Attempts to acquire a lock for the consumer using MySQL's `GET_LOCK` function. This ensures exclusive access to the consumer's state during processing.
-* **`getLastEventSequenceNumber(String consumerId)`**: Retrieves the last processed event sequence number for a consumer from the `evento__consumer_state` table.
-* **`setLastEventSequenceNumber(String consumerId, Long eventSequenceNumber)`**: Updates the last processed event sequence number for a consumer in the `evento__consumer_state` table.
-* **`getSagaState(String sagaName, String associationProperty, String associationValue)`**: Retrieves the stored state for a saga identified by its name, association property, and association value. It utilizes a JSON path query within the MySQL database to efficiently locate the relevant saga state.
-* **`setSagaState(Long id, String sagaName, SagaState sagaState)`**: Sets the state for a saga. If an ID is provided (indicating an existing saga), it updates the state for that specific saga. Otherwise, it inserts a new entry for the saga into the `evento__saga_state` table.
+## Schema migration
 
-**Usage Example:**
-
-The provided code snippet demonstrates how to configure `MysqlConsumerStateStore` within an Evento application using a lambda expression within the `setConsumerStateStoreBuilder` method:
+Run the bundled Flyway migrations against your `DataSource` once at startup:
 
 ```java
+FlywayMigrator.migrate(dataSource, SqlDialect.MYSQL);
+```
+
+`JdbcConsumerLock` uses MySQL's `GET_LOCK(id, 0)` for the cross-JVM exclusive zone, and `JdbcSagaStateStore` stores saga state as JSON with a flat `associations` column for fast `JSON_EXTRACT` lookups.
+
+## Wiring the bundle
+
+Compose the five JDBC stores into a `ConsumerProcessor`, wrap it in a `ConsumerEngineConfig`, and pass the builder to `setConsumerEngineConfigBuilder`:
+
+```java
+BiFunction<EventoServer, PerformanceService, ConsumerEngineConfig> jdbcConfig =
+    (eventoServer, performanceService) -> {
+        var dialect       = SqlDialect.MYSQL;
+        var lock          = new JdbcConsumerLock(dataSource, dialect);
+        var stateStore    = new JdbcConsumerStateStore(dataSource, dialect);
+        var sagaStore     = new JdbcSagaStateStore(dataSource, dialect, objectMapper);
+        var deadEventQueue = new JdbcDeadEventQueue(dataSource, dialect, objectMapper);
+        var dedupeStore   = new JdbcDedupeStore(dataSource, dialect);
+        var processor = ConsumerProcessor.builder()
+                .eventoServer(eventoServer)
+                .lock(lock)
+                .stateStore(stateStore)
+                .sagaStateStore(sagaStore)
+                .deadEventQueue(deadEventQueue)
+                .dedupeStore(dedupeStore)
+                .performanceService(performanceService)
+                .observerExecutor(Executors.newVirtualThreadPerTaskExecutor())
+                .build();
+        return new ConsumerEngineConfig(processor, stateStore, deadEventQueue);
+    };
+
 EventoBundle.Builder.builder()
-    .setBasePackage(DemoSagaApplication.class.getPackage())
-    .setConsumerStateStoreBuilder(((eventoServer, performanceService) -> {
-        return new MysqlConsumerStateStore(
-                eventoServer,
-                performanceService,
-                connection); // Connection Object
-    }))
-    ...
+    .setBasePackage(MyApplication.class.getPackage())
+    .setConsumerEngineConfigBuilder(jdbcConfig)
+    // ...
     .start();
 ```
 
-In this example, a `Connection` object (representing the connection to the MySQL database) is provided during the consumer state store creation.
-
-**Important Considerations:**
-
-* `MysqlConsumerStateStore` relies on a MySQL database for storage. Ensure you have a properly configured MySQL instance accessible to your Evento application.
-* Remember to call the `init()` method to create the necessary tables before using the consumer state store.
-* MySQL offers a strong foundation for persistent state management, with a rich ecosystem of tools and libraries.
-
-By choosing `MysqlConsumerStateStore`, you can leverage the familiarity and widespread adoption of MySQL for persistent state management within your Evento applications. This ensures data integrity and reliability across application restarts.
+{% hint style="info" %}
+Provide a pooled `DataSource` (e.g. HikariCP). The optimistic-versioning checkpoint commit and the `GET_LOCK`-based exclusive zone give safe behaviour when multiple instances of the same bundle run concurrently — only one instance processes a given consumer at a time.
+{% endhint %}

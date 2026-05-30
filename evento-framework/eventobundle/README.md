@@ -39,12 +39,7 @@ public class EventoConfiguration {
         .setBundleVersion(bundleVersion)
         .setEventoServerMessageBusConfiguration(new EventoServerMessageBusConfiguration(
             new ClusterNodeAddress(eventoServerHost, eventoServerPort)
-        )
-            .setDisableDelayMillis(1000)
-            .setMaxDisableAttempts(3)
-            .setMaxReconnectAttempts(30)
-            .setReconnectDelayMillis(5000)
-        )
+        ))
         .start();
   }
 }
@@ -52,10 +47,16 @@ public class EventoConfiguration {
 
 In this example, the `eventoApplication` bean leverages the `Builder` to configure the EventoBundle. It sets the base package, bundle ID, version, and configures the message bus using `EventoServerMessageBusConfiguration`. Finally, it calls the `start()` method to initiate the application.
 
+{% hint style="info" %}
+**v2 note.** In Evento v2 `EventoServerMessageBusConfiguration` carries only the list of cluster node addresses. Reconnect, retry, and back-off behaviour are handled automatically by the v2 Netty transport (exponential back-off with jitter — base 500 ms, max 30 s, ±20%); there are no longer `setMaxReconnectAttempts` / `setReconnectDelayMillis` / `setMaxDisableAttempts` / `setDisableDelayMillis` setters.
+{% endhint %}
+
 Advanced Configuration Options:
 
-* `autoscalingProtocolBuilder` (Optional): This property allows you to specify a custom function for building the autoscaling protocol used by the bundle. Autoscaling helps your application dynamically adjust resource allocation based on workload demands. By default, a `SimpleAutoscalingProtocol` implementation is used that doesn't perform any specific actions on arrival or departure of the bundle instance.
-* `consumerStateStoreBuilder` (Optional - Defaults to `InMemoryConsumerStateStore::new`): This property allows you to define a custom function for building the consumer state store. This store manages the state of event consumers within your bundle. By default, an in-memory consumer state store is used.
+* `consumerEngineConfigBuilder` (Optional - Defaults to `ConsumerEngineConfig::inMemory`): A `BiFunction<EventoServer, PerformanceService, ConsumerEngineConfig>` that builds the consumer persistence backing for the bundle. A `ConsumerEngineConfig` bundles a `ConsumerProcessor` (composed of the five v2 SPIs — `ConsumerLock`, `ConsumerStateStore`, `SagaStateStore`, `DeadEventQueue`, `DedupeStore`), the `ConsumerStateStore`, and the `DeadEventQueue` so the engines and the processor share one backing. When left unset, the in-memory wiring (`ConsumerEngineConfig::inMemory`) is used. For durable state, point it at the JDBC stores from `evento-consumer-state-store-jdbc` (see [ConsumerStateStore](consumerstatestore/README.md)).
+* `repositoryUrl` (Optional - Defaults to empty): Repository browser base URL used to build clickable source links in the dashboard, e.g. `https://github.com/org/repo/blob/main/my-bundle`. Empty disables source links.
+* `linePrefix` (Optional - Defaults to `L`): Line-anchor prefix for the repository browser — `L` for GitHub/GitLab, `lines-` for Bitbucket.
+* `description` / `detail` (Optional): Short and long-form bundle descriptions shown in dashboards. Falls back to `bundleId` / empty when not set. Component- and handler-level descriptions can be supplied with the `@EventoDescription` annotation.
 * `commandGatewayBuilder` (Optional - Defaults to `CommandGatewayImpl::new`): This property allows you to customize the creation of the command gateway within the bundle. The command gateway is responsible for routing commands to the appropriate component handlers. By default, a `CommandGatewayImpl` is used.
 * `queryGatewayBuilder` (Optional - Defaults to `QueryGatewayImpl::new`): Similar to `commandGatewayBuilder`, this property allows you to customize the creation of the query gateway within the bundle. The query gateway is responsible for routing queries to the appropriate component handlers. By default, a `QueryGatewayImpl` is used.
 * `performanceServiceBuilder` (Optional - Defaults to `RemotePerformanceService(eventoServer, 1)`): This property allows you to define a custom function for building the performance service within the bundle. This service monitors and reports on the performance of the bundle. By default, a `RemotePerformanceService` is used, which sends performance data to the Evento server.
@@ -63,11 +64,11 @@ Advanced Configuration Options:
 * `sssFetchDelay` (Optional - Defaults to 1000): This property defines the delay (in milliseconds) between subsequent fetches from the consumer state store. This value can be used to optimize event processing based on workload characteristics.
 * `tracingAgent` (Optional - Defaults to a new `TracingAgent` instance with bundleId and bundleVersion): This property allows you to set a custom tracing agent for the bundle. Tracing agents help track the execution flow of events and commands within your application. By default, a new `TracingAgent` instance is created with the bundle's ID and version.
 * `injector` (Optional - Defaults to a function returning null): This property allows you to define a custom function for injecting dependencies into your components. This advanced option provides flexibility for configuring specific injection behavior for your bundle.
-* `instanceId` (Optional - Defaults to UUID): This property allows is used to identify a particular instance of that bundle, used for telemetry purpose, autoscaling and tracing.
+* `instanceId` (Optional - Defaults to a random UUID): Identifies a particular running instance of the bundle; used for telemetry and tracing.
 
 **Additional Notes:**
 
-* EventoBundle offers several optional configuration options through the `Builder` class, allowing you to customize aspects like performance services, query and command gateways, and autoscaling protocols.
+* EventoBundle offers several optional configuration options through the `Builder` class, allowing you to customize aspects like performance services, query and command gateways, and the consumer engine persistence backing.
 * The chapter mentions additional functionalities like starting projector and saga event consumers. These functionalities are likely covered in separate sections as they involve managing specific consumer types.
 
 I hope this comprehensive explanation clarifies the role and functionalities of EventoBundle in Evento Framework applications.

@@ -1,2 +1,0 @@
-# Evento CLI Introduction
-

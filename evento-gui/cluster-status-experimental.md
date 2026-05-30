@@ -16,14 +16,11 @@ The Bundle Instances section displays all connected bundles within your cluster.
 * **Replica Count:** The number of instances running for the bundle.
 * **Instance IDs:** A list of the unique identifiers for each bundle instance.
 
-**Actions:**
+{% hint style="info" %}
+**Changed in Evento v2.** The Spawn Instance / Kill Instance actions were removed. Evento Server no longer starts or stops bundle processes — that is owned by your orchestrator (e.g. Kubernetes or Nomad). This page is now a read-only view of the instances currently connected to the cluster.
+{% endhint %}
 
-You can perform the following actions on bundle instances:
-
-* **Spawn Instance:** Create a new instance of the bundle to increase its capacity or redundancy.
-* **Kill Instance:** Terminate an existing instance of the bundle.
-
-By monitoring the Bundle Instances section, you can ensure that your cluster has the necessary resources to handle the workload and maintain optimal performance.
+By monitoring the Bundle Instances section, you can see which bundle instances are currently connected and confirm your cluster has the capacity it needs to handle the workload.
 
 <figure><img src="../.gitbook/assets/image (65).png" alt=""><figcaption><p>Bundle Instances</p></figcaption></figure>
 

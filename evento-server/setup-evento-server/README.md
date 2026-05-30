@@ -19,9 +19,7 @@ To customize the behavior of your Evento Server instance, you'll need to define 
 * **evento\_cluster\_name:** A unique identifier for your cluster. Choose a descriptive name to easily distinguish your cluster.
 * **evento\_performance\_capture\_rate:** This value determines the frequency at which internal telemetry data is captured. A lower value captures data more frequently, providing more detailed insights but potentially impacting performance.
 * **evento\_telemetry\_ttl:** This property defines the global time-to-live for telemetry data stored in days. Data older than this duration will be automatically removed.
-* **evento\_file\_upload\_dir:** Specify the directory where uploaded bundle files will be stored on the server.
 * **evento\_security\_signing\_key:** A critical security measure. This JWT (JSON Web Token) signature key is used for signing API requests, ensuring data integrity and authorization. **Never share this key publicly.**
-* **evento\_deploy\_spawn\_script:** (Optional) If you intend to automate bundle deployment, provide the path to a Python script that handles the spawning of new bundle instances.
 * **spring\_datasource\_url:** The connection URL for your PostgreSQL database.
 * **spring\_datasource\_username:** The username for accessing the PostgreSQL database.
 * **spring\_datasource\_password:** The password for accessing the PostgreSQL database.
@@ -47,21 +45,21 @@ services:
 
   evento-server:
     image: 'eventoframework/evento-server:latest'
-    privileged: true  # Grant necessary privileges for file uploads (optional, consider alternatives)
     depends_on:
       - database  # Ensure database is ready before starting Evento Server
     environment:
       - evento_cluster_name=evento-server  # Set your cluster name
       - evento_performance_capture_rate=0.1  # Capture telemetry data every 0.1 seconds (adjust as needed)
       - evento_telemetry_ttl=365  # Keep telemetry data for a year
-      - evento_file_upload_dir=/server_upload  # Upload directory on the server
       - evento_security_signing_key=MY_JWT_SECRET_TOKEN_SEED  # Replace with a strong secret
-      # (Optional) Path to your deployment script if using automated bundle deployment
-      - evento_deploy_spawn_script=/script/spawn.py 
       - spring_datasource_url=jdbc:postgresql://database:5432/evento
       - spring_datasource_username=postgres
       - spring_datasource_password=secret  # Replace with your actual password
     ports:
-      - '3000:3000'  # Map container port 3000 to host port 3000 (default Evento Server port)
-      - '3030:3030'  # Map container
+      - '3000:3000'  # Map container port 3000 to host port 3000 (default Evento Server REST/GUI port)
+      - '3030:3030'  # Map container port 3030 (bundle message-bus port)
 ```
+
+{% hint style="info" %}
+**Changed in Evento v2.** Bundles are no longer uploaded to the server as JARs. They register themselves at runtime over the message bus (self-discovery), so there is no upload directory, no `privileged: true`, and no deployment script. Deploying and scaling bundle instances is owned by your orchestrator (e.g. Kubernetes or Nomad).
+{% endhint %}

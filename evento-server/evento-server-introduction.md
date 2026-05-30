@@ -17,12 +17,12 @@ This publish-subscribe pattern decouples applications, promoting loose coupling.
 
 #### Bundle Registration: The Foundation for Execution
 
-Evento Server acts as the central registry for deployable units within your distributed system. These units are known as **bundles**. A bundle is essentially a JAR archive containing the executable code (typically written in Java) and a descriptor file. This descriptor file provides crucial information about the bundle, including:
+Evento Server acts as the central registry for the units that make up your distributed system. These units are known as **bundles**. In Evento v2, a bundle **registers itself at runtime** when it connects to the server over the message bus — there is no JAR upload or static descriptor file. At startup each bundle scans its own bytecode (ASM-based self-discovery) and publishes its discovery metadata to the server, including:
 
-* **Description:** Json explanation of the bundle's purpose and functionality.
-* **RECQ Components and Invocations:** Details about the specific RECQcomponents encapsulated within the bundle. This section of the descriptor file outlines the available components and how they can be invoked.
+* **Description:** A short and long-form explanation of the bundle's purpose and functionality (from the bundle configuration and `@EventoDescription` annotations).
+* **RECQ Components and Invocations:** The specific RECQ components encapsulated within the bundle and the commands/queries they invoke, discovered automatically from the code — no separate CLI publish step.
 
-By registering bundles with Evento Server, you essentially make them available for deployment and execution within the cluster. Evento Server utilizes the information gleaned from the bundle descriptor during deployment to configure and manage the bundle instances.
+By connecting to Evento Server, a bundle makes its components discoverable and routable within the cluster. The server uses this self-reported metadata to build the application graph and route commands, queries, and events. Deploying and scaling the bundle's processes is owned by your orchestrator (e.g. Kubernetes or Nomad).
 
 #### Beyond Messaging: Event Store and the Power of History
 
@@ -53,15 +53,14 @@ Evento Server serves as a Telemetry Server, collecting and storing telemetry dat
 
 By analyzing this data, developers gain valuable insights into application behavior, enabling them to identify bottlenecks, optimize performance, and make informed decisions for continuous improvement.
 
-#### Cluster Balancing: Scaling with Demand
+#### Scaling: An External Concern
 
-Evento Server plays a crucial role in cluster balancing. It receives signals from autoscaling protocols implemented within bundles. These signals indicate when to:
+{% hint style="info" %}
+**Changed in Evento v2.** The built-in autoscaling protocol was removed. Evento Server no longer spawns or kills bundle instances and bundles no longer send "bored"/"suffering" scaling signals. Instead, the framework **emits performance metrics only** (via the telemetry server and Micrometer/Prometheus), and the decision to scale up or down is delegated to your orchestrator — for example Horizontal Pod Autoscaling in Kubernetes, or Nomad — driven by those metrics.
+{% endhint %}
 
-* **Scale Up:** Spawn new bundle instances to handle increased workload demands.
-* **Scale Down:** Terminate idle bundle instances to conserve resources.
-
-By dynamically adjusting the number of running bundles based on real-time needs, Evento Server ensures optimal resource utilization and efficient application performance.
+By exposing detailed performance telemetry rather than owning the lifecycle itself, Evento Server stays focused on routing and coordination while leaving elasticity to the platform best suited to it.
 
 #### In Conclusion
 
-Evento Server acts as the central nervous system of a distributed system built with the Evento framework. It facilitates communication between applications, provides a mechanism for recording and replaying events, manages the cluster of running bundles (registered with their descriptions), gathers telemetry data, and enables dynamic scaling. By leveraging these functionalities, developers can build robust, scalable, and maintainable distributed applications. As you delve deeper into the Evento framework, you'll discover how each component interacts with Evento Server to create a coordinated and responsive application ecosystem.
+Evento Server acts as the central nervous system of a distributed system built with the Evento framework. It facilitates communication between applications, provides a mechanism for recording and replaying events, manages the cluster of running bundles (which register themselves with their discovery metadata), and gathers telemetry data that external orchestrators can use for scaling. By leveraging these functionalities, developers can build robust, scalable, and maintainable distributed applications. As you delve deeper into the Evento framework, you'll discover how each component interacts with Evento Server to create a coordinated and responsive application ecosystem.

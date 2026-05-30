@@ -25,7 +25,6 @@ services:
       - ./data/postgres:/var/lib/postgresql/data/
   evento-server:
     image: 'eventoframework/evento-server:latest'
-    privileged: true
     restart: on-failure
     depends_on:
       - evento-db
@@ -36,12 +35,8 @@ services:
       - evento_performance_capture_rate=1
       # Telemetry data TTL
       - evento_telemetry_ttl=365
-      # Upload directory for Bundle Registration
-      - evento_file_upload-dir=/server_upload
       # Secret key used to generate JWT access tokens
       - evento_security_signing_key=MY_JWT_SECRET_TOKEN_SEED
-      # Evento Deploy Spawn Script Path
-      - evento_deploy_spawn_script=/script/spawn.py
       # Postgres Database Connection Parameters
       - spring_datasource_url=jdbc:postgresql://evento-db:5432/evento
       - spring_datasource_username=postgres
@@ -49,12 +44,11 @@ services:
     ports:
       - '3000:3000'
       - '3030:3030'
-    volumes:
-      - ./data/evento/files:/server_upload
-      - ./docker-spawn.py:/script/spawn.py
 ```
 
-You need to specify a Script for the automatic bundle deployment, add an empty Python script and bind it, it will be fine at the start.
+{% hint style="info" %}
+In Evento v2, bundles register themselves with the server at runtime over the message bus — there is no JAR upload and no deployment script, so no upload volume or spawn-script bind is needed. Deploying and scaling bundle instances is handled by your orchestrator (e.g. Kubernetes or Nomad).
+{% endhint %}
 
 ***
 
@@ -63,7 +57,7 @@ You need to specify a Script for the automatic bundle deployment, add an empty P
 To develop RECQ components you need the [Broken link](/broken/pages/nTG67pbLHFvPaevz3gWh "mention") Bundle Library.
 
 {% hint style="danger" %}
-Evento Framework is compatible with[ Java 21](https://openjdk.org/projects/jdk/21/) or more.
+Evento Framework v2 requires [Java 25](https://openjdk.org/projects/jdk/25/) or newer.
 {% endhint %}
 
 You can find the library on [Maven Central](https://central.sonatype.com/):  [https://central.sonatype.com/artifact/com.eventoframework/evento-bundle](https://central.sonatype.com/artifact/com.eventoframework/evento-bundle)
@@ -71,7 +65,7 @@ You can find the library on [Maven Central](https://central.sonatype.com/):  [ht
 #### Gradle
 
 ```gradle
-implementation group: 'com.eventoframework', name: 'evento-bundle', version: 'ev1.15.0'
+implementation group: 'com.eventoframework', name: 'evento-bundle', version: '2.0.0'
 ```
 
 #### Maven&#x20;
@@ -80,7 +74,7 @@ implementation group: 'com.eventoframework', name: 'evento-bundle', version: 'ev
 <dependency>
     <groupId>com.eventoframework</groupId>
     <artifactId>evento-bundle</artifactId>
-    <version>ev1.15.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 

@@ -94,8 +94,6 @@
   * [Context](evento-framework/eventobundle/context.md)
   * [TracingAgend and @Track](evento-framework/eventobundle/tracingagend-and-track/README.md)
     * [SentryTracingAgent](evento-framework/eventobundle/tracingagend-and-track/sentrytracingagent.md)
-  * [Autoscaling Protocol](evento-framework/eventobundle/autoscaling-protocol/README.md)
-    * [ThreadCountAutoscalingProtocol](evento-framework/eventobundle/autoscaling-protocol/threadcountautoscalingprotocol.md)
   * [Injector and @Component](evento-framework/eventobundle/injector-and-component.md)
 
 ## Evento Server
@@ -105,7 +103,6 @@
   * [Advanced Options](evento-server/setup-evento-server/advanced-options.md)
   * [Evento Event Store Modes: APES and CPES](evento-server/setup-evento-server/evento-event-store-modes-apes-and-cpes.md)
 * [Evento Server Cluster](evento-server/evento-server-cluster.md)
-* [Bundle Deploy Script](evento-server/bundle-deploy-script.md)
 
 ## EVENTO GUI
 
@@ -119,9 +116,3 @@
   * [Performance Evaluation](evento-gui/flows/performance-evaluation.md)
 * [Application Graph](evento-gui/application-graph.md)
 * [System State Store](evento-gui/system-state-store.md)
-
-## Evento CLI
-
-* [Evento CLI Introduction](evento-cli/evento-cli-introduction.md)
-* [Update Version](evento-cli/update-version.md)
-* [Publish](evento-cli/publish.md)

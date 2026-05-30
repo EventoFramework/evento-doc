@@ -1,46 +1,40 @@
 # ConsumerStateStore
 
-The `ConsumerStateStore` class within the Evento Framework serves as the foundation for managing consumer state. It provides a central interface for event consumers (projectors, observers, and sagas) to interact with the Evento server and track their processing progress. This chapter delves into the core functionalities and responsibilities of this abstract class.
+Consumer state — how far each projector, observer, and saga has progressed, plus saga instances, dead events, and dedupe windows — is what lets event consumers resume exactly where they left off after a restart without missing or reprocessing events.
 
-**Key Responsibilities:**
+{% hint style="warning" %}
+**Rewritten in Evento v2.** The single v1 abstract `ConsumerStateStore` class (with its monolithic `consumeEventsFor*` / `enterExclusiveZone` / saga-state methods) has been **replaced by five small, focused SPIs**. Each concern is now independently implementable and testable. The v1 `MysqlConsumerStateStore` / `PostgresConsumerStateStore` classes are gone; durable persistence is provided by the single `evento-consumer-state-store-jdbc` module (Postgres **and** MySQL).
+{% endhint %}
 
-* **Event Consumption:**
-  * Facilitates consuming events for projectors, observers, and sagas.
-  * Handles fetching events from the Evento server in batches based on a specified fetch size.
-  * Ensures proper sequencing by tracking the last processed event sequence number for each consumer.
-* **State Management:**
-  * Provides methods for sagas to access and manipulate their state.
-  * Inheriting classes (like `InMemoryConsumerStateStore` or `MysqlConsumerStateStore`) implement specific mechanisms for storing and retrieving saga state.
-* **Exclusive Zone Management:**
-  * Defines methods for entering and leaving an exclusive zone for a consumer.
-  * This mechanism helps prevent concurrent access to a consumer's state during processing, ensuring data consistency.
+## The five SPIs (`evento-common`)
 
-**Abstract Methods:**
+| SPI | Responsibility |
+|---|---|
+| `ConsumerStateStore` | Per-consumer checkpoint: read/commit the last processed sequence number with optimistic versioning, plus the `isEnabled(consumerId)` probe and error history. |
+| `ConsumerLock` | Cross-JVM exclusive zone for a consumer. `lock(consumerId)` returns a `LockHandle` (`AutoCloseable`) so only one instance processes a consumer at a time. |
+| `SagaStateStore` | Saga instance lookup by association, plus insert / update / delete of serialized saga state. |
+| `DeadEventQueue` | Per-consumer dead-letter queue for events that failed processing, with a retry flag. |
+| `DedupeStore` | Observer dedupe with sweep windows (at-least-once → effectively-once for fire-and-forget observers). |
 
-* `consumeEventsForProjector(consumerId, projectorName, context, projectorEventConsumer, fetchSize)`: Consumes events for a specific projector.
-* `consumeEventsForObserver(consumerId, observerName, context, observerEventConsumer, fetchSize)`: Consumes events for a specific observer.
-* `consumeEventsForSaga(consumerId, sagaName, context, sagaEventConsumer, fetchSize)`: Consumes events for a specific saga.
-* `getLastEventSequenceNumberSagaOrHead(consumerId)`: Retrieves the last processed event sequence number for a saga or head consumer.
-* `removeSagaState(sagaId)`: Removes the state of a saga identified by its ID. (Implementation specific to subclass)
-* `leaveExclusiveZone(consumerId)`: Called when a consumer leaves the exclusive zone. (Implementation specific to subclass)
-* `enterExclusiveZone(consumerId)`: Called when a consumer enters the exclusive zone. (Implementation specific to subclass)
-* `getLastEventSequenceNumber(consumerId)`: Retrieves the last processed event sequence number for a consumer. (Implementation specific to subclass)
-* `setLastEventSequenceNumber(consumerId, eventSequenceNumber)`: Sets the last processed event sequence number for a consumer. (Implementation specific to subclass)
-* `getSagaState(sagaName, associationProperty, associationValue)`: Retrieves the stored state of a saga. (Implementation specific to subclass)
-* `setSagaState(sagaId, sagaName, sagaState)`: Sets the state of a saga identified by its ID and name. (Implementation specific to subclass)
+These SPIs are composed by a `ConsumerProcessor`, and the trio of `ConsumerProcessor` + `ConsumerStateStore` + `DeadEventQueue` is wrapped in a `ConsumerEngineConfig` record that the bundle's consumer engines (`ProjectorEngine`, `SagaEngine`, `ObserverEngine`) run on.
 
-**Additional Methods:**
+## Wiring it on the bundle
 
-* `getObjectMapper()`: Returns the `ObjectMapper` instance used for JSON serialization and deserialization.
+You select the persistence backing with `setConsumerEngineConfigBuilder(...)` on the `EventoBundle.Builder`. The builder takes a `BiFunction<EventoServer, PerformanceService, ConsumerEngineConfig>`.
 
-**Consumer Implementations:**
+In-memory (the default — no setup, suitable for development and tests):
 
-While `ConsumerStateStore` provides the core functionalities, specific implementations handle state persistence mechanisms. The Evento Framework offers concrete implementations like:
+```java
+EventoBundle.Builder.builder()
+    .setBasePackage(MyApplication.class.getPackage())
+    .setConsumerEngineConfigBuilder(ConsumerEngineConfig::inMemory)
+    // ...
+    .start();
+```
 
-* `InMemoryConsumerStateStore`: Stores state in-memory, suitable for development or testing environments.
-* `MysqlConsumerStateStore`: Leverages MySQL for state persistence, offering durability and scalability.
-* `PostgresConsumerStateStore`: Utilizes PostgreSQL for state persistence, providing another option for relational database storage.
+When `setConsumerEngineConfigBuilder` is omitted, the bundle defaults to `ConsumerEngineConfig::inMemory` at startup.
 
-These implementations extend `ConsumerStateStore` and provide concrete logic for methods like `removeSagaState`, `leaveExclusiveZone`, `enterExclusiveZone`, `getLastEventSequenceNumber`, and `setLatestEventSequenceNumber`.
+## Implementations
 
-Understanding `ConsumerStateStore` is crucial for working with event consumers in the Evento Framework. It establishes a consistent abstraction for event consumption, state management, and concurrency control, allowing developers to focus on business logic within projectors, observers, and sagas.
+* **In-memory** — `InMemoryConsumerStateStore`, `InMemoryConsumerLock`, `InMemorySagaStateStore`, `InMemoryDeadEventQueue`, `InMemoryDedupeStore` (in `evento-common`). State is lost on restart; ideal for development and tests.
+* **JDBC (Postgres / MySQL)** — `JdbcConsumerStateStore`, `JdbcConsumerLock`, `JdbcSagaStateStore`, `JdbcDeadEventQueue`, `JdbcDedupeStore` (in the `evento-consumer-state-store-jdbc` module). Durable persistence backed by Flyway-managed schema. See [PostgresConsumerStateStore](postgresconsumerstatestore.md) and [MysqlConsumerStateStore](mysqlconsumerstatestore.md).

@@ -14,7 +14,10 @@ The provided code snippet showcases the `TracingAgent` class, which serves as th
 
 * **Correlation:** The `correlate` methods establish relationships between messages by associating metadata. This allows you to trace the flow of a request across various service calls.
 * **Tracking:** The `track` method enables monitoring the execution of specific transactions. It accepts a `Transaction` object that encapsulates the logic to be tracked and returns the result.
-* **Autoscaling Integration (Optional):** The `AutoscalingProtocol` field allows integration with an autoscaling mechanism. The `arrival` and `departure` methods signal the start and end of a tracked operation, potentially influencing scaling decisions.
+
+{% hint style="info" %}
+**Changed in Evento v2.** The default `TracingAgent` is an honest no-op: it performs correlation pass-through and executes the tracked transaction without emitting any spans. It no longer integrates with an autoscaling protocol (autoscaling was removed in v2 — scaling is an external concern owned by your orchestrator, e.g. Kubernetes or Nomad). Provide a custom `TracingAgent` (or the `SentryTracingAgent`) to wire real distributed tracing.
+{% endhint %}
 
 **Leveraging Annotations for Tracking:**
 

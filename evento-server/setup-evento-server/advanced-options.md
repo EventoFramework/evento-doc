@@ -17,18 +17,10 @@ The Evento server relies on a variety of configuration properties to govern its 
 * `evento.cluster.name`: This property defines the name of the Evento cluster. It's used for identification and helps differentiate between multiple clusters within a distributed system.
 * `evento.server.instance.id`: This property assigns a unique identifier to this particular Evento server instance within the cluster. This helps differentiate between multiple running instances.
 
-**File Storage:**
-
-* `evento.file.upload-dir`: This property specifies the directory path where uploaded files are stored by the server. Ensure this directory has appropriate permissions for the Evento process.
-
 **Performance Monitoring:**
 
 * `evento.performance.capture.rate`: This property determines the rate at which performance metrics are captured. A higher rate provides more granular data but can increase overhead.
 * `evento.telemetry.ttl`: This property defines the Time To Live (TTL) for telemetry data. Telemetry data older than the specified TTL will be automatically purged from the system.
-
-**Deployment:**
-
-* `evento.deploy.spawn.script`: This property specifies the script path used for spawning new bundle instances. This script is typically responsible for downloading and starting the bundle code.
 
 **Network Communication:**
 
