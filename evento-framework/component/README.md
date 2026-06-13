@@ -23,6 +23,8 @@ The `@Component` module bridges the gap between your RECQ architecture and its J
 
 By combining these annotations with the core RECQ components, you can create robust and adaptable microservices. The `@Component` module ensures a consistent approach to defining and managing these components, leading to clean and maintainable code.
 
+Evento is optimised for **read-heavy systems**, and a key design decision is which write strategy each data flow should use — the consistency-enforced `@Aggregate` pipeline, or a high-throughput direct-write `@Service`. See [Choosing a Write Strategy: Reads vs Writes](choosing-a-write-strategy.md) before designing your components.
+
 In the following chapters, we'll delve deeper into each RECQ component and explore the extended functionalities provided by the `@Component` module. Each chapter will focus on a specific annotation, providing detailed explanations, code examples, and best practices for its application.
 
 This chapter structure allows you to gain a comprehensive understanding of the `@Component` module and its role in implementing the RECQ Architecture in your Evento microservices. So, buckle up and get ready to unlock the full potential of clean and maintainable code for building exceptional microservices!

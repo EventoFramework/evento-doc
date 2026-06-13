@@ -69,6 +69,7 @@
     * [Domain and Service Event](evento-framework/payload-and-messages/event/domain-and-service-event.md)
   * [Query and View](evento-framework/payload-and-messages/view.md)
 * [@Component](evento-framework/component/README.md)
+  * [Choosing a Write Strategy: Reads vs Writes](evento-framework/component/choosing-a-write-strategy.md)
   * [@Aggregate](evento-framework/component/aggregate/README.md)
     * [Aggregate State](evento-framework/component/aggregate/aggregate-state.md)
     * [@AggregateCommandHandler](evento-framework/component/aggregate/aggregatecommandhandler.md)

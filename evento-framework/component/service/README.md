@@ -29,6 +29,16 @@ There are two main types of services within RECQ:
 * **Stateless Services:** These services perform actions without maintaining any internal state. A common example is sending notifications through an external API (like sending an email notification upon an event).
 * **Stateful Services:** These services manage and persist their own state. For instance, a payment gateway service might store information about ongoing transactions.
 
+#### When to Use a Service for High-Throughput Direct Writes
+
+Beyond bridging to external systems, `@Service` is also the right tool for **high-volume writes that do not need write-side invariants**. Because a service runs with maximum parallelism and writes **directly to its datastore**, it bypasses the `@Aggregate` → event → `@Projector` pipeline and the serialisation that pipeline imposes per context. This makes it ideal for data flows like IoT/sensor telemetry, high-volume logging, or append-only ingestion, where throughput matters and ordering/exactly-once consistency is not an application constraint.
+
+Use an `@Aggregate` (with `@Projector`/`@Projection`) when the write side must enforce ordered, exactly-once, invariant-preserving rules; reach for a direct-write `@Service` when those guarantees are unnecessary and throughput is the priority.
+
+{% hint style="info" %}
+For the full reasoning and a per-flow decision rule, see [Choosing a Write Strategy: Reads vs Writes](../choosing-a-write-strategy.md).
+{% endhint %}
+
 #### Using `@Service` with Command Handlers
 
 Services leverage `@CommandHandler` methods to handle incoming commands. These command handlers typically follow this pattern:
