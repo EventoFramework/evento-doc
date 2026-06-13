@@ -34,6 +34,8 @@ EventoBundle.Builder.builder()
 
 When `setConsumerEngineConfigBuilder` is omitted, the bundle defaults to `ConsumerEngineConfig::inMemory` at startup.
 
+With the JDBC store, the `evento_v2_*` schema is auto-created on first connection as of v2.1.1 — no manual migration step is needed (see [PostgresConsumerStateStore](postgresconsumerstatestore.md)).
+
 ## Implementations
 
 * **In-memory** — `InMemoryConsumerStateStore`, `InMemoryConsumerLock`, `InMemorySagaStateStore`, `InMemoryDeadEventQueue`, `InMemoryDedupeStore` (in `evento-common`). State is lost on restart; ideal for development and tests.

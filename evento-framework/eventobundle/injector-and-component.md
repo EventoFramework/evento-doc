@@ -46,6 +46,35 @@ EventoBundle.Builder.builder()
 
 We configure the `setInjector` method with `factory::getBean`. This essentially tells Evento to leverage Spring's `getBean` function to resolve dependencies for the components Evento manages internally. When `DemoProjector` is instantiated, the injector (Spring's `getBean` in this case) will locate and provide the required `DemoRepository` instance.
 
+#### Do not use @Autowired / field injection
+
+Evento instantiates components by reflection and wires their dependencies through the **constructor**, resolved by the configured injector. Field injection annotations (Spring's `@Autowired`, JSR-330's `@Inject`) on component fields are therefore **not** allowed: the framework never processes them, so an annotated field would silently stay `null`.
+
+As of **v2.1.1**, this fails fast — at component registration the framework throws an `IllegalStateException` with a message telling you to switch to constructor injection if any component field is annotated with `@Autowired` / `@Inject`.
+
+Declare the dependency as a constructor parameter instead:
+
+```java
+// CORRECT — constructor injection (resolved by the injector)
+@Projector(version = 3)
+public class DemoProjector {
+
+  private final DemoRepository demoRepository;
+
+  public DemoProjector(DemoRepository demoRepository) {
+    this.demoRepository = demoRepository;
+  }
+}
+
+// WRONG — field injection is rejected at startup (v2.1.1+)
+@Projector(version = 3)
+public class DemoProjector {
+
+  @Autowired
+  private DemoRepository demoRepository; // stays null; throws IllegalStateException
+}
+```
+
 **Benefits of Evento's DI:**
 
 * **Simplified Component Management:** Evento handles component lifecycles, reducing boilerplate code.
