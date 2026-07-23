@@ -23,13 +23,13 @@ Invokers serve as the entry points for interacting with your RECQ application. T
 
 Invokers embrace a stateless design. This means they do not maintain any persistent state information about the interactions they handle. This stateless nature allows for significant scalability – you can effortlessly add more Invoker instances to handle increasing workloads without compromising consistency.
 
-**Availability Reigns Supreme: Always Ready to Serve**
+**Responsiveness Reigns Supreme: Always Ready to Serve**
 
-Due to their stateless design and focus on external communication initiation, Invokers prioritize availability (A) within the system. Their primary goal is to be readily accessible for external actors to trigger system actions.
+Due to their stateless design and focus on external communication initiation, Invokers prioritize responsiveness (R): they react to external triggers within a bounded time, dispatching the corresponding command or query and handing back the (possibly asynchronous) outcome. They carry no domain state and make no consistency claim of their own.
 
-**Partitioning Tolerance: Ensuring Robustness**
+**A Pure Boundary, Not Domain Logic**
 
-Like other RECQ components, Invokers exhibit partitioning tolerance (P). This means they can continue functioning even if network partitions occur. This ensures that external actors can still interact with the system to some extent, even if communication with other internal components might be temporarily disrupted.
+An Invoker is a bridge from outside the system to the inside — the delegation property of RECQ components means all domain decisions live in the Aggregates, Services, and consumers the Invoker addresses. Keeping Invokers free of business logic is what keeps the system's interaction graph fully described by the messages they send.
 
 **Relationship with Services: A Shared Focus**
 
@@ -47,4 +47,4 @@ By providing a centralized point for external interaction, Invokers simplify sys
 | Can send Command Messages   | Yes |
 | Can Send Query Messages     | Yes |
 | State type                  | No  |
-| CAP Properties              | AP  |
+| Profile                     | --R |

@@ -2,7 +2,7 @@
 
 The ever-growing complexity of modern applications demands innovative approaches to ensure scalability, resilience, and maintainability. Distributed systems, where tasks and data are spread across multiple interconnected computers, have become the de facto standard for tackling these challenges. However, effectively managing distributed systems requires careful consideration of design patterns and architectural best practices.
 
-This guide explores a collection of state-of-the-art patterns that empower developers to construct robust and performant distributed systems. We'll delve into each pattern, highlighting its core concepts, benefits, and how it specifically contributes to the design and implementation of **RECQ architectures**. RECQ stands for **Reactive Event-Driven CQRS**, a specific type of architecture that leverages these patterns to create efficient and scalable microservices.
+This guide explores a collection of state-of-the-art patterns that empower developers to construct robust and performant distributed systems. We'll delve into each pattern, highlighting its core concepts, benefits, and how it specifically contributes to the design and implementation of **RECQ architectures**. RECQ stands for **Reactive, Event-Driven Commands and Queries**, a specific type of architecture that leverages these patterns to create efficient and scalable microservices.
 
 By understanding these core design patterns, developers can leverage the strengths of distributed systems while mitigating their inherent complexities. Let's dive into the essential tools for building the distributed systems of tomorrow:
 

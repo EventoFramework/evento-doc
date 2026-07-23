@@ -44,7 +44,7 @@ Observers are valuable for scenarios where you need a component to react to spec
 | Can handle Command Messages | No  |
 | Can handle Query Messages   | No  |
 | Can handle Events           | Yes |
-| Can send Command Messages   | No  |
+| Can send Command Messages   | Yes |
 | Can Send Query Messages     | Yes |
 | State type                  | No  |
-| CAP Properties              | AP  |
+| Profile                     | --R |

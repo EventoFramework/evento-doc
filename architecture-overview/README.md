@@ -1,6 +1,6 @@
 # Architecture Overview
 
-RECQ stands for **Reactive, Event-driven, CQRS (Command Query Responsibility Segregation), and Microservices**. It's an architectural style designed to build scalable, responsive, and maintainable applications. Here's a breakdown of its key principles:
+RECQ stands for **Reactive, Event-Driven Commands and Queries**. It's an architectural style for event-driven microservices, designed to build scalable, responsive, and maintainable applications. Here's a breakdown of its key principles:
 
 **1. Reactive:**
 

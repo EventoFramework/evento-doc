@@ -17,7 +17,7 @@ To start an Evento Framework application, you use the `Builder` class provided b
 * `setBasePackage(package)`: Specifies the base package where EventoBundle should scan for components using reflection. This package should contain all your application classes with relevant annotations.
 * `setBundleId(String)`: Assigns a unique identifier to your application.
 * `setBundleVersion(long)`: Defines the version of your application. This is useful for managing deployments and rollouts.
-* `setEventoServerMessageBusConfiguration(EventoServerMessageBusConfiguration)`: Provides configuration details for connecting to the Evento server cluster. This includes the cluster node address, retry attempts, and delay settings.
+* `setEventoServerMessageBusConfiguration(EventoServerMessageBusConfiguration)`: Provides the address(es) of the Evento server cluster node(s) the bundle can dial. Reconnection and back-off are handled automatically by the transport.
 
 **Example Usage:**
 
@@ -57,6 +57,7 @@ Advanced Configuration Options:
 * `repositoryUrl` (Optional - Defaults to empty): Repository browser base URL used to build clickable source links in the dashboard, e.g. `https://github.com/org/repo/blob/main/my-bundle`. Empty disables source links.
 * `linePrefix` (Optional - Defaults to `L`): Line-anchor prefix for the repository browser — `L` for GitHub/GitLab, `lines-` for Bitbucket.
 * `description` / `detail` (Optional): Short and long-form bundle descriptions shown in dashboards. Falls back to `bundleId` / empty when not set. Component- and handler-level descriptions can be supplied with the `@EventoDescription` annotation.
+* `strictConfinement` (Optional - Defaults to `false`): At startup Evento scans the bundle's bytecode and flags every `CommandGateway`/`QueryGateway` call site found in a class that is **not** a registered component, plus sends whose payload type cannot be statically resolved. Such calls escape the self-discovered invocation graph, so the dependency graph shown by the server would be incomplete. By default violations are logged as warnings; with `strictConfinement(true)` the bundle refuses to start instead. See [Confinement and Analyzability](../../recq-patterns/recq-communication-pattern/README.md) for the rationale.
 * `commandGatewayBuilder` (Optional - Defaults to `CommandGatewayImpl::new`): This property allows you to customize the creation of the command gateway within the bundle. The command gateway is responsible for routing commands to the appropriate component handlers. By default, a `CommandGatewayImpl` is used.
 * `queryGatewayBuilder` (Optional - Defaults to `QueryGatewayImpl::new`): Similar to `commandGatewayBuilder`, this property allows you to customize the creation of the query gateway within the bundle. The query gateway is responsible for routing queries to the appropriate component handlers. By default, a `QueryGatewayImpl` is used.
 * `performanceServiceBuilder` (Optional - Defaults to `RemotePerformanceService(eventoServer, 1)`): This property allows you to define a custom function for building the performance service within the bundle. This service monitors and reports on the performance of the bundle. By default, a `RemotePerformanceService` is used, which sends performance data to the Evento server.

@@ -20,10 +20,10 @@ While the table provides a high-level overview, the Bundle Catalog empowers you 
 
 * **Bundle Description:** This section offers a comprehensive explanation of the bundle's purpose and the functionalities it provides within the overall application. Understanding the description helps you grasp the bundle's role in the bigger picture.
 * **Component Graph:** A visual representation of the components encapsulated within the bundle. This graph provides valuable insights into how these components interact and collaborate. By analyzing the connections between components, you can understand the data flow within the bundle and how it achieves its intended functionality. The image you sent appears to depict this component graph as a network of interconnected nodes representing components.
-* **Specific Bundle Data:** This section might provide details specific to the bundle, such as:
-  * **Artifact Coordinates:** Information that uniquely identifies the bundle within a repository system, allowing for version control and deployment management.
-  * **Configuration Details:** An overview of the configuration options associated with the bundle. These configurations might influence the behavior of the components within the bundle.
-  * **Last Update:** The date and time the bundle was last updated, which can be helpful for tracking changes and deployments.
+* **Specific Bundle Data:** This section provides details the bundle self-reported at registration, such as:
+  * **Version and Description:** The bundle's declared version plus the description and detail supplied through the `EventoBundle` builder (or `@EventoDescription` annotations on its components).
+  * **Source Repository Link:** When the bundle is configured with a `repositoryUrl` (and optional `linePrefix`), the catalog deep-links components and handlers straight to their source file and line in your repository browser.
+  * **Last Update:** The date and time the bundle registration was last refreshed, which can be helpful for tracking deployments.
 
 By examining the component graph and specific bundle data, you gain a deeper understanding of the inner workings of each bundle. This knowledge empowers you to troubleshoot issues, optimize performance, and make informed decisions about application architecture.
 

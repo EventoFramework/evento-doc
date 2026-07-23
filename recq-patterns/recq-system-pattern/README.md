@@ -4,17 +4,17 @@ description: Building Blocks for Reactive Microservices
 
 # RECQ System Pattern
 
-The RECQ System Pattern defines the high-level architectural components that make up a RECQ-based application. These components work together to create a modular, scalable, and event-driven system. Here's a breakdown of the key components:
+The RECQ System Pattern defines the high-level modules that make up a RECQ-based application. A RECQ system is composed of exactly **three kinds of modules** working together to create a modular, scalable, and event-driven system:
 
-* [**Components**](component.md)**:** These are self-contained units of software that encapsulate specific functionalities of the application. Each component implements a well-defined business logic and interacts with other components through messages. Examples of RECQ components include:
-  * **Command Service (Aggregate and Services):** Handles user commands for adding, editing, and deleting data. It publishes events representing these actions.
-  * **Query Service (Projector and Projections):** Respond to user queries for retrieving data. It subscribes to relevant events published by the Command Service to keep its data up-to-date.
-  * **Domain Logic Components (Invoker, Sagas and Observers):** Implement core business logic of the application and may interact with both Command and Query Services.
-* [**Message Gateway:**](message-gateway.md) This component acts as an intermediary for communication between different components within the system. It can handle functionalities like:
-  * Routing messages to the appropriate recipient component based on defined rules.
-  * Implementing message transformation or validation if needed.
-  * Providing a single point of entry for external systems to interact with the RECQ application.
-* [**System State Store**](system-state-store.md)**:** This persistent storage mechanism is responsible for storing all the events that occur within the system. It serves as the central repository for the complete history of state changes. Both Command and Query Services can access the Event Store to retrieve historical data or for rebuilding the current state of the application if needed.
+* [**Components**](component.md)**:** These are self-contained units of software that encapsulate specific functionalities of the application. Each component implements a well-defined business logic and interacts with the rest of the system only through messages. The [RECQ Component Pattern](../recq-component-pattern/) refines them into seven types. Informally they can be grouped by role:
+  * **Write side (Aggregates and Services):** Handle commands that modify the system state and publish the resulting events.
+  * **Read side (Projectors and Projections):** Materialize and serve read models, kept up to date by subscribing to the published events.
+  * **Coordination and reaction (Sagas and Observers):** React to events to orchestrate cross-component workflows or trigger side effects.
+  * **Boundary (Invokers):** Bridge the outside world into the system by dispatching commands and queries. Invokers carry no domain state — all domain decisions are delegated to the components they address.
+* [**Message Gateway:**](message-gateway.md) This module acts as an intermediary for communication between different components within the system. It handles:
+  * Routing each command or query to its single recipient component, based strictly on the message type.
+  * Correlating asynchronous responses back to their requests.
+* [**System State Store**](system-state-store.md)**:** This persistent storage mechanism is responsible for storing all the events that occur within the system. It serves as the central repository for the complete history of state changes — the system's single source of truth. Components can read from it to rebuild state and subscribe to it to react to state changes.
 
 <figure><img src="../../.gitbook/assets/image (38).png" alt=""><figcaption><p>RECQ System Big Picture</p></figcaption></figure>
 

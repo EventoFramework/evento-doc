@@ -27,6 +27,14 @@ In a RECQ architecture, the System State Store (SSS) utilizes a pub/sub (publish
   * This information allows components to identify the last successfully processed event and avoid duplicate processing.
   * The CSS can also be used to store additional context related to event consumption by the component.
 
+**Enforcing Single-Active Consumption:**
+
+For consistent consumers (Projectors and Sagas), the CSS is also the mechanism that enforces the single-active-instance-per-context rule:
+
+* **Consumer Lock:** An exclusive lock keyed by consumer and context guarantees that only one instance advances a given context at a time. Replicas that fail to acquire the lock stand by as failover; if the active instance dies or loses its session, a replica takes over from the last recorded checkpoint. Different contexts hold independent locks and advance in parallel.
+* **Exactly-Once Gate:** A deduplication record of the last processed event per consumer ensures that after a crash-and-recover, redelivered events are not applied twice.
+* **Dead Event Queue:** An event whose processing fails permanently is parked in a dead event queue instead of blocking the stream, and can be inspected and replayed later. Transient failures (a downed collaborator, a timeout) do not dead-letter — the checkpoint stays in place and the event is redelivered with backoff.
+
 <figure><img src="../../.gitbook/assets/image (48).png" alt=""><figcaption><p>System STate Store to Component Communication</p></figcaption></figure>
 
 **Benefits of Pub/Sub and Consumer State Stores:**

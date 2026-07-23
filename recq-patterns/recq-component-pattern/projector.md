@@ -24,11 +24,11 @@ Unlike command handlers in Aggregates, Projectors do not return any value from t
 
 **Ensuring Consistency, One Event at a Time**
 
-Projectors prioritize consistency over raw processing speed. They process events in a strictly sequential manner, ensuring that the internal read model reflects the state changes in the correct order. This sequential processing limits their scalability, as they cannot efficiently handle high volumes of events concurrently.
+Projectors prioritize consistency over raw processing speed. They process events in a strictly sequential manner, ensuring that the internal read model reflects the state changes in the correct order.
 
-**Singleton Pattern for System-Wide Consistency**
+**Single Active Instance per Context**
 
-To maintain strong consistency across the entire system, Projectors implement the Singleton pattern at the system level. This ensures that only one instance of a specific Projector exists, preventing inconsistencies arising from parallel processing of events by multiple Projector instances.
+To maintain this ordering guarantee, only one Projector instance is *active* at a time **per context** — a named partition of the event stream that bounds both where and in what order events are applied. Other instances stand by as failover: if the active one dies, a replica takes over from the last recorded checkpoint, so replication buys availability. Throughput, on the other hand, scales *horizontally by partitioning*: the event stream can be split into multiple independent contexts, and each context is projected concurrently by its own active instance. A Projector is therefore not a system-wide singleton — it is single-active within each context, and parallel across contexts.
 
 **Internal State and Shared Consumer State Stores**
 
@@ -43,14 +43,14 @@ Projectors reside within the Query Model of a RECQ architecture. This means they
 
 **Projectors in Action: A Streamlined Approach to Read Models**
 
-By processing events and constructing optimized read models, Projectors empower your application to deliver efficient and consistent query performance. Their focus on sequential processing guarantees strong consistency within the read models, ensuring data integrity for querying purposes. While limited in raw processing power, Projectors play a vital role in building reliable and scalable read models within RECQ architectures.
+By processing events and constructing optimized read models, Projectors empower your application to deliver efficient and consistent query performance. Their focus on sequential processing guarantees strong consistency within the read models, ensuring data integrity for querying purposes. While per-context throughput is bounded, Projectors play a vital role in building reliable and scalable read models within RECQ architectures.
 
-| Capability                  |           |
-| --------------------------- | --------- |
-| Can handle Command Messages | No        |
-| Can handle Query Messages   | No        |
-| Can handle Events           | Yes       |
-| Can send Command Messages   | No        |
-| Can Send Query Messages     | Yes       |
-| State type                  | Component |
-| CAP Properties              | CP        |
+| Capability                  |         |
+| --------------------------- | ------- |
+| Can handle Command Messages | No      |
+| Can handle Query Messages   | No      |
+| Can handle Events           | Yes     |
+| Can send Command Messages   | No      |
+| Can Send Query Messages     | Yes     |
+| State type                  | Context |
+| Profile                     | C--     |

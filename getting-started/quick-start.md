@@ -35,8 +35,9 @@ services:
       - evento_performance_capture_rate=1
       # Telemetry data TTL
       - evento_telemetry_ttl=365
-      # Secret key used to generate JWT access tokens
-      - evento_security_signing_key=MY_JWT_SECRET_TOKEN_SEED
+      # GUI/API login (HTTP Basic) — defaults evento/secret, always override in real deployments
+      - spring_security_user_name=evento
+      - spring_security_user_password=secret
       # Postgres Database Connection Parameters
       - spring_datasource_url=jdbc:postgresql://evento-db:5432/evento
       - spring_datasource_username=postgres
@@ -65,7 +66,7 @@ You can find the library on [Maven Central](https://central.sonatype.com/):  [ht
 #### Gradle
 
 ```gradle
-implementation group: 'com.eventoframework', name: 'evento-bundle', version: '2.3.0'
+implementation group: 'com.eventoframework', name: 'evento-bundle', version: '2.3.1'
 ```
 
 #### Maven&#x20;
@@ -74,7 +75,7 @@ implementation group: 'com.eventoframework', name: 'evento-bundle', version: '2.
 <dependency>
     <groupId>com.eventoframework</groupId>
     <artifactId>evento-bundle</artifactId>
-    <version>2.3.0</version>
+    <version>2.3.1</version>
 </dependency>
 ```
 

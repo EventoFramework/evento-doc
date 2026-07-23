@@ -8,7 +8,7 @@ In the realm of complex applications built with modular components, managing dep
 
 #### Introducing the Injector: The Dependency Resolver
 
-The `Injector` interface serves as the heart of Evento's DI system. It acts as a powerful function that takes a class as input and returns a corresponding instance. This instance will have all its required dependencies fulfilled through the injector's magic.
+The injector — a plain `Function<Class<?>, Object>` you supply to the builder via `setInjector` — serves as the heart of Evento's DI system. It takes a class as input and returns a corresponding instance. This instance will have all its required dependencies fulfilled through the injector's magic.
 
 **Behind the Scenes:**
 

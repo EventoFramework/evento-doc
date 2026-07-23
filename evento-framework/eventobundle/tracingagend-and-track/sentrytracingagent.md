@@ -4,7 +4,7 @@ description: A Deep Dive into Custom Tracing with Sentry
 
 # SentryTracingAgent
 
-The code provided showcases `SentryTracingAgent`, a custom implementation of the `TracingAgent` class in Evento. This agent leverages the Sentry platform for distributed tracing, offering a more comprehensive tracing solution compared to the default implementation. Let's delve into how `SentryTracingAgent` works and overrides core methods.
+Evento does not ship a Sentry integration — the code below is a **complete example you can copy into your own project** (adding the `io.sentry:sentry` dependency). It shows `SentryTracingAgent`, a custom implementation of Evento's `TracingAgent` class that leverages the Sentry platform for distributed tracing, offering a more comprehensive tracing solution compared to the default no-op implementation. Let's delve into how `SentryTracingAgent` works and overrides core methods.
 
 ```java
 import io.sentry.*;

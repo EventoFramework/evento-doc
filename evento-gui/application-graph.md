@@ -16,7 +16,7 @@ The Application Graph leverages a unique visual approach to represent the buildi
 * **Mid-Level Circles:** Nested within the bundle circles are circles representing the **components**. These are the workhorses of your application, responsible for handling specific tasks such as processing commands, generating events, or querying data. Their placement within their corresponding bundle circle reflects their belonging to that particular functional unit.
 * **Innermost Circles:** At the core of the component circles, you might find even smaller circles representing **handlers**. Handlers are the most granular units of execution within a component. They define how a component reacts to specific events or commands. Their placement within the component circle reflects their role as specific functionalities within that component.
 
-This nested structure offers a clear visual hierarchy, allowing you to grasp the relationships between these elements at a glance.
+This nested structure offers a clear visual hierarchy, allowing you to grasp the relationships between these elements at a glance. Handler bubbles are not all the same size: each one is sized by its **betweenness centrality** in the interaction graph, so the handlers that sit on the most message paths — the structural hubs of your system — stand out immediately. To keep large applications readable, labels are culled at low zoom levels and fade in region by region as you zoom, with bundle names acting as overview landmarks.
 
 #### Unveiling the Connections: Beyond the Hierarchy
 
@@ -31,7 +31,8 @@ By analyzing these connections, you gain insights into how data flows and events
 
 The Evento GUI allows you to interact with the Application Graph, providing further details about each element:
 
-* **Hovering Over Elements:** Hovering over a circle might reveal a tooltip with additional information, such as the name of the bundle, component, or handler.
+* **Hovering Over Elements:** Hovering over a handler enlarges its bubble and highlights its message paths — **downstream** invocations in orange and **upstream** callers in teal — so you can trace at a glance what a handler triggers and what triggers it.
+* **Handler Search:** A floating search box matches handlers by payload or component name (shown as `payload — component · bundle`). Selecting a result flies the view to that handler and pins its highlight — the label stays readable at any zoom and the up/downstream paths stay lit until you dismiss it (background tap, clearing the search bar, or Escape).
 * **Clicking on Elements:** Clicking on a circle might navigate you to a dedicated page with detailed information about the selected element. For bundles, you might see a list of their components. For components, you might see a description of their purpose and the handlers they contain.
 
 This interactive exploration empowers you to delve deeper into the intricate workings of your RECQ application.

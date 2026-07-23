@@ -33,9 +33,9 @@ Similar to Aggregates, Sagas maintain an internal state that tracks the progress
   * The implementation of the Saga Shared Consumer State Store shares similarities with the Projector Consumer State Store in terms of consistency.
   * However, the details of state retrieval and synchronization across instances are optimized for Saga-specific needs.
 
-**Scalability Constraints: Sequential Processing for Guaranteed Consistency**
+**Scalability: Single Active Instance per Context**
 
-Sagas, like Projectors, exhibit limitations in raw processing power due to their focus on consistent cross-component workflows. Their `SagaEventHandler` typically processes events in a sequential manner to ensure the correct order of operations within the Saga workflow. This sequential processing can limit scalability for high-volume workloads involving frequent Sagas.
+Sagas, like Projectors, process events sequentially to ensure the correct order of operations within the workflow, and they follow the same execution model: a single *active* instance per context, with replicas standing by as failover. Throughput scales by partitioning the event stream into independent contexts that advance in parallel, not by processing the same context concurrently.
 
 **Relationship with Projectors: Addressing Different Needs**
 
@@ -48,12 +48,12 @@ Both Projectors and Sagas play critical roles in RECQ architectures, but they ca
 
 Sagas are invaluable for managing scenarios where a single action might trigger a sequence of interactions across multiple Aggregates or Services. By orchestrating these interactions and ensuring consistent state changes, Sagas guarantee the overall integrity of distributed transactions within your RECQ application. While scalability constraints might exist, Sagas offer a powerful mechanism for handling complex workflows that require strong consistency across multiple components.
 
-| Capability                  |           |
-| --------------------------- | --------- |
-| Can handle Command Messages | No        |
-| Can handle Query Messages   | No        |
-| Can handle Events           | Yes       |
-| Can send Command Messages   | No        |
-| Can Send Query Messages     | Yes       |
-| State type                  | Component |
-| CAP Properties              | CP        |
+| Capability                  |         |
+| --------------------------- | ------- |
+| Can handle Command Messages | No      |
+| Can handle Query Messages   | No      |
+| Can handle Events           | Yes     |
+| Can send Command Messages   | Yes     |
+| Can Send Query Messages     | Yes     |
+| State type                  | Context |
+| Profile                     | C--     |

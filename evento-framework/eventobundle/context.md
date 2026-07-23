@@ -21,10 +21,10 @@ return new DemoCreatedEvent(
         command.getDemoId(),
         command.getName(),
         command.getValue())
-    .setContext(ContextUtils.getContextFromMetadata(metadata));
+    .setContext(metadata.get("context"));
 ```
 
-In this example, the context is retrieved from the `metadata` object and assigned to the newly created `DemoCreatedEvent`.
+In this example, the context is read from the `metadata` accompanying the command and assigned to the newly created `DemoCreatedEvent`. The context is just a `String` you compute yourself — from metadata, from the command's data, or a constant. When no context is set, events belong to the default context (`com.evento.common.utils.Context.DEFAULT`); consumers subscribed to `Context.ALL` (`"*"`) receive events from every context.
 
 **Context and Event Partitioning:**
 

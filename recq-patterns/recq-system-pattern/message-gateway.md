@@ -9,8 +9,7 @@ The Message Gateway is the component in a RECQ architecture that acts as a centr
 **Why Use a Message Gateway?**
 
 * **Reduced Coupling:** By routing messages through the gateway, components don't need to be aware of the specific location or implementation details of other components they need to interact with. This reduces coupling and simplifies development and maintenance.
-* **Centralized Message Routing:** The gateway can implement routing logic to determine the appropriate recipient component for a message based on its content or message type.
-* **Message Transformation and Validation (Optional):** The gateway can potentially transform messages to a common format or validate messages before sending them to the recipient component.
+* **Centralized Message Routing:** The gateway routes each message to its recipient component **strictly by message type**, using a registry that maps each command and query type to its single handler. Routing never depends on the message's payload values — this is what makes the system's interaction graph statically recoverable from the source code. (Content-based routing or message transformation, as found in general-purpose brokers, is outside the RECQ model.)
 
 **Message Gateway Functionality:**
 

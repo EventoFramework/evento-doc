@@ -38,7 +38,7 @@ This ability to record and replay events empowers developers to build robust and
 Evento Server acts as the central registry for all running application bundles within the cluster. It maintains critical information about each bundle, including its:
 
 * **Status:** Monitors the health and operational state of each bundle instance.
-* **Configuration:** Stores bundle-specific configuration details.
+* **Discovery Metadata:** Stores what each bundle self-reported at registration — its components, handlers, payloads, and invocation graph.
 * **Location:** Tracks where each bundle instance is currently running within the cluster.
 
 This centralized management simplifies monitoring and troubleshooting within the distributed system.

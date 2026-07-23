@@ -4,7 +4,7 @@ description: What is RECQ?
 
 # Introduction
 
-RECQ stands for **Reactive, Event-driven, CQRS (Command Query Responsibility Segregation)**. It's a comprehensive architectural approach that guides the development of modern, scalable software systems. RECQ emphasizes event-oriented microservices architectures and aims to create applications that adhere to the principles of reactive programming as outlined in the  [Reactive Manifesto](https://www.reactivemanifesto.org/) and the more recent [Reactive Principles](https://www.reactiveprinciples.org/).
+RECQ stands for **Reactive, Event-Driven Commands and Queries**. It's a comprehensive architectural approach that guides the development of modern, scalable software systems. RECQ emphasizes event-oriented microservices architectures and aims to create applications that adhere to the principles of reactive programming as outlined in the  [Reactive Manifesto](https://www.reactivemanifesto.org/) and the more recent [Reactive Principles](https://www.reactiveprinciples.org/).
 
 **Beyond the Manifesto: Adherence to Best Practices**
 
@@ -20,9 +20,11 @@ RECQ goes beyond just subscribing to the Reactive Manifesto. It advocates for th
 
 RECQ leverages specific patterns to define the structure and communication within the system:
 
-* [**RECQ System Pattern**](recq-system-pattern/)**:** Defines the high-level modules that make up a RECQ system, such as Command Service, Query Service, Event Store, and more.
-* [**RECQ Communication Pattern**](recq-communication-pattern/)**:** Establishes how these modules interact with each other using event-driven messaging.
-* [**RECQ Component Pattern**](recq-component-pattern/)**:** Rigorously defines the functionalities and responsibilities of each individual component within the RECQ ecosystem.
+* [**RECQ System Pattern**](recq-system-pattern/)**:** Defines the three kinds of modules that make up a RECQ system: Components, the Message Gateway, and the System State Store.
+* [**RECQ Communication Pattern**](recq-communication-pattern/)**:** Establishes the three — and only three — channels through which these modules interact using event-driven messaging.
+* [**RECQ Component Pattern**](recq-component-pattern/)**:** Rigorously defines the seven component types, their capabilities, state scopes, and consistency–responsiveness profiles.
+
+A distinguishing trait of RECQ is that these constraints are **structural, not aspirational**: because the component roles are closed, routing is by message type, and communication channels are exhaustive, the reactive qualities (responsiveness, resilience, elasticity, message-driven interaction) are enforced by construction — and the complete interaction graph of an application can be recovered exactly from its source code.
 
 **Additional Techniques for Enhanced Systems:**
 

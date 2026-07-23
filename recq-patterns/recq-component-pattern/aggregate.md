@@ -31,6 +31,8 @@ The command handler acts as the brain of the Aggregate. It analyzes the incoming
 * **Generate a State Change Event:** If the command is valid, the handler generates a new event that reflects the state change resulting from the command execution.
 * **Return an Error:** If the command violates any business rules or constraints, the handler returns an error message indicating the failure.
 
+Note that this is a structural rule, not a convention: a command handler emits **exactly one event** (or fails). When a business action seems to require multiple events, the RECQ resolutions are to model a single *richer* event that carries the whole outcome, or to delegate the follow-up steps to a Saga that reacts to the first event.
+
 **Publishing the Change Story:**
 
 If a state change event is generated, it's published to the SSS. This event serves as a record of the change and allows for eventual consistency to be achieved across the system.
@@ -49,7 +51,7 @@ While Aggregates cannot send queries, they can execute other commands. This allo
 
 **Scalability and Consistency Considerations:**
 
-Maintaining strong consistency for Aggregate state requires locking mechanisms to prevent concurrent access from multiple components. This impacts availability (a), as only one operation can be processed at a time. However, it's important to note that this is a localized consistency guarantee (Partitioned State). The overall system can still achieve eventual consistency across all Aggregates through the asynchronous event processing model. As a result, the system exhibits a trade-off between local consistency (C) and partial availability (a), but maintains overall Basic Availability.
+Maintaining strong consistency for Aggregate state requires serializing the commands that target the same aggregate instance. This weakens responsiveness (r): a command may wait behind another command addressed to the same instance, so the reaction-time bound holds only for non-contending requests. The guarantee is localized to the instance — commands for different aggregate instances proceed in parallel, and the aggregate's profile is therefore **Cr**: strongly consistent per instance, weakly responsive under contention.
 
 In essence, RECQ Aggregates are powerful building blocks that provide a well-defined and consistent approach to managing domain entities and their associated logic within event-driven microservices architectures.
 
@@ -60,5 +62,5 @@ In essence, RECQ Aggregates are powerful building blocks that provide a well-def
 | Can handle Events           | No                          |
 | Can send Command Messages   | Yes                         |
 | Can Send Query Messages     | No                          |
-| State type                  | Instance (Bu Aggregate Key) |
-| CAP Properties              | CaP                         |
+| State type                  | Instance (by Aggregate Key) |
+| Profile                     | Cr                          |

@@ -29,6 +29,16 @@ The RECQ Communication Pattern defines the structure and expected behaviour of m
   * Components can subscribe to specific events or event types that they are interested in.
   * When a new event is published to the store, subscribed components receive a notification and can react asynchronously to the state change.
 
+**No Other Channel:**
+
+These three channels are **exhaustive** — a RECQ system admits no other communication path between components. In particular, side channels such as shared caches, distributed locks, shared databases, or shared files are forbidden by the Isolation property. Only two shared stores are sanctioned, and neither is a communication channel between distinct components: the read model shared between a Projector and its Projections, and the Consumer State Store shared among replicas of one consumer.
+
+**Confinement and Analyzability by Construction:**
+
+Because routing is strictly by message type and the channel set is closed, the complete interaction graph of a RECQ application can be recovered **exactly** from its source code: it suffices to extract, for each handler, the set of commands and queries it emits. This holds under a closed-world assumption whose load-bearing clause is **emit-logic confinement** — a handler's gateway calls (command sends and query dispatches) must stay within its declaring component class, not be hidden in arbitrary helper classes, and each send must name a concrete payload type.
+
+Evento enforces this at bundle registration time: a confinement check flags every gateway call site found in a class that is not a registered component, and every send whose payload type cannot be statically resolved. Violations are reported as warnings by default; with the `strictConfinement` builder flag enabled, the bundle refuses to start instead.
+
 **Benefits of the RECQ Communication Pattern:**
 
 * **Asynchronous Communication:** Enables loosely coupled components to interact without waiting for synchronous responses.

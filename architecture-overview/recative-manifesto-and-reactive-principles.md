@@ -32,6 +32,6 @@ The Reactive Principles serve as a companion document to the Manifesto. It delve
 
 **Evento Framework: Simplifying RECQ Architecture for Your Next Project**
 
-The Evento Framework enters the scene by specifically targeting the implementation of **RECQ architectures**. RECQ stands for **Reactive Event-Driven CQRS** and is a specific type of Reactive architecture focused on building event-driven microservices. By leveraging the principles outlined in the Reactive Manifesto and the practical guidance of the Reactive Principles, Evento empowers developers to construct highly scalable and maintainable microservices within JavaEE environments.
+The Evento Framework enters the scene by specifically targeting the implementation of **RECQ architectures**. RECQ stands for **Reactive, Event-Driven Commands and Queries** and is a specific type of Reactive architecture focused on building event-driven microservices. By leveraging the principles outlined in the Reactive Manifesto and the practical guidance of the Reactive Principles, Evento empowers developers to construct highly scalable and maintainable microservices within JavaEE environments.
 
 In the following sections, we'll delve deeper into RECQ architectures, explore the specific features of the Evento Framework, and discover how it streamlines the development of robust and responsive applications for the modern world.

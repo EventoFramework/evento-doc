@@ -46,9 +46,9 @@ By offering a scalable and efficient way to handle queries using materialized vi
 | Capability                  |     |
 | --------------------------- | --- |
 | Can handle Command Messages | No  |
-| Can handle Query Message    | Yes |
+| Can handle Query Messages   | Yes |
 | Can handle Events           | No  |
 | Can send Command Messages   | No  |
 | Can Send Query Messages     | Yes |
 | State type                  | No  |
-| CAP Properties              | AP  |
+| Profile                     | --R |

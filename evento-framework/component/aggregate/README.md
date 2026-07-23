@@ -36,8 +36,6 @@ public @interface Aggregate {
 }
 ```
 
-Usa il codice con cautela.content\_copy
-
 * **`@Retention(RetentionPolicy.RUNTIME)`:** This ensures that the annotation information is retained at runtime, allowing Evento to access it during application execution.
 * **`@Target(ElementType.TYPE)`:** This specifies that the annotation can only be applied to class declarations.
 * **`@Component`:** This indicates that the annotated class is a component within the Evento framework.

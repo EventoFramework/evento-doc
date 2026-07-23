@@ -1,32 +1,25 @@
 # GUI Auth
 
-#### The Initial Encounter: A Token Request
+#### Signing In: Username and Password
 
-Upon launching the Evento GUI for the first time, you'll be greeted by a login screen, acting as the first line of defense. Unlike traditional username and password combinations, the Evento GUI employs a token-based authentication system. This mechanism ensures secure access by requiring a temporary token issued by the Evento server itself.
+When you open the Evento GUI, you are greeted by a branded login page. Since Evento Server v2.2, authentication uses a standard **username and password** over **HTTP Basic auth** — there are no tokens to generate, no application logs to scrape, and no token expiry.
 
-The login screen will prominently display an alert message, informing you that a token is required for access. This message serves as a clear reminder that unauthorized access attempts are futile.
+The credentials are the ones configured on the Evento Server through Spring Boot's in-memory user:
 
-<figure><img src="../.gitbook/assets/image (52).png" alt=""><figcaption></figcaption></figure>
+* `spring.security.user.name` — the login username (default: `evento`)
+* `spring.security.user.password` — the login password (default: `secret`)
 
-#### Unveiling the Token: A Journey Through Application Logs
+{% hint style="warning" %}
+The defaults (`evento` / `secret`) are for local exploration only. **Always override both properties in any real deployment**, e.g. by setting the `SPRING_SECURITY_USER_NAME` and `SPRING_SECURITY_USER_PASSWORD` environment variables on the server container.
+{% endhint %}
 
-To gain access to the coveted token, you'll need to embark on a brief exploration of the Evento server's application logs. These logs serve as a detailed record of the server's activities, often containing valuable pieces of information.
+#### How It Works
 
-Within the application logs, keep an eye out for entries related to token generation. These entries might be marked with specific keywords or phrases like "Web Token" or "API Token Generation." The exact format and location of these entries might vary depending on your specific Evento server configuration.
+* The login page verifies your credentials directly against the server; on success you land on the dashboard.
+* The GUI attaches the credentials as an `Authorization: Basic` header to every API call, and caches them in the browser's localStorage so the session survives page reloads.
+* If the server ever rejects a request (401/403) — for example after the password is changed — the GUI clears the stored credentials and redirects you back to the login page.
+* Use the **logout** button in the header to clear the stored credentials at any time.
 
-Once you locate a relevant log entry, it will typically contain the actual token string. This string is a unique identifier that grants temporary access to the Evento GUI. Remember to treat this token with care, as it serves as your key to unlocking the hidden world of your distributed system.
+#### Scope of Authentication
 
-<figure><img src="../.gitbook/assets/image (51).png" alt=""><figcaption></figcaption></figure>
-
-#### Granting Access: The Power of the Token
-
-Armed with the token obtained from the application logs, return to the Evento GUI login screen. Locate the designated field for entering the token and carefully paste the retrieved string. Once entered, proceed with the login process.
-
-If the token is valid and hasn't expired, the Evento GUI will grant you access, transforming the login screen into a comprehensive dashboard displaying the inner workings of your distributed system. Here, you can leverage the various functionalities offered by the GUI, such as cluster visualization, telemetry monitoring, performance analysis, and flow visualization.
-
-**Important Considerations:**
-
-* **Token Expiration:** Be mindful that tokens typically have a limited lifespan. Once a token expires, it will no longer grant access, necessitating the retrieval of a new token from the application logs.
-* **Security Best Practices:** While exploring the application logs for the token is a necessary step during the initial login, it's crucial to implement proper security measures once you're granted access. Consider utilizing a secure token management solution to generate, store, and rotate tokens for enhanced security.
-
-By understanding the token-based authentication system and the process for obtaining a valid token, you'll be well-equipped to securely access and explore the powerful features of the Evento GUI. As you delve deeper into the framework, remember to prioritize security best practices to safeguard your distributed system.
+All GUI pages and every `/api/**` endpoint require authentication; only the health/info actuator probes are public. Note that this login protects the **web GUI and REST API**. Bundle connections on the message bus are authenticated separately with the optional wire-level shared secret (`evento.server.bus.auth-token`, see [Advanced Options](../evento-server/setup-evento-server/advanced-options.md)).

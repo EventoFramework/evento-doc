@@ -37,10 +37,12 @@ The Consumers section provides a list of all active consumers within your cluste
 **By clicking on a specific consumer, you can access additional details, such as:**
 
 * **Last Consumed Event Identifier:** The identifier of the last event processed by the consumer.
-* **Dead Event Queue:** A list of events that failed to be processed, allowing for manual reprocessing.
+* **Dead Event Queue:** A list of events that failed to be processed. From here you can re-enqueue events for reprocessing or delete them — this is the only mutating action left in the GUI's otherwise read-only surface.
 
-<figure><img src="../.gitbook/assets/image (67).png" alt=""><figcaption><p>COnsumer Detailed Status</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (67).png" alt=""><figcaption><p>Consumer Detailed Status</p></figcaption></figure>
 
 The Cluster Status page, with its Bundle Instances and Consumers sections, offers a valuable tool for managing and monitoring your Evento cluster. By effectively utilizing this information, you can optimize performance, troubleshoot issues, and ensure the overall health of your system.
 
-**Note:** Based on the provided information, the Consumers section appears to be under development, and the full functionality may not be available in the current version of the interface.
+{% hint style="info" %}
+Consumers register (and re-register) automatically every time a bundle establishes a session with the server. If the list is empty, make sure both the server and the bundles run Evento **2.3.1 or later** — earlier 2.x servers silently dropped consumer registrations.
+{% endhint %}

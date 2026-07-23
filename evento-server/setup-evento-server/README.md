@@ -19,12 +19,13 @@ To customize the behavior of your Evento Server instance, you'll need to define 
 * **evento\_cluster\_name:** A unique identifier for your cluster. Choose a descriptive name to easily distinguish your cluster.
 * **evento\_performance\_capture\_rate:** This value determines the frequency at which internal telemetry data is captured. A lower value captures data more frequently, providing more detailed insights but potentially impacting performance.
 * **evento\_telemetry\_ttl:** This property defines the global time-to-live for telemetry data stored in days. Data older than this duration will be automatically removed.
-* **evento\_security\_signing\_key:** A critical security measure. This JWT (JSON Web Token) signature key is used for signing API requests, ensuring data integrity and authorization. **Never share this key publicly.**
+* **spring\_security\_user\_name / spring\_security\_user\_password:** The username and password protecting the GUI and REST API (HTTP Basic auth). Defaults are `evento` / `secret` — **always override them in any real deployment.**
+* **evento\_server\_bus\_auth\_token** (optional)**:** A shared secret that connecting bundles must present on the message bus. Leave unset to accept any bundle (default).
 * **spring\_datasource\_url:** The connection URL for your PostgreSQL database.
 * **spring\_datasource\_username:** The username for accessing the PostgreSQL database.
 * **spring\_datasource\_password:** The password for accessing the PostgreSQL database.
 
-**Important Note:** The `evento_security_signing_key` should be treated as a secret and not be included in any public documentation or version control systems.
+**Important Note:** Credentials such as `spring_security_user_password` and `evento_server_bus_auth_token` should be treated as secrets and not be included in any public documentation or version control systems.
 
 #### Sample Deployment with Docker Compose:
 
@@ -51,7 +52,8 @@ services:
       - evento_cluster_name=evento-server  # Set your cluster name
       - evento_performance_capture_rate=0.1  # Capture telemetry data every 0.1 seconds (adjust as needed)
       - evento_telemetry_ttl=365  # Keep telemetry data for a year
-      - evento_security_signing_key=MY_JWT_SECRET_TOKEN_SEED  # Replace with a strong secret
+      - spring_security_user_name=evento  # GUI/API login user
+      - spring_security_user_password=secret  # Replace with a strong password
       - spring_datasource_url=jdbc:postgresql://database:5432/evento
       - spring_datasource_username=postgres
       - spring_datasource_password=secret  # Replace with your actual password

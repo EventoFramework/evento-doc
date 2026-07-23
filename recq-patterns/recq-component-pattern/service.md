@@ -30,13 +30,9 @@ Similar to Aggregates, Services refrain from sending Query-type messages. This a
 * **Email Service:** A Service could be responsible for sending email notifications. The `CommandHandler` within the Service would receive a command containing the email content and recipient details. It would then interact with an external email provider to deliver the message.
 * **Payment Processing:** Another example is a Service that delegates payment processing to a third-party provider. The Service's `CommandHandler` would receive a payment command, interact with the payment gateway, and potentially emit an event reflecting the processing outcome.
 
-**Scalability Focus: Availability Reigns Supreme**
+**Weak Consistency, Weak Responsiveness**
 
-Services prioritize availability over strong consistency within the internal system (c). Since Service interactions involve external systems, consistency guarantees are primarily the responsibility of those external providers. However, Services themselves strive to be highly available (a) to ensure smooth communication with external resources. This availability might be subject to the specific implementation of ACID properties (Atomicity, Consistency, Isolation, Durability) within the chosen external system.
-
-**Partitioning Tolerance: A Core Strength**
-
-Like other RECQ components, Services exhibit partitioning tolerance (P). This means they can continue functioning even if network partitions occur, preventing complete system outages due to external communication challenges.
+Services offer only weak consistency (c) within the internal system: since Service interactions involve external systems, consistency guarantees are primarily the responsibility of those external providers. Responsiveness is likewise weak (r) — a Service reacts as fast as the external resource it wraps allows, so its reaction time cannot be bounded a priori for contending or slow external calls. Being stateless on the RECQ side, Services can be replicated freely for availability.
 
 **Services in Action: Enabling Seamless External Interactions**
 
@@ -50,4 +46,4 @@ Services bridge the gap between your application and the external world. They al
 | Can send Command Messages   | Yes |
 | Can Send Query Messages     | No  |
 | State type                  | No  |
-| CAP Properties              | caP |
+| Profile                     | cr  |

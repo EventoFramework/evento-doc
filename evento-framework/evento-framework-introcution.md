@@ -1,11 +1,10 @@
 # Introduction
 
-Evento Framework is a Java library designed to simplify the development of reactive systems based on the RECQ architecture. RECQ stands for:
+Evento Framework is a Java library designed to simplify the development of reactive systems based on the RECQ architecture. RECQ stands for **Reactive, Event-Driven Commands and Queries**:
 
 * **Reactive:** Systems are responsive to user interactions and data changes.
-* **Event-driven:** Communication between different parts of the application happens through events.
-* **CQRS (Command Query Responsibility Segregation):** Separate components handle data reads (queries) and writes (commands) for better performance and scalability.
-* **Microservices:** The application is broken down into smaller, independent services that communicate with each other.
+* **Event-Driven:** Communication between different parts of the application happens through events.
+* **Commands and Queries:** Separate components handle data writes (commands) and reads (queries) — the CQRS principle applied at the communication level for better performance and scalability.
 
 Evento Framework provides functionalities to implement these RECQ principles effectively. Here are some key features of Evento:
 

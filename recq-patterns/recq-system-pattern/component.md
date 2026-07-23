@@ -11,6 +11,7 @@ A RECQ component is a self-contained unit of software that implements a well-def
 * [**Isolation**](https://www.reactivemanifesto.org/glossary#Isolation)**:**
   * **Temporal Isolation:** Components operate independently and asynchronously without relying on other components to be available at any specific time.
   * **Spatial Isolation:** Components don't need knowledge about the location or existence of other components in the system. This concept is also known as Location Transparency.
+  * Isolation also **forbids side channels**: components must not share caches, distributed locks, databases, or files as a way of communicating. The only sanctioned shared stores are the read model between a Projector and its Projections, and the Consumer State Store shared among replicas of one consumer.
 * **Containment:**
   * Components encapsulate the logic and resources they need to fulfill their responsibilities.
   * This aligns with the concept of aggregation in Domain-Driven Design, where tightly coupled entities are grouped together within a component.
@@ -34,8 +35,8 @@ A RECQ component is a self-contained unit of software that implements a well-def
   * Components can send messages to other components within the system.
   * This capability allows for inter-component communication to coordinate activities and share information.
 * **Replicability:**
-  * A RECQ component can be replicated across multiple instances to achieve horizontal scaling.
-  * The design of the component should ensure consistency even with multiple instances operating concurrently.
+  * A RECQ component must be replicable across multiple instances. Replicability is first of all about **availability**: replicas act as failover, so the loss of one instance does not make the component unavailable.
+  * Replicability must not be conflated with horizontal scalability, which is about **throughput**. Stateless and instance-state components gain throughput from replication for free; consistent, context-state consumers (Projectors, Sagas) keep a single active instance per context and gain throughput by partitioning the event stream into more contexts instead.
 
 > Strict definition:
 >
