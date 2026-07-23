@@ -4,6 +4,8 @@
 
 When you open the Evento GUI, you are greeted by a branded login page. Since Evento Server v2.2, authentication uses a standard **username and password** over **HTTP Basic auth** — there are no tokens to generate, no application logs to scrape, and no token expiry.
 
+<figure><img src="../.gitbook/assets/image (52).png" alt=""><figcaption><p>The Evento GUI login page</p></figcaption></figure>
+
 The credentials are the ones configured on the Evento Server through Spring Boot's in-memory user:
 
 * `spring.security.user.name` — the login username (default: `evento`)
