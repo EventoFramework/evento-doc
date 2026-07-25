@@ -103,6 +103,7 @@
 * [Evento Server Introduction](evento-server/evento-server-introduction.md)
 * [SetUp Evento Server](evento-server/setup-evento-server/README.md)
   * [Advanced Options](evento-server/setup-evento-server/advanced-options.md)
+  * [Throughput and Capacity](evento-server/setup-evento-server/throughput-and-capacity.md)
   * [Evento Event Store Modes: APES and CPES](evento-server/setup-evento-server/evento-event-store-modes-apes-and-cpes.md)
 * [Evento Server Cluster](evento-server/evento-server-cluster.md)
 

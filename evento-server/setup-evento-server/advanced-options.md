@@ -30,9 +30,18 @@ The Evento server relies on a variety of configuration properties to govern its 
 * `server.port`: The HTTP port serving the REST API and the GUI (default `3000`).
 * `evento.server.bus.port`: The TCP port on which the Evento server listens for incoming bundle message-bus connections (default `3030`). Ensure this port is accessible and not blocked by firewalls.
 
+**Request Capacity:**
+
+* `evento.server.bus.business-executor-core-size`: Threads kept alive to handle bundle requests (default `max(8, cores × 2)`).
+* `evento.server.bus.business-executor-max-size`: Ceiling on those threads (default `cores × 8`). The pool grows to this size *before* it queues, so this is the property that sets sustainable throughput.
+* `evento.server.bus.business-executor-queue-capacity`: Requests allowed to wait for a thread (default `256`). Keep it small — a request that waits longer than its client's timeout is served for nobody. See [Throughput and Capacity](throughput-and-capacity.md).
+* `evento.server.bus.business-executor-saturation-warn-interval`: Throttle for the `event=bus_business_executor_saturated` warning (default `10s`).
+* `evento.es.fetch.concurrency`: Concurrent `EventFetchRequest` handlers (default `4`). Often the real ceiling on a consumer-heavy cluster; each fetch holds a full result set on heap, so raise it against measured headroom.
+
 **Observability:**
 
 * `management.endpoints.web.exposure.include`: Actuator endpoints exposed over HTTP; the server ships with `health,info,prometheus,metrics`, so Prometheus can scrape bus and JVM metrics from `/actuator/prometheus`.
+* Bus capacity meters: `evento.server.bus.executor.{pool.size,max,active,queue.depth}` and the counter `evento.server.bus.executor.saturated` — the one to alert on. See [Throughput and Capacity](throughput-and-capacity.md).
 * `management.endpoint.health.probes.enabled`: Enables Kubernetes-style liveness/readiness probes under `/actuator/health/{liveness,readiness}`. Health and info are the only endpoints that don't require authentication.
 
 &#x20;**Event Store:**
