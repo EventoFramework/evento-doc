@@ -25,6 +25,7 @@ The Component Catalog doesn't merely present a static list. Clicking on a specif
 * **Comprehensive Component Description:** This section provides a more in-depth explanation of the component's purpose and functionality within the system. It might also include details about the payloads it handles (commands, queries) and the events it produces.
 * **Payload Interactions:** This section sheds light on how the chosen component interacts with payloads. It might showcase the specific payloads the component can handle and the payloads it generates. Understanding these interactions fosters a deeper understanding of data flow within your application.
 * **Configuration Details:** (might not be available in all versions) This section might provide details about the configuration options associated with the component. These configurations could influence the behavior or processing logic of the component, giving you insights into how it's customized within your system.
+* **Executor:** an event handler dispatched to a [consumer executor](../evento-framework/eventobundle/parallel-consumers.md) is marked with the executor's name. Worth looking for when reading an unfamiliar projector: a marked handler consumes in parallel, which means it makes no ordering promise and is not redelivered if the process dies mid-flight.
 
 By delving into the detailed component view, you gain a deeper understanding of each component's role in the intricate dance of processing events, handling commands, and generating responses within your Evento application.
 

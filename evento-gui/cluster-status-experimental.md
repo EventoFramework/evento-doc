@@ -38,6 +38,7 @@ The Consumers section provides a list of all active consumers within your cluste
 
 * **Last Consumed Event Identifier:** The identifier of the last event processed by the consumer.
 * **Dead Event Queue:** A list of events that failed to be processed. From here you can re-enqueue events for reprocessing or delete them — this is the only mutating action left in the GUI's otherwise read-only surface.
+* **Parallel:** shown only for consumers that dispatch handlers to a [consumer executor](../evento-framework/eventobundle/parallel-consumers.md) — the executor names the consumer depends on, how many handler tasks are in flight, how often a cycle ended early because the executor was saturated, and how many transient failures its parallel handlers hit. A climbing *Saturated* count means the executor is the bottleneck.
 
 <figure><img src="../.gitbook/assets/image (67).png" alt=""><figcaption><p>Consumer Detailed Status</p></figcaption></figure>
 

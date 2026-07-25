@@ -66,6 +66,10 @@ Advanced Configuration Options:
 * `tracingAgent` (Optional - Defaults to a new `TracingAgent` instance with bundleId and bundleVersion): This property allows you to set a custom tracing agent for the bundle. Tracing agents help track the execution flow of events and commands within your application. By default, a new `TracingAgent` instance is created with the bundle's ID and version.
 * `injector` (Optional - Defaults to a function returning null): This property allows you to define a custom function for injecting dependencies into your components. This advanced option provides flexibility for configuring specific injection behavior for your bundle.
 * `instanceId` (Optional - Defaults to a random UUID): Identifies a particular running instance of the bundle; used for telemetry and tracing.
+* `addConsumerExecutor(ConsumerExecutor)` (Optional): Registers a named, bounded executor that an `@EventHandler(executor = "...")` can dispatch to, so that handler consumes events in parallel instead of one at a time. Build one with `ConsumerExecutors.virtual(name, n)`, `pooled(name, n)` or `partitioned(name, lanes)`. A handler naming an unregistered executor fails start-up. See [Parallel Consumers](parallel-consumers.md).
+* `setCheckpointMode(CheckpointMode)` (Optional - Defaults to `ON_START`): When a parallel consumer persists its checkpoint. `WATERMARK` commits only the highest contiguous *completed* sequence, restoring at-least-once delivery at the cost of replaying the in-flight window after a crash. `setComponentCheckpointMode(Class, CheckpointMode)` overrides it for one projector.
+* `setConsumerStatsInterval(Duration)` (Optional - Defaults to 30 s): How often the bundle pushes parallel-consumption counters to the server for Prometheus. Bundles with no consumer executor push nothing at all.
+* `setComponentContexts(Class, String...)` (Optional): Restricts a consumer to specific [contexts](context.md); one consumer is started per context.
 
 **Additional Notes:**
 

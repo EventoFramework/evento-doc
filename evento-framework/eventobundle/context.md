@@ -34,15 +34,15 @@ In this example, the context is read from the `metadata` accompanying the comman
 
 **Configuring Contexts in Evento Bundle:**
 
-The `setContexts` method within `EventoBundle.Builder` allows you to define contexts for your bundle:
+The `setComponentContexts` method within `EventoBundle.Builder` allows you to define contexts for your bundle:
 
 <pre class="language-java"><code class="lang-java">EventoBundle.Builder.builder()
 ...
-<strong>.setContexts(Map.of(DemoProjector.class.getSimpleName(), Set.of("UK", "IT")))
+<strong>.setComponentContexts(DemoProjector.class, "UK", "IT")
 </strong><strong>...
 </strong></code></pre>
 
-Here, a map is used to associate a consumer class (e.g., `DemoProjector`) with a set of contexts (e.g., "UK" and "IT").
+Here, a consumer class (e.g., `DemoProjector`) is associated with the contexts it should consume (e.g., "UK" and "IT"). Call it once per component; `removeComponentContexts(Class)` clears an entry again.
 
 **Event Consumption with Context Awareness:**
 
@@ -57,3 +57,7 @@ Here, a map is used to associate a consumer class (e.g., `DemoProjector`) with a
 * Modular design: Contexts promote modularity in your event-driven architecture by enabling clear separation of concerns.
 
 By effectively utilizing contexts, you can streamline event handling within your Evento applications. Contexts allow for efficient partitioning of event streams, leading to focused processing and improved scalability in your event-driven system.
+
+{% hint style="info" %}
+Contexts scale a consumer *out* — one consumer per context, each with its own checkpoint and its own slice of the stream. To scale a single consumer *up*, by handling several events from the same stream at once, see [Parallel Consumers](parallel-consumers.md).
+{% endhint %}

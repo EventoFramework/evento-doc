@@ -1,6 +1,6 @@
 # Dead Event Queues
 
-Consistent consumers (Projectors, Sagas, and Observers) process events from the System State Store sequentially. A single event whose handler keeps failing would therefore block the whole stream — the classic *poison pill* problem. Dead Event Queues are Evento's answer: an event that cannot be processed is parked aside, the checkpoint advances, and the consumer keeps going.
+Consistent consumers (Projectors, Sagas, and Observers) process events from the System State Store sequentially by default. A single event whose handler keeps failing would therefore block the whole stream — the classic *poison pill* problem. Dead Event Queues are Evento's answer: an event that cannot be processed is parked aside, the checkpoint advances, and the consumer keeps going.
 
 ## Permanent vs Transient Failures
 
@@ -26,6 +26,14 @@ void on(OrderPlacedEvent event) {
 {% hint style="warning" %}
 Redelivery means your handler can run more than once for the same event. Keep side effects that precede a potentially failing step **idempotent** — on redelivery they will execute again.
 {% endhint %}
+
+### Under a parallel consumer
+
+The distinction above assumes the sequential path, where the checkpoint has not yet moved when the handler fails. A handler dispatched to a [consumer executor](eventobundle/parallel-consumers.md) is checkpointed as soon as its task *starts*, so by the time it fails redelivery is no longer available — **transient and permanent failures alike can only be dead-lettered**, once the handler's `retry` budget is exhausted.
+
+Two things follow. The `retry` attribute carries more weight there, and its `-1` default is coerced to `0` under an executor, so an untuned parallel handler dead-letters on its first failure. And because a burst of transient failures would otherwise fill the queue at full speed, the consumer detects a run of them and backs its fetch loop off exponentially until the dependency recovers.
+
+If dead-lettering transient failures is not acceptable for a given consumer, `CheckpointMode.WATERMARK` restores redelivery by checkpointing only completed work.
 
 ## Inspecting and Replaying Dead Events
 

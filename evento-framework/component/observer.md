@@ -52,6 +52,12 @@ While retries can help overcome temporary hiccups, there may be situations where
 
 By employing DLQs, Evento ensures efficient processing of most events while providing a mechanism to handle persistent failures and prevent data loss.
 
+**Parallel Consumption**
+
+Observers have always dispatched their handlers asynchronously, so an observer never blocks on a slow reaction. Since **2.4.0** that fan-out is *bounded*: the default observer executor admits a fixed number of concurrent handlers, which gives the consume loop real backpressure. Previously an observer catching up from a cold checkpoint would submit its whole backlog as fast as it could fetch it.
+
+An observer's `@EventHandler` can also name its own executor — including a partitioned one for per-aggregate ordering. See [Parallel Consumers](../eventobundle/parallel-consumers.md).
+
 #### Key Differences from `@Saga`
 
 While sharing some similarities in definition, `@Observer` differs from `@Saga` in its design philosophy:

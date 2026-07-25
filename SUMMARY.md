@@ -93,6 +93,7 @@
     * [PostgresConsumerStateStore](evento-framework/eventobundle/consumerstatestore/postgresconsumerstatestore.md)
     * [MysqlConsumerStateStore](evento-framework/eventobundle/consumerstatestore/mysqlconsumerstatestore.md)
   * [Context](evento-framework/eventobundle/context.md)
+  * [Parallel Consumers](evento-framework/eventobundle/parallel-consumers.md)
   * [TracingAgend and @Track](evento-framework/eventobundle/tracingagend-and-track/README.md)
     * [SentryTracingAgent](evento-framework/eventobundle/tracingagend-and-track/sentrytracingagent.md)
   * [Injector and @Component](evento-framework/eventobundle/injector-and-component.md)

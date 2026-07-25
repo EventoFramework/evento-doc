@@ -16,6 +16,7 @@ Here's a breakdown of the annotation's definition:
 public @interface EventHandler {
     public int retry() default -1;
     public int retryDelay() default 1000;
+    public String executor() default "";
 }
 ```
 
@@ -35,6 +36,16 @@ While retries can help overcome temporary hiccups, there may be situations where
 * DLQs act as a safety net, storing these unprocessed events for potential future intervention.
 
 By employing DLQs, Evento ensures efficient processing of most events while providing a mechanism to handle persistent failures and prevent data loss.
+
+**Optional Parallel Consumption:**
+
+* **`public String executor() default "";`**: Names a consumer executor registered on the bundle, dispatching this handler's events to it so they are processed **in parallel** instead of one at a time. Empty (the default) keeps the handler on the sequential path.
+
+Parallel dispatch relaxes ordering and, for events in flight when the process dies, delivery — so it suits handlers that are idempotent or blind overwrites. A *partitioned* executor gives per-aggregate ordering back, and `CheckpointMode.WATERMARK` gives at-least-once back. See [Parallel Consumers](../../eventobundle/parallel-consumers.md) for the full picture, including the sizing rule for handlers that open a database transaction.
+
+{% hint style="warning" %}
+`retry` is coerced to `0` under an executor, because retrying forever inside a parallel task would pin a concurrency permit and starve the executor. Set an explicit `retry` for any parallel handler that calls a remote dependency, or a transient blip dead-letters the event on its first failure.
+{% endhint %}
 
 #### Implementing `@EventHandler` Methods
 
