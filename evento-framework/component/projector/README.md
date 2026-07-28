@@ -26,6 +26,14 @@ public @interface Projector {
      * @return the version of the Projector
      */
     int version();
+
+    /**
+     * Whether the bundle must wait for this projector's consumer to reach the head
+     * of the event stream before enabling itself on the cluster.
+     *
+     * @return true when bundle enablement must wait for this projector's alignment
+     */
+    boolean waitForHeadReached() default false;
 }
 ```
 
@@ -35,9 +43,44 @@ Here's a breakdown of the `@Projector` annotation:
 * **`@Target(ElementType.TYPE)`:** This specifies that the annotation can only be applied to class declarations.
 * **`@Component`:** This indicates that the annotated class is a component within the Evento framework.
 
-The `@Projector` annotation also includes a `version` parameter:
+The `@Projector` annotation also includes two parameters:
 
 * **`version` (int):** This parameter specifies the version of the projector. This versioning mechanism becomes crucial when significant changes are made to the projection logic. A new version allows Evento to potentially recompute the projection state based on the revised logic.
+* **`waitForHeadReached` (boolean, default `false`):** Whether the bundle must wait for this projector to catch up to the head of the event stream before becoming available on the cluster. See [Startup and head alignment](#startup-and-head-alignment-waitforheadreached) below.
+
+#### Startup and Head Alignment (`waitForHeadReached`)
+
+When a bundle starts, each projector consumer resumes from its last checkpoint and replays
+events until it reaches the **head** of the event stream (the latest stored event). By default
+this alignment does **not** block startup: the bundle registers and enables itself on the
+cluster immediately, starts serving commands and queries, and projectors keep aligning in the
+background. Each consumer logs the moment it catches up:
+
+```
+Projector head reached: DemoProjector - Version: 3 - Context: default
+```
+
+This default keeps startup fast — a projector with a long backlog (a new projector version, a
+cold state store, a large event history) does not delay the rest of the application. The price
+is eventual consistency at its most visible: right after startup, queries may hit a read model
+that is still behind.
+
+If a projection must never be served while known to be behind, opt that projector into the
+startup gate:
+
+```java
+@Projector(version = 3, waitForHeadReached = true)
+public class DemoProjector { ... }
+```
+
+With `waitForHeadReached = true` the bundle stays **disabled** — invisible to command and query
+routing — until every gating projector (one gate per [context](../../eventobundle/context.md))
+has reached head. Handlers dispatched to [parallel executors](../../eventobundle/parallel-consumers.md)
+are drained before the gate releases, so the read model is genuinely aligned, not merely
+fetched. Saga and observer engines also start only after the gate opens.
+
+Mixing is fine: gate only the projectors whose queries demand freshness at startup and let the
+rest align in the background.
 
 #### How Projectors Work
 

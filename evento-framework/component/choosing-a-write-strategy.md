@@ -35,6 +35,11 @@ The same property explains projector behaviour **after a crash or restart**. Pro
 
 In other words, a slow catch-up means *queries are briefly stale*, never that *data is lost*.
 
+By default a restarting bundle becomes available immediately and lets its projectors catch up
+in the background. A projector whose queries must never observe a known-stale read model can
+opt into gating startup with `@Projector(waitForHeadReached = true)` — see
+[Startup and head alignment](projector/README.md#startup-and-head-alignment-waitforheadreached).
+
 This design is ideal when reads dominate **and** the write side genuinely needs invariants. If your domain has rules that must hold no matter what — uniqueness, non-negative balances, capacity limits — the aggregate's ordered, exactly-once consumption is exactly the guarantee you want.
 
 #### When the Default Path Is the Wrong Tool: High-Throughput Writes
