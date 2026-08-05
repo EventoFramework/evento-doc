@@ -9,7 +9,7 @@ For durable consumer state on MySQL, use the JDBC implementations of the five co
 ## Dependency
 
 ```gradle
-implementation group: 'com.eventoframework.evento-consumer-state-store', name: 'evento-consumer-state-store-jdbc', version: '2.4.4'
+implementation group: 'com.eventoframework.evento-consumer-state-store', name: 'evento-consumer-state-store-jdbc', version: '2.4.5'
 ```
 
 ## Schema migration
