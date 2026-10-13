@@ -17,8 +17,11 @@ The Evento server relies on a variety of configuration properties to govern its 
 
 **Cluster:**
 
-* `evento.cluster.name`: This property defines the name of the Evento cluster. It's used for identification and helps differentiate between multiple clusters within a distributed system.
-* `evento.server.instance.id`: This property assigns a unique identifier to this particular Evento server instance within the cluster. This helps differentiate between multiple running instances.
+* `evento.cluster.name` (env `EVENTO_CLUSTER_NAME`): The name of the Evento cluster, announced to bundles in the handshake; a bundle using `withExpectedClusterName` refuses servers of another cluster. Use the same value on every server of a cluster and a different one per deployment (the shipped `evento-server` is the same everywhere).
+* `evento.cluster.node.server.id`: The unique id of this server on the bus (it becomes `evento.server.bus.server-instance-id`). **Must be unique per server** in a cluster.
+* `evento.server.instance.id`: The id used by the consumer service; unique per server as well.
+* `evento.server.bus.pick-strategy`: How a handler is chosen among live instances: `random` (default), `first`, or `locality-preferred` (same zone as the caller, then any).
+* Distributed locks, presence and the other cluster settings are listed in [Cluster Configuration](../evento-server-cluster/cluster-configuration.md).
 
 **Performance Monitoring:**
 

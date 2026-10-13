@@ -122,3 +122,7 @@ The provided code snippet showcases a `DemoSaga` class:
 * Understanding `@Saga` is crucial for building robust workflows that span multiple events and actions within the RECQ architecture.
 
 The next chapter will delve deeper into `Saga State` management, an essential aspect of working with sagas in Evento.
+
+{% hint style="info" %}
+**Commands sent by a saga are idempotent (2.5.0).** A command sent from a `@SagaEventHandler` without an explicit key gets one derived from the consumer, the event and the command (`evento:<consumerId>:<seq>:<Command>:<n>`), so a redelivered event does not execute it twice. Rewinding the saga answers its re-sent commands as replays; rewind under a new consumer id to run them again. See [Exactly-once Commands](../../../evento-server/evento-server-cluster/exactly-once-commands.md).
+{% endhint %}

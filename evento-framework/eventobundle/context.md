@@ -24,7 +24,11 @@ return new DemoCreatedEvent(
     .setContext(metadata.get("context"));
 ```
 
-In this example, the context is read from the `metadata` accompanying the command and assigned to the newly created `DemoCreatedEvent`. The context is just a `String` you compute yourself — from metadata, from the command's data, or a constant. When no context is set, events belong to the default context (`com.evento.common.utils.Context.DEFAULT`); consumers subscribed to `Context.ALL` (`"*"`) receive events from every context.
+In this example, the context is read from the `metadata` accompanying the command and assigned to the newly created `DemoCreatedEvent`. The context is just a `String` you compute yourself — from metadata, from the command's data, or a constant. When no context is set, events belong to the default context (`com.evento.common.utils.Context.DEFAULT`); consumers subscribed to `Context.WILDCARD` (`"*"`) receive events from every context.
+
+{% hint style="warning" %}
+`*` is the **only** wildcard. `Context.ALL` is a deprecated alias of `Context.WILDCARD` (since 2.5.0): it is `"*"`, not a context named `"ALL"`. The literal string `"ALL"` is an ordinary context — a natural name for events every region needs — and a consumer configured with `"ALL"` reads only events whose context is `"ALL"`. Since 2.5.0 servers match `_` and `%` in context names literally (before, `SUD_AMERICA` also matched `SUDXAMERICA`).
+{% endhint %}
 
 **Context and Event Partitioning:**
 
@@ -42,7 +46,7 @@ The `setComponentContexts` method within `EventoBundle.Builder` allows you to de
 </strong><strong>...
 </strong></code></pre>
 
-Here, a consumer class (e.g., `DemoProjector`) is associated with the contexts it should consume (e.g., "UK" and "IT"). Call it once per component; `removeComponentContexts(Class)` clears an entry again.
+Here, a consumer class (e.g., `DemoProjector`) is associated with the contexts it should consume (e.g., "UK" and "IT"). Call it once per component; `removeComponentContexts(Class)` clears an entry again. A component with no entry reads **every** context. Each context gets its own consumer engine, with its own consumer id, checkpoint and lock, so instances of the same bundle that configure the same contexts compete for the same lanes, and instances with different contexts run side by side. Prefer one generic component with configuration-driven contexts over one class per region.
 
 **Event Consumption with Context Awareness:**
 

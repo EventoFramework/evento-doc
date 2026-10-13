@@ -20,6 +20,8 @@ The Bundle Instances section displays all connected bundles within your cluster.
 **Changed in Evento v2.** The Spawn Instance / Kill Instance actions were removed. Evento Server no longer starts or stops bundle processes — that is owned by your orchestrator (e.g. Kubernetes or Nomad). This page is now a read-only view of the instances currently connected to the cluster.
 {% endhint %}
 
+In a cluster each server shows **its own view**: the instances connected to it. To see which zone each instance announced (for `locality-preferred` routing), call `GET /api/cluster-status/zones` on that server.
+
 By monitoring the Bundle Instances section, you can see which bundle instances are currently connected and confirm your cluster has the capacity it needs to handle the workload.
 
 <figure><img src="../.gitbook/assets/image (65).png" alt=""><figcaption><p>Bundle Instances</p></figcaption></figure>

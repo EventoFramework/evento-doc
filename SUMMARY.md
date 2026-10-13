@@ -105,7 +105,12 @@
   * [Advanced Options](evento-server/setup-evento-server/advanced-options.md)
   * [Throughput and Capacity](evento-server/setup-evento-server/throughput-and-capacity.md)
   * [Evento Event Store Modes: APES and CPES](evento-server/setup-evento-server/evento-event-store-modes-apes-and-cpes.md)
-* [Evento Server Cluster](evento-server/evento-server-cluster.md)
+* [Evento Server Cluster](evento-server/evento-server-cluster/README.md)
+  * [Bundle Failover and Fail-back](evento-server/evento-server-cluster/bundle-failover-and-failback.md)
+  * [Exactly-once Commands](evento-server/evento-server-cluster/exactly-once-commands.md)
+  * [Cells and Locality](evento-server/evento-server-cluster/cells-and-locality.md)
+  * [Cluster Configuration](evento-server/evento-server-cluster/cluster-configuration.md)
+  * [Upgrading to 2.5](evento-server/evento-server-cluster/upgrading-to-2-5.md)
 
 ## EVENTO GUI
 

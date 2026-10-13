@@ -71,7 +71,7 @@ Expiries are logged at `WARN`. Treat a steady stream of them as capacity exhaust
 
 **Reduce demand** when it does not. Client concurrency is the fastest lever and the only one that works during an active collapse. Since 2.4.0 a bundle can also bound itself: `BundleClientConfig.Builder.maxInFlightRequests(n)` refuses a request outright with `TooManyPendingRequestsException` once `n` are already outstanding. That failure is immediate and definite — nothing was sent, so it is always safe to retry after backing off — which is strictly better for a caller than spending a full 30-second deadline to fail anyway.
 
-**Scale out** when one server is genuinely the limit; see [Evento Server Cluster](../evento-server-cluster.md). Partitioning by [context](../../evento-framework/eventobundle/context.md) spreads consumers across servers, and for write-side throughput the choice of component matters as much as any pool size — see [Choosing a Write Strategy](../../evento-framework/component/choosing-a-write-strategy.md), since aggregates serialise per context while services do not.
+**Scale out** when one server is genuinely the limit; see [Evento Server Cluster](../evento-server-cluster/README.md). Partitioning by [context](../../evento-framework/eventobundle/context.md) spreads consumers across servers, and for write-side throughput the choice of component matters as much as any pool size — see [Choosing a Write Strategy](../../evento-framework/component/choosing-a-write-strategy.md), since aggregates serialise per context while services do not.
 
 ## A note on timeouts and retries
 

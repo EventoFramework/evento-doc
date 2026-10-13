@@ -65,3 +65,7 @@ services:
 {% hint style="info" %}
 **Changed in Evento v2.** Bundles are no longer uploaded to the server as JARs. They register themselves at runtime over the message bus (self-discovery), so there is no upload directory, no `privileged: true`, and no deployment script. Deploying and scaling bundle instances is owned by your orchestrator (e.g. Kubernetes or Nomad).
 {% endhint %}
+
+{% hint style="info" %}
+**Running more than one server?** All instances share the same database and the same `evento_cluster_name`, and each needs a unique `evento_cluster_node_server_id`. Since 2.5.0 the first server to boot migrates the schema; size PostgreSQL `max_connections` for 30 connections per server. See [Evento Server Cluster](../evento-server-cluster/README.md).
+{% endhint %}
