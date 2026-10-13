@@ -4,7 +4,7 @@ description: Rollout order, first-boot schema migrations and connection sizing f
 
 # Upgrading to 2.5
 
-Wire changes in 2.5 are additive: 2.4 bundles work against 2.5 servers unchanged, and 2.5 bundles run against 2.4 servers (without exactly-once and without probe-gated fail-back). The **database schema** is migrated on the first boot of a 2.5 server, which drives the rollout order. 2.5.1 is a dependency-only patch on top of 2.5.0: the two mix freely.
+Wire changes in 2.5 are additive: 2.4 bundles work against 2.5 servers unchanged, and 2.5 bundles run against 2.4 servers (without exactly-once and without probe-gated fail-back). The **database schema** is migrated on the first boot of a 2.5 server, which drives the rollout order. Patch releases mix freely with 2.5.0: 2.5.1 updates dependencies only, and 2.5.2 fixes a race in which a reply written just before its sender closed the session (the end of a fail-back drain) could be lost. **Prefer 2.5.2.**
 
 ## 1. Upgrade every server together, then the bundles
 
