@@ -19,7 +19,8 @@ The defaults (`evento` / `secret`) are for local exploration only. **Always over
 
 * The login page verifies your credentials directly against the server; on success you land on the dashboard.
 * The GUI attaches the credentials as an `Authorization: Basic` header to every API call, and caches them in the browser's localStorage so the session survives page reloads.
-* If the server ever rejects a request (401/403) — for example after the password is changed — the GUI clears the stored credentials and redirects you back to the login page.
+* If the server ever rejects your credentials (401) — for example after the password is changed — the GUI clears the stored credentials and redirects you back to the login page.
+* If you are signed in but lack the role an action needs (403), the GUI tells you so ("This action needs the ADMIN role.") and keeps you signed in.
 * Use the **logout** button in the header to clear the stored credentials at any time.
 
 #### Single Sign-On with OpenID Connect
@@ -44,6 +45,32 @@ Register the console at the provider as a confidential web client with the redir
 * The session lives in an HttpOnly cookie; no token reaches the browser. Changes (consumer operations) carry a CSRF token the GUI reads from the `XSRF-TOKEN` cookie.
 * A user whose groups grant neither role can sign in but sees nothing (every API call answers 403).
 * HTTP Basic stays available for machine clients, e.g. a Prometheus scrape of `/actuator/prometheus` with the configured user.
+
+#### Roles
+
+* `WEB` reads the console: dashboard, catalog, flows, cluster status, consumers, event store.
+* `ADMIN` is needed for every change: retrying, deleting or replaying dead events, and removing a bundle from the catalog (`DELETE /api/bundle/{id}`, which before 2.6 needed only `WEB`).
+
+The Basic user gets both roles; with OIDC they come from the provider's groups.
+
+#### Audit Trail
+
+Since Evento **2.6** the server records who did what in the console:
+
+| Event | When |
+| --- | --- |
+| `ADMIN_ACTION` | every change, with the action, its target, the caller's address and the outcome (`ok`, or `failed` with the error), written when the bundle has answered |
+| `AUTHENTICATION_FAILURE` | a wrong password, a failed OIDC sign-in |
+| `AUTHENTICATION_SUCCESS`, `LOGOUT` | OIDC sign-in and sign-out (Basic re-authenticates on every request, so its successes are not recorded) |
+| `AUTHORIZATION_FAILURE` | a signed-in user refused an action its roles do not grant |
+
+Each event is one line on the `evento.audit` logger:
+
+```
+event=audit type=ADMIN_ACTION principal=alice action=consumer.dead_queue.consume consumerId=orders_OrderProjector_1_default remoteAddress=10.0.4.17 outcome=ok
+```
+
+That log is the durable record: route the `evento.audit` logger to your SIEM or to an append-only file. The latest events (`evento.server.audit.capacity`, default 1000) are also at `/actuator/auditevents`, for `ADMIN` users only; they are kept in memory and lost on restart. `management.auditevents.enabled=false` turns the audit off.
 
 #### Scope of Authentication
 
