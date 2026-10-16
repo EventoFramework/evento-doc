@@ -22,6 +22,29 @@ The defaults (`evento` / `secret`) are for local exploration only. **Always over
 * If the server ever rejects a request (401/403) — for example after the password is changed — the GUI clears the stored credentials and redirects you back to the login page.
 * Use the **logout** button in the header to clear the stored credentials at any time.
 
+#### Single Sign-On with OpenID Connect
+
+Since Evento **2.6** the console can sign users in through your organisation's identity provider (Keycloak, Entra ID, Okta, Google Workspace, …) instead of the shared user:
+
+```properties
+evento.server.web.auth=oidc                                   # EVENTO_SERVER_WEB_AUTH
+spring.security.oauth2.client.registration.evento.client-id=evento-console
+spring.security.oauth2.client.registration.evento.client-secret=${OIDC_CLIENT_SECRET}
+spring.security.oauth2.client.registration.evento.scope=openid,profile,email
+spring.security.oauth2.client.provider.evento.issuer-uri=https://login.example.com/realms/acme
+# which groups grant the console's roles
+evento.server.web.oidc.roles-claim=groups                     # e.g. roles (Entra ID), realm_access.roles (Keycloak)
+evento.server.web.oidc.web-role=evento-web                    # read the console
+evento.server.web.oidc.admin-role=evento-admin                # also consumer operations
+```
+
+Register the console at the provider as a confidential web client with the redirect URI `https://<your-server>/login/oauth2/code/evento`.
+
+* The login page shows **Sign in with your organisation**: the server runs the authorization-code flow (with PKCE) and brings you back to the dashboard.
+* The session lives in an HttpOnly cookie; no token reaches the browser. Changes (consumer operations) carry a CSRF token the GUI reads from the `XSRF-TOKEN` cookie.
+* A user whose groups grant neither role can sign in but sees nothing (every API call answers 403).
+* HTTP Basic stays available for machine clients, e.g. a Prometheus scrape of `/actuator/prometheus` with the configured user.
+
 #### Scope of Authentication
 
 All GUI pages and every `/api/**` endpoint require authentication; only the health/info actuator probes are public. Note that this login protects the **web GUI and REST API**. Bundle connections on the message bus are authenticated separately with the optional wire-level shared secret (`evento.server.bus.auth-token`, see [Advanced Options](../evento-server/setup-evento-server/advanced-options.md)).
