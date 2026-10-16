@@ -58,7 +58,7 @@ In Evento v2, bundles register themselves with the server at runtime over the me
 To develop RECQ components you need the [Broken link](/broken/pages/nTG67pbLHFvPaevz3gWh "mention") Bundle Library.
 
 {% hint style="danger" %}
-Evento Framework v2 requires [Java 25](https://openjdk.org/projects/jdk/25/) or newer.
+Since Evento 2.6 the client libraries (`evento-bundle` and the others your application depends on) require [Java 21](https://openjdk.org/projects/jdk/21/) or newer; the Evento Server image ships its own JVM (Java 25).
 {% endhint %}
 
 You can find the library on [Maven Central](https://central.sonatype.com/):  [https://central.sonatype.com/artifact/com.eventoframework/evento-bundle](https://central.sonatype.com/artifact/com.eventoframework/evento-bundle)
@@ -82,7 +82,7 @@ implementation group: 'com.eventoframework', name: 'evento-bundle', version: '2.
 
 
 {% hint style="info" %}
-Evento framework is independent of any other structured known framework like [Spring](https://spring.io/), [Micronaut ](https://micronaut.io/)or [Quarkus](https://quarkus.io/), so you can implement a RECQ application using your preferred technology even plain [JavaEE](https://it.wikipedia.org/wiki/Jakarta_EE).
+Evento framework is independent of any other structured known framework like [Spring](https://spring.io/), [Micronaut ](https://micronaut.io/)or [Quarkus](https://quarkus.io/), so you can implement a RECQ application using your preferred technology even plain [JavaEE](https://it.wikipedia.org/wiki/Jakarta_EE). For Spring Boot there is an optional [starter](../evento-framework/eventobundle/spring-boot-starter.md).
 {% endhint %}
 
 ***

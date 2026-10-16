@@ -1,6 +1,7 @@
 # Table of contents
 
 * [Introduction](README.md)
+* [Licensing](licensing.md)
 * [Architecture Overview](architecture-overview/README.md)
   * [Distributed Systems & Microservices](architecture-overview/distributed-systems-and-microservices.md)
   * [Recative Manifesto & Reactive Principles](architecture-overview/recative-manifesto-and-reactive-principles.md)
@@ -89,6 +90,7 @@
     * [@SagaEventHandler](evento-framework/component/saga/sagaeventhandler.md)
   * [@Observer](evento-framework/component/observer.md)
 * [Dead Event Queues](evento-framework/dead-event-queues.md)
+* [Testing with Fixtures](evento-framework/testing-with-fixtures.md)
 * [EventoBundle](evento-framework/eventobundle/README.md)
   * [EventoServerMessageBusConfiguration](evento-framework/eventobundle/eventoservermessagebusconfiguration.md)
   * [ConsumerStateStore](evento-framework/eventobundle/consumerstatestore/README.md)
@@ -98,14 +100,17 @@
   * [Context](evento-framework/eventobundle/context.md)
   * [Parallel Consumers](evento-framework/eventobundle/parallel-consumers.md)
   * [TracingAgend and @Track](evento-framework/eventobundle/tracingagend-and-track/README.md)
+    * [OpenTelemetry](evento-framework/eventobundle/tracingagend-and-track/opentelemetry.md)
     * [SentryTracingAgent](evento-framework/eventobundle/tracingagend-and-track/sentrytracingagent.md)
   * [Injector and @Component](evento-framework/eventobundle/injector-and-component.md)
+  * [Spring Boot Starter](evento-framework/eventobundle/spring-boot-starter.md)
 
 ## Evento Server
 
 * [Evento Server Introduction](evento-server/evento-server-introduction.md)
 * [SetUp Evento Server](evento-server/setup-evento-server/README.md)
   * [Advanced Options](evento-server/setup-evento-server/advanced-options.md)
+  * [Security](evento-server/setup-evento-server/security.md)
   * [Throughput and Capacity](evento-server/setup-evento-server/throughput-and-capacity.md)
   * [Evento Event Store Modes: APES and CPES](evento-server/setup-evento-server/evento-event-store-modes-apes-and-cpes.md)
 * [Evento Server Cluster](evento-server/evento-server-cluster/README.md)
