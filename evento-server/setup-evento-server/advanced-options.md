@@ -41,6 +41,15 @@ The Evento server relies on a variety of configuration properties to govern its 
 * `evento.server.bus.business-executor-saturation-warn-interval`: Throttle for the `event=bus_business_executor_saturated` warning (default `10s`).
 * `evento.es.fetch.concurrency`: Concurrent `EventFetchRequest` handlers (default `4`). Often the real ceiling on a consumer-heavy cluster; each fetch holds a full result set on heap, so raise it against measured headroom.
 
+**Memory Bounds (2.6):**
+
+The server keeps no query answers (queries are routed "straight": not cached, not buffered across a reconnect) and bounds what it keeps for commands in bytes:
+
+* `evento.server.bus.dedup.max-retained-bytes`: Total bytes of command replies kept for exactly-once replays (in bytes, default `134217728` = 128 MiB); the least recently used are dropped first.
+* `evento.server.bus.dedup.max-response-bytes`: A command reply larger than this (in bytes, default `1048576` = 1 MiB) is remembered as answered without its bytes; a duplicate then fails instead of executing twice.
+* `evento.server.bus.reconnect-buffer.max-bytes`: Bytes of replies held for bundles that are reconnecting (in bytes, default `268435456` = 256 MiB); a reply over budget is not buffered (`event=reconnect_buffer_full`).
+* `evento.server.bus.compression.threshold-bytes`: The server compresses its own replies (event fetches included) from this size, when the requester accepts it (in bytes, default `32768` = 32 KiB).
+
 **Observability:**
 
 * `management.endpoints.web.exposure.include`: Actuator endpoints exposed over HTTP; the server ships with `health,info,prometheus,metrics`, so Prometheus can scrape bus and JVM metrics from `/actuator/prometheus`.

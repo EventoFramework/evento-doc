@@ -30,9 +30,15 @@ A well-structured `@QueryHandler` method typically adheres to the following patt
    * `QueryGateway` (Optional): This allows implementing the federated query pattern within your query handler (discussed in a later chapter).
    * `Metadata` (Optional): This represents metadata associated with the query (often already included in the `QueryMessage` object).
    * `Instant` (Optional): This represents the timestamp of the query message.
-3. **Single or Multiple Return Type:** The return type of the `@QueryHandler` method can be either `Single<View>` or `Multiple<View>`.
+3. **Return Type:** The return type of the `@QueryHandler` method is the `QueryResponse` declared by the query:
    * `Single<View>`: Used for queries that expect a single response object of a specific view type (e.g., `DemoView`).
    * `Multiple<View>`: Used for queries that expect a collection of view objects of a specific type (e.g., retrieving a list of `DemoView` objects).
+   * `Page<View>` (2.6): One page of a larger result, by page number or by cursor. See [Streamed and Paged Queries](streaming-and-paged-queries.md).
+   * `Streamed<View>` (2.6): A lazy result, produced only as fast as a streaming caller consumes it (an export, a database cursor). See [Streamed and Paged Queries](streaming-and-paged-queries.md).
+
+{% hint style="info" %}
+Any query, whatever its handler returns, can be consumed as a stream by the caller with `QueryGateway.stream(...)`, and can require to reflect a command just sent with `QueryOptions.after(token)`: see [Streamed and Paged Queries](streaming-and-paged-queries.md) and [Read Your Writes](read-your-writes.md). A query asked by the same bundle that handles it is answered in process, with the same tracing and metrics as a remote one.
+{% endhint %}
 
 {% hint style="warning" %}
 The `QueryGateway` within Evento empowers you to implement the federated query pattern, fetching data from various services to construct a comprehensive response. However, it's crucial to be mindful of eventual consistency when using this approach, especially when joining data from multiple sources.

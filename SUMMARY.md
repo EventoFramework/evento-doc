@@ -68,6 +68,7 @@
   * [Event](evento-framework/payload-and-messages/event/README.md)
     * [Domain and Service Event](evento-framework/payload-and-messages/event/domain-and-service-event.md)
   * [Query and View](evento-framework/payload-and-messages/view.md)
+  * [Payload Versioning and Upcasting](evento-framework/payload-and-messages/payload-versioning.md)
 * [@Component](evento-framework/component/README.md)
   * [Choosing a Write Strategy: Reads vs Writes](evento-framework/component/choosing-a-write-strategy.md)
   * [@Aggregate](evento-framework/component/aggregate/README.md)
@@ -78,6 +79,8 @@
     * [Projector @EventHandler](evento-framework/component/projector/projector-eventhandler.md)
   * [@Projection](evento-framework/component/projection/README.md)
     * [@QueryHandler](evento-framework/component/projection/queryhandler.md)
+    * [Streamed and Paged Queries](evento-framework/component/projection/streaming-and-paged-queries.md)
+    * [Read Your Writes](evento-framework/component/projection/read-your-writes.md)
   * [@Service](evento-framework/component/service/README.md)
     * [@CommandHandler](evento-framework/component/service/commandhandler.md)
   * [@Invoker](evento-framework/component/invoker.md)
@@ -111,6 +114,7 @@
   * [Cells and Locality](evento-server/evento-server-cluster/cells-and-locality.md)
   * [Cluster Configuration](evento-server/evento-server-cluster/cluster-configuration.md)
   * [Upgrading to 2.5](evento-server/evento-server-cluster/upgrading-to-2-5.md)
+  * [Upgrading to 2.6](evento-server/evento-server-cluster/upgrading-to-2-6.md)
 
 ## EVENTO GUI
 
