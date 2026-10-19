@@ -25,6 +25,10 @@ The defaults (`evento` / `secret`) are for local exploration only. **Always over
 
 #### Single Sign-On with OpenID Connect
 
+{% hint style="info" %}
+**Evento Enterprise.** Single sign-on and the audit trail below are part of Evento Enterprise, available under the [commercial licence](https://www.eventoframework.com/licensing/): run the `evento-server-enterprise` distribution instead of the open-source server, with the same settings. The open-source server refuses to start with `evento.server.web.auth=oidc`.
+{% endhint %}
+
 Since Evento **2.6** the console can sign users in through your organisation's identity provider (Keycloak, Entra ID, Okta, Google Workspace, …) instead of the shared user:
 
 ```properties
@@ -55,7 +59,7 @@ The Basic user gets both roles; with OIDC they come from the provider's groups.
 
 #### Audit Trail
 
-Since Evento **2.6** the server records who did what in the console:
+Since Evento **2.6** Evento Enterprise records who did what in the console:
 
 | Event | When |
 | --- | --- |
