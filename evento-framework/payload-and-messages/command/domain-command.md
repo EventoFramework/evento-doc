@@ -112,7 +112,7 @@ public abstract class DomainCommand extends Command {
 
 * **`Command` Extension:** This interface inherits functionalities from the base `Command` interface, likely including a method to access the payload object.
 * **`getAggregateId()`:** This method is crucial for routing the command to the appropriate aggregate for handling. It retrieves the ID of the target aggregate.
-* **`getLockId()` (Optional):** This method might be used for optimistic locking purposes. By default, it might return `getAggregateId()` to use a locking strategy based on the single aggregate.
+* **`getLockId()` (Optional):** The key of the lock the server takes while the command runs, so commands on one aggregate wait for each other. By default it returns `getAggregateId()`. Returning `null` takes no lock: since 2.6 concurrent commands on the aggregate are then not queued but checked when their event is stored (the aggregate fence), and all but the first fail with `AggregateConflictException` and can be sent again.
 * [**Cache Invalidation Control**](domain-command.md#cache-invalidation-mechanism)**:** The `invalidateAggregateCaches` and `invalidateAggregateSnapshot` flags provide fine-grained control over cache invalidation behavior.
 
 **Concrete Domain Command Implementations:**

@@ -4,7 +4,7 @@ description: Rollout order and behaviour changes for 2.6 (query path and payload
 
 # Upgrading to 2.6
 
-2.6 changes the query path (streamed, paged and locally answered queries, read-your-writes, compression, bounded server memory) and adds [payload versioning](../../evento-framework/payload-and-messages/payload-versioning.md). There is **no database schema change**. Wire changes are additive and negotiated in the handshake (capabilities `stream:1` and `revision:1`): 2.5 and 2.6 bundles and servers interoperate in any mix, with the exceptions below.
+2.6 changes the query path (streamed, paged and locally answered queries, read-your-writes, compression, bounded server memory), adds [payload versioning](../../evento-framework/payload-and-messages/payload-versioning.md) and fences aggregate appends in the database. There is **one additive schema change** (section 5). Wire changes are additive and negotiated in the handshake (capabilities `stream:1` and `revision:1`): 2.5 and 2.6 bundles and servers interoperate in any mix, with the exceptions below.
 
 ## 1. Servers first, then the bundles
 
@@ -35,3 +35,15 @@ Nothing has to change in the bundles' code. Then, where useful:
 A bundle now answers the queries it handles itself, without the server (`setLocalQueryShortCircuit(false)` to turn it off). Tracing, metrics and the GUI see these queries as before.
 
 Code that asserts the exact capability set of a bundle's handshake must expect `stream:1` and `revision:1`.
+
+## 5. The aggregate fence (schema change)
+
+Every event of an aggregate command now carries the aggregate's version, in a new column `es__events.aggregate_seq` (1, 2, 3... per aggregate) under a unique index on `(aggregate_id, aggregate_seq)`. The server reads the version together with the aggregate's events and stores the new event as the next version, so **two commands that decided from the same state can no longer both store their event**: the database refuses the second one. Before 2.6 this could happen when a server lost the aggregate lock (a failover, a dead database session) and, without any fault, for a command whose `getLockId()` returns `null`.
+
+* **With `spring.sql.init.mode=always`** (the default) the first 2.6 server adds the column and the index at boot, without blocking appends: the column is a catalog-only change and the index is built `CONCURRENTLY`. Existing events keep an empty version and are outside the index.
+* **With a schema managed outside the server** apply `classpath:db/upgrade/es-events-aggregate-seq.sql` (in `evento-server.jar`), outside a transaction block. Until then the server logs `event=aggregate_fence_unsupported` and appends as 2.5 did; it notices the script within a minute, without a restart.
+* **The fence holds once every server runs 2.6**: a 2.5 server appends without a version.
+
+{% hint style="info" %}
+**Commands without a lock now fail instead of forking the aggregate.** If a `DomainCommand` overrides `getLockId()` to return `null`, two concurrent commands on one aggregate used to both succeed from the same state. Now one succeeds and the other fails with `AggregateConflictException` ("aggregate … changed while the command ran"; nothing is stored): send it again and it runs on the new state. Refusals log `event=aggregate_fence_conflict` and count in `evento.server.commands.fence.conflicts`. With the default lock this only happens after a lost lock.
+{% endhint %}
