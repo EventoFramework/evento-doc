@@ -77,4 +77,38 @@ Payloads are compared with `equals` when it says they are equal, otherwise field
 Payload classes must be top-level classes. Evento routes payloads by the class name after the last dot, so a nested class (`Outer$Inner`) is not routed in a bundle, and the fixture fails the same way.
 {% endhint %}
 
-Retries, dead-event queues and checkpoints belong to the consumer engines and are not part of the fixtures: test them with a real bundle against a server.
+Retries, dead-event queues and checkpoints belong to the consumer engines and are not part of the fixtures: test them with a real bundle against a broker, as below.
+
+## Integration tests with a broker
+
+Two ways to run a real bundle in a test, from 2.6:
+
+* **`EventoTestBroker`** (`com.eventoframework:evento-test-broker`, test scope): the server's own broker and aggregate command handling in the test's JVM, on a free port, with an in-memory event store. Aggregate commands are stored as events, projectors, sagas and observers read them, queries are routed. No database, no container, one broker per test. It runs server code, so the tests need Java 25.
+
+```java
+try (var broker = EventoTestBroker.start()) {
+    var bundle = EventoBundle.Builder.builder()
+            .setBasePackage(OrderAggregate.class.getPackage())
+            .setBundleId("orders")
+            .setEventoServerMessageBusConfiguration(broker.busConfiguration())
+            .setConsumerEngineConfigBuilder(ConsumerEngineConfig::inMemory)
+            .start();
+    bundle.getCommandGateway().send(new CreateOrder("o-1")).get();
+    assertThat(broker.events()).hasSize(1);
+    broker.publish(new PaymentReceived("o-1"), "o-1"); // an event for the consumers
+}
+```
+
+* **`EventoServerContainer`** (`evento-test`, with Testcontainers in the test's dependencies): the real server image, on a PostgreSQL the test starts. The full server (persistence, locks, web console API), out of process: it works with tests on Java 21 and any Spring Boot version.
+
+```java
+var network = Network.newNetwork();
+var postgres = new PostgreSQLContainer<>("postgres:16").withNetwork(network).withNetworkAliases("pg");
+var evento = new EventoServerContainer()   // ghcr.io/eventoframework/evento-server:<this version>
+        .withNetwork(network)
+        .withDatabase("jdbc:postgresql://pg:5432/" + postgres.getDatabaseName(),
+                postgres.getUsername(), postgres.getPassword())
+        .dependsOn(postgres);
+evento.start();
+// ... .setEventoServerMessageBusConfiguration(evento.busConfiguration())
+```
