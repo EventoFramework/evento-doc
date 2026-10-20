@@ -119,7 +119,7 @@
   * [Cells and Locality](evento-server/evento-server-cluster/cells-and-locality.md)
   * [Cluster Configuration](evento-server/evento-server-cluster/cluster-configuration.md)
   * [Upgrading to 2.5](evento-server/evento-server-cluster/upgrading-to-2-5.md)
-  * [Upgrading to 2.6](evento-server/evento-server-cluster/upgrading-to-2-6.md)
+  * [Upgrading to 3.0](evento-server/evento-server-cluster/upgrading-to-3-0.md)
   * [Compatibility Policy](evento-server/evento-server-cluster/compatibility.md)
 
 ## EVENTO GUI

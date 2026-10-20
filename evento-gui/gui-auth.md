@@ -25,7 +25,7 @@ The defaults (`evento` / `secret`) are for local exploration only. **Always over
 
 #### Single Sign-On with OpenID Connect
 
-Since Evento **2.6** the console can sign users in through your organisation's identity provider (Keycloak, Entra ID, Okta, Google Workspace, …) instead of the shared user:
+Since Evento **3.0** the console can sign users in through your organisation's identity provider (Keycloak, Entra ID, Okta, Google Workspace, …) instead of the shared user:
 
 ```properties
 evento.server.web.auth=oidc                                   # EVENTO_SERVER_WEB_AUTH
@@ -49,13 +49,13 @@ Register the console at the provider as a confidential web client with the redir
 #### Roles
 
 * `WEB` reads the console: dashboard, catalog, flows, cluster status, consumers, event store.
-* `ADMIN` is needed for every change: retrying, deleting or replaying dead events, and removing a bundle from the catalog (`DELETE /api/bundle/{id}`, which before 2.6 needed only `WEB`).
+* `ADMIN` is needed for every change: retrying, deleting or replaying dead events, and removing a bundle from the catalog (`DELETE /api/bundle/{id}`, which before 3.0 needed only `WEB`).
 
 The Basic user gets both roles; with OIDC they come from the provider's groups.
 
 #### Audit Trail
 
-Since Evento **2.6** the server records who did what in the console (on by default; `management.auditevents.enabled=false` turns it off):
+Since Evento **3.0** the server records who did what in the console (on by default; `management.auditevents.enabled=false` turns it off):
 
 | Event | When |
 | --- | --- |

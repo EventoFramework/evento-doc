@@ -25,7 +25,7 @@ This section explains how the cluster works and how to deploy it:
 * **Global ordering is preserved.** Appends run in one statement under a PostgreSQL advisory lock (`CPES` mode), so the sequence order equals the commit order on every server. Two commands on one aggregate can never both store an event decided from the same state: the database refuses the second one (the aggregate fence), and the server runs it again on the new state. Contended aggregates are serialised cluster-wide by distributed locks, which servers take in turn.
 
 {% hint style="warning" %}
-**Use `evento.es.mode=CPES` with more than one server** (the default). `APES` relies on a time window that does not hold across servers, and is deprecated since 2.6.
+**Use `evento.es.mode=CPES` with more than one server** (the default). `APES` relies on a time window that does not hold across servers, and is deprecated since 3.0.
 {% endhint %}
 
 ## Topologies

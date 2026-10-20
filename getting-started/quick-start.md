@@ -29,6 +29,10 @@ services:
     depends_on:
       - evento-db
     environment:
+      # A local try-out: since 3.0 the server defaults to the prod profile and does not start
+      # without a bus token, bus TLS, a payload allowlist and non-default passwords. dev lists what
+      # is missing and starts. See Security before going to production.
+      - EVENTO_SERVER_SECURITY_PROFILE=dev
       # Cluster name visualized on the GUI
       - evento_cluster_name=evento-server
       # Capture rate for internal telemetry
@@ -58,7 +62,7 @@ In Evento v2, bundles register themselves with the server at runtime over the me
 To develop RECQ components you need the [Broken link](/broken/pages/nTG67pbLHFvPaevz3gWh "mention") Bundle Library.
 
 {% hint style="danger" %}
-Since Evento 2.6 the client libraries (`evento-bundle` and the others your application depends on) require [Java 21](https://openjdk.org/projects/jdk/21/) or newer; the Evento Server image ships its own JVM (Java 25).
+Since Evento 3.0 the client libraries (`evento-bundle` and the others your application depends on) require [Java 21](https://openjdk.org/projects/jdk/21/) or newer; the Evento Server image ships its own JVM (Java 25).
 {% endhint %}
 
 You can find the library on [Maven Central](https://central.sonatype.com/):  [https://central.sonatype.com/artifact/com.eventoframework/evento-bundle](https://central.sonatype.com/artifact/com.eventoframework/evento-bundle)

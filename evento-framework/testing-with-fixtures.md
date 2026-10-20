@@ -4,10 +4,10 @@ description: Given/when/then tests of aggregates, sagas, projectors and services
 
 # Testing with Fixtures
 
-Evento handlers are plain methods: an aggregate decides an event from its state and a command, a saga reacts to an event with commands. Since Evento **2.6**, `evento-test` runs a component's own handlers the way a bundle does, with no server, no event store and no database.
+Evento handlers are plain methods: an aggregate decides an event from its state and a command, a saga reacts to an event with commands. Since Evento **3.0**, `evento-test` runs a component's own handlers the way a bundle does, with no server, no event store and no database.
 
 ```gradle
-testImplementation 'com.eventoframework:evento-test:2.6.0'
+testImplementation 'com.eventoframework:evento-test:3.0.0'
 ```
 
 The fixtures do not depend on a test framework: an expectation that fails throws an `AssertionError`, and every result also exposes its raw values for AssertJ or Hamcrest.
@@ -81,7 +81,7 @@ Retries, dead-event queues and checkpoints belong to the consumer engines and ar
 
 ## Integration tests with a broker
 
-Two ways to run a real bundle in a test, from 2.6:
+Two ways to run a real bundle in a test, from 3.0:
 
 * **`EventoTestBroker`** (`com.eventoframework:evento-test-broker`, test scope): the server's own broker and aggregate command handling in the test's JVM, on a free port, with an in-memory event store. Aggregate commands are stored as events, projectors, sagas and observers read them, queries are routed. No database, no container, one broker per test. It runs server code, so the tests need Java 25.
 

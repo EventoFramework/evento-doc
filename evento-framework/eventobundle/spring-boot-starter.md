@@ -4,19 +4,19 @@ description: Run a bundle in a Spring Boot application from properties
 
 # Spring Boot Starter
 
-Since Evento **2.6**, `evento-spring-boot-starter` builds, starts and stops the bundle of a Spring Boot application from `evento.bundle.*` properties. It works with Spring Boot **3.x and 4.x** (it uses only the API they share and brings no Spring dependency of its own) and is Apache-2.0 like the other client libraries. Evento itself does not depend on Spring: the starter is optional, and an application can keep building `EventoBundle` by hand (see [Injector and @Component](injector-and-component.md)).
+Since Evento **3.0**, `evento-spring-boot-starter` builds, starts and stops the bundle of a Spring Boot application from `evento.bundle.*` properties. It works with Spring Boot **3.x and 4.x** (it uses only the API they share and brings no Spring dependency of its own) and is Apache-2.0 like the other client libraries. Evento itself does not depend on Spring: the starter is optional, and an application can keep building `EventoBundle` by hand (see [Injector and @Component](injector-and-component.md)).
 
 ## Dependency
 
 ```gradle
-implementation 'com.eventoframework:evento-spring-boot-starter:2.6.0'
+implementation 'com.eventoframework:evento-spring-boot-starter:3.0.0'
 ```
 
 ```xml
 <dependency>
     <groupId>com.eventoframework</groupId>
     <artifactId>evento-spring-boot-starter</artifactId>
-    <version>2.6.0</version>
+    <version>3.0.0</version>
 </dependency>
 ```
 

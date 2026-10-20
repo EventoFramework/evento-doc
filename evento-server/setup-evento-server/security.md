@@ -4,7 +4,7 @@ description: Bus authentication and TLS, payload allowlist, and the production p
 
 # Security
 
-Evento's hardening is opt-in in 2.x, so existing deployments keep working. Since Evento **2.6** a single property tells the server whether it runs in development or in production, and refuses to start in production while a piece of hardening is missing.
+Evento's hardening is opt-in in 2.x, so existing deployments keep working. Since Evento **3.0** a single property tells the server whether it runs in development or in production, and refuses to start in production while a piece of hardening is missing.
 
 ## The security profile
 
@@ -12,8 +12,8 @@ Evento's hardening is opt-in in 2.x, so existing deployments keep working. Since
 evento.server.security.profile=prod     # EVENTO_SERVER_SECURITY_PROFILE
 ```
 
-* `dev` (the default in 2.x) logs at startup the checks that fail (`event=security_profile_dev`) and starts.
-* `prod` does not start, before opening the bus port, until every check passes, and lists the failing ones:
+* `prod`, **the default since 3.0**, does not start, before opening the bus port, until every check passes, and lists the failing ones.
+* `dev` logs at startup the checks that fail (`event=security_profile_dev`) and starts: for development, tests and demos (`EVENTO_SERVER_SECURITY_PROFILE=dev`).
 
 | Check | How to pass it |
 |---|---|

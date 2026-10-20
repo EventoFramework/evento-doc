@@ -4,10 +4,10 @@ description: Follow a request across bundles and the server with OpenTelemetry
 
 # OpenTelemetry
 
-Since Evento **2.6**, `evento-opentelemetry` traces a bundle with [OpenTelemetry](https://opentelemetry.io/). It is opt-in: a bundle without it keeps the no-op `TracingAgent` and pays nothing.
+Since Evento **3.0**, `evento-opentelemetry` traces a bundle with [OpenTelemetry](https://opentelemetry.io/). It is opt-in: a bundle without it keeps the no-op `TracingAgent` and pays nothing.
 
 ```gradle
-implementation 'com.eventoframework:evento-opentelemetry:2.6.0'
+implementation 'com.eventoframework:evento-opentelemetry:3.0.0'
 ```
 
 The module depends on the OpenTelemetry **API** only: your application provides the SDK (or runs the [OpenTelemetry Java agent](https://opentelemetry.io/docs/zero-code/java/agent/)) and decides where spans go.

@@ -1,22 +1,26 @@
 ---
-description: Rollout order and behaviour changes for 2.6 (query path, payload versioning, aggregate commands, APES deprecation, licence)
+description: Rollout order and behaviour changes for 3.0 (query path, payload versioning, aggregate commands, APES deprecation, licence)
 ---
 
-# Upgrading to 2.6
+# Upgrading to 3.0
 
-2.6 changes the query path (streamed, paged and locally answered queries, read-your-writes, compression, bounded server memory), adds [payload versioning](../../evento-framework/payload-and-messages/payload-versioning.md) fences aggregate appends in the database, runs aggregate commands without the lock and with group commit, and deprecates APES. There is **one additive schema change** (section 5), and the server now migrates its schema with Flyway (section 6). Wire changes are additive and negotiated in the handshake (capabilities `stream:1` and `revision:1`): 2.5 and 2.6 bundles and servers interoperate in any mix, with the exceptions below.
+3.0 changes the query path (streamed, paged and locally answered queries, read-your-writes, compression, bounded server memory), adds [payload versioning](../../evento-framework/payload-and-messages/payload-versioning.md) fences aggregate appends in the database, runs aggregate commands without the lock and with group commit, and deprecates APES. There is **one additive schema change** (section 5), and the server now migrates its schema with Flyway (section 6). Wire changes are additive and negotiated in the handshake (capabilities `stream:1` and `revision:1`): 2.5 and 3.0 bundles and servers interoperate in any mix, with the exceptions below.
+
+## 0. The server now refuses to start unhardened
+
+3.0 is a major release, and changes one default: `evento.server.security.profile` is `prod`. A server that has no bus auth token, no bus TLS, no payload allowlist, the shipped passwords or `*` as CORS origin **does not start** and lists what is missing ([Security](../setup-evento-server/security.md)). Fix the list, or set `EVENTO_SERVER_SECURITY_PROFILE=dev` where that is acceptable (development, tests, demos). Everything else below is backward compatible: 2.5 and 3.0 bundles and servers interoperate.
 
 ## 1. Servers first, then the bundles
 
 Upgrade the servers, then roll the bundles at your own pace. Servers can be upgraded one at a time.
 
 {% hint style="warning" %}
-**A class annotated with `@Revision` needs 2.6 servers.** A 2.5 server re-encodes payload envelopes without their revision, so a 2.6 bundle refuses to send or store a revised payload through it (the error says so). Deploy the first `@Revision` only once every server is on 2.6. Unrevised payloads, the default, flow through any server.
+**A class annotated with `@Revision` needs 3.0 servers.** A 2.5 server re-encodes payload envelopes without their revision, so a 3.0 bundle refuses to send or store a revised payload through it (the error says so). Deploy the first `@Revision` only once every server is on 3.0. Unrevised payloads, the default, flow through any server.
 {% endhint %}
 
 ## 2. Queries are "straight"
 
-A 2.6 server routes a query declared by a 2.6 handler bundle straight: its answer is not kept for exactly-once replays and not buffered while the caller reconnects (queries are idempotent reads; keeping answers is what filled the server's heap with large results). A 2.6 caller that loses its session while a query is in flight **asks it again** on its next session, on whatever server. A 2.5 caller in the same situation now waits for its timeout instead of getting the buffered answer: **upgrade callers along with the handler bundles**.
+A 3.0 server routes a query declared by a 3.0 handler bundle straight: its answer is not kept for exactly-once replays and not buffered while the caller reconnects (queries are idempotent reads; keeping answers is what filled the server's heap with large results). A 3.0 caller that loses its session while a query is in flight **asks it again** on its next session, on whatever server. A 2.5 caller in the same situation now waits for its timeout instead of getting the buffered answer: **upgrade callers along with the handler bundles**.
 
 Event fetches of the consumers are asked again after a lost session in the same way.
 
@@ -38,11 +42,11 @@ Code that asserts the exact capability set of a bundle's handshake must expect `
 
 ## 5. The aggregate fence (schema change)
 
-Every event of an aggregate command now carries the aggregate's version, in a new column `es__events.aggregate_seq` (1, 2, 3... per aggregate) under a unique index on `(aggregate_id, aggregate_seq)`. The server reads the version together with the aggregate's events and stores the new event as the next version, so **two commands that decided from the same state can no longer both store their event**: the database refuses the second one. Before 2.6 this could happen when a server lost the aggregate lock (a failover, a dead database session) and, without any fault, for a command whose `getLockId()` returns `null`.
+Every event of an aggregate command now carries the aggregate's version, in a new column `es__events.aggregate_seq` (1, 2, 3... per aggregate) under a unique index on `(aggregate_id, aggregate_seq)`. The server reads the version together with the aggregate's events and stores the new event as the next version, so **two commands that decided from the same state can no longer both store their event**: the database refuses the second one. Before 3.0 this could happen when a server lost the aggregate lock (a failover, a dead database session) and, without any fault, for a command whose `getLockId()` returns `null`.
 
-* **With `spring.sql.init.mode=always`** (the default) the first 2.6 server adds the column and the index at boot, without blocking appends: the column is a catalog-only change and the index is built `CONCURRENTLY`. Existing events keep an empty version and are outside the index.
+* **With `spring.sql.init.mode=always`** (the default) the first 3.0 server adds the column and the index at boot, without blocking appends: the column is a catalog-only change and the index is built `CONCURRENTLY`. Existing events keep an empty version and are outside the index.
 * **With a schema managed outside the server** apply `classpath:db/upgrade/es-events-aggregate-seq.sql` (in `evento-server.jar`), outside a transaction block. Until then the server logs `event=aggregate_fence_unsupported` and appends as 2.5 did; it notices the script within a minute, without a restart.
-* **The fence holds once every server runs 2.6**: a 2.5 server appends without a version.
+* **The fence holds once every server runs 3.0**: a 2.5 server appends without a version.
 
 {% hint style="info" %}
 **Commands without a lock no longer fork the aggregate.** If a `DomainCommand` overrides `getLockId()` to return `null`, two concurrent commands on one aggregate used to both succeed from the same state. Now the second one loses the fence, nothing of it is stored, and the server runs it again on the new state under the aggregate lock: its caller gets the answer computed on the current state, which may be a refusal by the domain. `AggregateConflictException` is answered only when 5 runs within the deadline all lost (`event=aggregate_fence_conflict`, `evento.server.commands.fence.conflicts`).
@@ -50,7 +54,7 @@ Every event of an aggregate command now carries the aggregate's version, in a ne
 
 ## 6. The schema is migrated by Flyway
 
-With `spring.sql.init.mode=always` (the default) the server keeps its schema with Flyway: the first 2.6 server creates the history table `evento_es_schema_history`, takes an existing database in at version 0 and runs the migrations V1-V5, which find what is already there and add what is missing (section 5 included), without blocking appends. The database user of the server needs the right to create that table. Servers starting together still migrate once. Later versions add migrations; there is nothing to do by hand. With `spring.sql.init.mode=never` nothing changes: the server touches no schema.
+With `spring.sql.init.mode=always` (the default) the server keeps its schema with Flyway: the first 3.0 server creates the history table `evento_es_schema_history`, takes an existing database in at version 0 and runs the migrations V1-V5, which find what is already there and add what is missing (section 5 included), without blocking appends. The database user of the server needs the right to create that table. Servers starting together still migrate once. Later versions add migrations; there is nothing to do by hand. With `spring.sql.init.mode=never` nothing changes: the server touches no schema.
 
 ## 7. Aggregate commands run without the lock
 

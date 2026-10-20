@@ -4,7 +4,7 @@ description: Everything public; Apache-2.0 client libraries, Apache-2.0 with the
 
 # Licensing
 
-All of Evento is public, with every feature: the server, the web console with [single sign-on and the audit trail](evento-gui/gui-auth.md), the client libraries. There is no closed edition. Two licences apply, from Evento **2.6.0**; versions up to 2.5.x keep the licences they were released with.
+All of Evento is public, with every feature: the server, the web console with [single sign-on and the audit trail](evento-gui/gui-auth.md), the client libraries. There is no closed edition. Two licences apply, from Evento **3.0.0**; versions up to 2.5.x keep the licences they were released with.
 
 | Component | Licence |
 |---|---|

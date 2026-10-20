@@ -6,7 +6,7 @@ description: Changing payload classes without losing the history written with th
 
 An event store is append-only: an event written two years ago keeps the shape its class had two years ago. Evento stores a payload as JSON, `["com.acme.OrderPlaced", { …fields… }]`, and routes events by their simple class name, so as long as the class only gains or loses fields, Jackson absorbs the difference and nothing needs to be done. When a change goes further — a field renamed, split or changing meaning, a class renamed or moved — the old events can no longer be read into the new class.
 
-Since Evento **2.6** payloads are **versioned**: a class declares its *revision*, every payload records the revision it was written with, and the bundle registers **upcasters** that turn an older shape into the next one *at read time*, before Jackson sees it. The history is never rewritten.
+Since Evento **3.0** payloads are **versioned**: a class declares its *revision*, every payload records the revision it was written with, and the bundle registers **upcasters** that turn an older shape into the next one *at read time*, before Jackson sees it. The history is never rewritten.
 
 {% hint style="info" %}
 This is the strategy of Axon Framework (`@Revision` + an upcaster chain applied while reading). The store is evidence of what happened: an upcaster that turns out wrong is fixed and applies to every later read, while a migrated store cannot be un-migrated.
@@ -23,7 +23,7 @@ This is the strategy of Axon Framework (`@Revision` + an upcaster chain applied 
 
 ## Declaring a revision
 
-Annotate the payload class with `@Revision(n)`. A class without the annotation is revision `0`, and so is everything written before 2.6: existing stores need no migration.
+Annotate the payload class with `@Revision(n)`. A class without the annotation is revision `0`, and so is everything written before 3.0: existing stores need no migration.
 
 ```java
 import com.evento.common.versioning.Revision;
@@ -101,7 +101,7 @@ An upcaster that throws stops its consumer **at that event** (logged as `event=u
 ## Upgrade order
 
 {% hint style="warning" %}
-**Upgrade the Evento Servers to 2.6 before deploying a class with `@Revision`.** An older server re-encodes payload envelopes without the revision, so a revised payload would be stored as revision 0 and upcast again on every read. A 2.6 bundle detects such a server (it lacks the `revision:1` capability) and refuses to send or store a revised payload through it, with an error that says so. Unrevised payloads, the default, flow through any server.
+**Upgrade the Evento Servers to 3.0 before deploying a class with `@Revision`.** An older server re-encodes payload envelopes without the revision, so a revised payload would be stored as revision 0 and upcast again on every read. A 3.0 bundle detects such a server (it lacks the `revision:1` capability) and refuses to send or store a revised payload through it, with an error that says so. Unrevised payloads, the default, flow through any server.
 {% endhint %}
 
 ## Things to know
