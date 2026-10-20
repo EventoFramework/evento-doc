@@ -77,6 +77,7 @@ Peak per server: 20 + 10 = **30 connections**. Three servers fit PostgreSQL's de
 | `setHeartbeatReadIdle(Duration)` | 45 s | how long a silent server goes unnoticed |
 | `setDefaultRequestTimeout(Duration)` | 30 s | request timeout, which is also the deadline the server enforces |
 | `setMaxInFlightRequests(int)` | 2048 | outstanding requests per bundle |
+| `setMaxInboundRequests(int)` | 0 (no bound) | requests the bundle handles at once; one more is refused at once with `TooManyPendingRequestsException`, not executed (2.6) |
 | `setServiceCommandOutcomeStore(ServiceCommandOutcomeStore)` | none | exactly-once for keyed service commands (shared by all instances) |
 | `setComponentContexts(Class, String...)` | every context | one consumer engine per context |
 

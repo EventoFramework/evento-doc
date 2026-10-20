@@ -44,6 +44,7 @@ evento.bundle.auth-token=${EVENTO_BUNDLE_AUTH_TOKEN}
 | `evento.bundle.expected-cluster-name` | — | Refuse servers announcing another `evento.cluster.name`. |
 | `evento.bundle.zone` | — | Zone for `locality-preferred` routing. |
 | `evento.bundle.default-request-timeout` | `30s` | Timeout of gateway calls without one. |
+| `evento.bundle.max-inbound-requests` | `0` | Requests this bundle handles at once; one more is refused at once, not executed. `0`: no bound. |
 | `evento.bundle.tls.enabled` | `false` | Connect with TLS. |
 | `evento.bundle.tls.trust-certs` | JDK trust store | PEM file with the CAs that sign the server's certificate. |
 | `evento.bundle.tls.cert-chain`, `.private-key`, `.private-key-password` | — | This bundle's certificate and PKCS#8 key, for mutual TLS. |
