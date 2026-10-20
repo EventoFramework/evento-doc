@@ -1,5 +1,5 @@
 ---
-description: Rollout order and behaviour changes for 2.6 (query path, payload versioning, aggregate commands, APES deprecation)
+description: Rollout order and behaviour changes for 2.6 (query path, payload versioning, aggregate commands, APES deprecation, licence)
 ---
 
 # Upgrading to 2.6
@@ -66,3 +66,7 @@ With the fence in place (section 5) the server no longer takes the aggregate loc
 ## 8. APES is deprecated
 
 On one server CPES is now as fast as APES, and with several servers APES consumers can skip events. A server started with `evento.es.mode=APES` logs `event=es_mode_deprecated`. To move an APES store to CPES, stop every server and start them with `evento.es.mode=CPES`: the sequence goes on above the newest APES id. See [Event Store Modes](../setup-evento-server/evento-event-store-modes-apes-and-cpes.md).
+
+## 9. Licence: everything public
+
+The server and the web console move from AGPL-3.0 (or commercial) to **Apache-2.0 with the Commons Clause**, and single sign-on and the audit trail, until now a separate commercial distribution, are part of the server: the same jar and image for everyone. Running, changing and using Evento, also commercially, needs no licence; selling Evento itself (hosting it for others, reselling it, consulting or training about it) needs a written authorisation. The client libraries stay Apache-2.0. See [Licensing](../../licensing.md).
