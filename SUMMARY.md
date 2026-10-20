@@ -93,6 +93,7 @@
 * [Testing with Fixtures](evento-framework/testing-with-fixtures.md)
 * [Scheduling and Deadlines with Quartz](evento-framework/scheduling-with-quartz.md)
 * [Personal Data and the Right to Erasure](evento-framework/personal-data.md)
+* [Multi-Tenancy](evento-framework/multi-tenancy.md)
 * [EventoBundle](evento-framework/eventobundle/README.md)
   * [EventoServerMessageBusConfiguration](evento-framework/eventobundle/eventoservermessagebusconfiguration.md)
   * [ConsumerStateStore](evento-framework/eventobundle/consumerstatestore/README.md)
