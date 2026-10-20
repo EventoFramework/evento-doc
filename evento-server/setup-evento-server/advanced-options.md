@@ -36,7 +36,7 @@ The Evento server relies on a variety of configuration properties to govern its 
 **Request Capacity:**
 
 * `evento.server.bus.business-executor-core-size`: Threads kept alive to handle bundle requests (default `max(8, cores × 2)`).
-* `evento.server.bus.business-executor-max-size`: Ceiling on those threads (default `cores × 8`). The pool grows to this size *before* it queues, so this is the property that sets sustainable throughput.
+* `evento.server.bus.business-executor-max-size`: Ceiling on those threads (default `cores × 32` since 2.6; it was `cores × 8`, which capped a 4-core server near 2,500 commands a second). The pool grows to this size *before* it queues, so this is the property that sets sustainable throughput.
 * `evento.server.bus.business-executor-queue-capacity`: Requests allowed to wait for a thread (default `256`). Keep it small — a request that waits longer than its client's timeout is served for nobody. See [Throughput and Capacity](throughput-and-capacity.md).
 * `evento.server.bus.business-executor-saturation-warn-interval`: Throttle for the `event=bus_business_executor_saturated` warning (default `10s`).
 * `evento.es.fetch.concurrency`: Concurrent `EventFetchRequest` handlers (default `4`). Often the real ceiling on a consumer-heavy cluster; each fetch holds a full result set on heap, so raise it against measured headroom.
@@ -58,8 +58,11 @@ The server keeps no query answers (queries are routed "straight": not cached, no
 
 &#x20;**Event Store:**
 
-* `evento.es.mode`: This property defines the operating mode of the Event Store. Options might be "APES" and "CPES".
-* `evento.es.fetch.delay`: for the "APES" event store mode, indicates the "gray area" (inconsistency window, in milliseconds) for events due to cluster node synchronization: event fetches will not return events published after the current instant minus this value.
+* `evento.es.mode`: How events are numbered: `CPES` (default) or `APES` (deprecated since 2.6). See [Event Store Modes](evento-event-store-modes-apes-and-cpes.md).
+* `evento.es.fetch.delay`: APES only (deprecated): event fetches do not return events whose id is newer than the current instant minus this value (in milliseconds, default `69`).
+* `evento.es.append.batch.writers`: Group commit (2.6): threads writing batches of appends, each batch in one statement and one transaction (default `-1` = automatic: 2 under CPES, 4 under APES; `0` turns group commit off).
+* `evento.es.append.batch.max-size`: Most appends in one batch (default `256`).
+* `evento.server.commands.optimistic`: Aggregate commands run without the aggregate lock, protected by the aggregate fence, and run again under the lock when they lose it (default `true`, since 2.6; `false` takes the lock for every command, as in 2.5).
 * `evento.es.aggregate.events.cache.expiry`: This property defines the expiration time (in milliseconds) for the cache that stores fetched aggregate events.
 * `evento.es.aggregate.state.cache.expiry`: This property defines the expiration time (in milliseconds) for the cache that stores the current state of aggregates.
 * `evento.es.aggregate.events.cache.size`: This property specifies the maximum size of the cache that stores fetched aggregate events.

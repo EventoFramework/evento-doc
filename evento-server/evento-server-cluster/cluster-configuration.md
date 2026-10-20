@@ -25,7 +25,9 @@ Server properties can also be set from the environment with Spring Boot's rule (
 | Property | Default | Meaning |
 |---|---|---|
 | `spring.datasource.url` | `jdbc:postgresql://localhost:5432/evento` | the shared event store; with a PostgreSQL HA pair use a multi-host URL with `targetServerType=primary` |
-| `evento.es.mode` | `CPES` | **must be `CPES` with more than one server** |
+| `evento.es.mode` | `CPES` | **must be `CPES` with more than one server**; `APES` is deprecated since 2.6 ([Event Store Modes](../setup-evento-server/evento-event-store-modes-apes-and-cpes.md)) |
+| `evento.es.append.batch.writers` / `evento.es.append.batch.max-size` | -1 (2 under CPES) / 256 | group commit: appends that arrive together share one statement and one commit; `0` writers turns it off |
+| `evento.server.commands.optimistic` | `true` | aggregate commands run without the lock, protected by the aggregate fence; a command that loses it runs again under the lock |
 | `evento.es.fetch.concurrency` | 4 | concurrent event fetches per server |
 | `evento.es.fetch.max.age.ms` | 30000 | staleness gate on fetches; ≤ 0 disables it |
 | `evento.es.aggregate.{state,events}.cache.size` / `.expiry` | 1024 / 150000 ms | per-server caches, not invalidated across servers |
@@ -37,7 +39,7 @@ Server properties can also be set from the environment with Spring Boot's rule (
 | Property | Default | Meaning |
 |---|---|---|
 | `spring.datasource.hikari.maximum-pool-size` / `minimum-idle` | 20 / 5 | application pool |
-| `evento.lock.pool.maximum-size` | 10 | dedicated pool for distributed locks: how many locks a server can hold at once |
+| `evento.lock.pool.maximum-size` | 10 | dedicated pool for distributed locks: the locks a server holds at once, plus up to half of it waiting in line in PostgreSQL for a lock another server holds |
 | `evento.lock.pool.connection-timeout-ms` | 1000 | wait for a lock-pool connection |
 | `evento.lock.acquire.timeout.ms` | 60000 | bound on every lock wait (or the command's deadline, if earlier); throws `LockAcquisitionTimeoutException` |
 | `spring.task.scheduling.pool.size` | 2 | presence heartbeat and telemetry sweep do not queue behind each other |

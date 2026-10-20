@@ -12,7 +12,7 @@ Three limits sit in series between an inbound frame and a response. A request is
 
 | Limit | Property | Default |
 | --- | --- | --- |
-| Threads handling bundle requests | `evento.server.bus.business-executor-max-size` | `cores × 8` |
+| Threads handling bundle requests | `evento.server.bus.business-executor-max-size` | `cores × 32` (2.6; was `cores × 8`) |
 | Requests waiting for one of those threads | `evento.server.bus.business-executor-queue-capacity` | `256` |
 | Concurrent event-store fetches | `evento.es.fetch.concurrency` | `4` |
 

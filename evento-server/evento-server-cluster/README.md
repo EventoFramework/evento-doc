@@ -22,10 +22,10 @@ This section explains how the cluster works and how to deploy it:
 
 * **One shared state.** Every server reads and writes the same `es__events` table and the same catalog (`core__bundle`, `core__component`, `core__handler`, `core__consumer`, `core__bundle_instance`). A consumer can fetch from any server, and its checkpoint and lane lock live in the consumer state store, so a lane survives a change of server.
 * **Each server routes to its own bundles.** Handler registry, forwarding table and correlations live in the server's memory, and servers do not forward requests to each other. A request reaches a handler only when caller and handler are connected to the **same** server; otherwise it fails at once with `no handler for <PayloadType>`. This is a design choice: connectivity is regional, a client may reach only some servers, and the intended topology is a **cell** — a server with a complete set of handlers next to it. Requests stay in the cell, a failure stays in the cell, and consistency between cells comes from the shared event store.
-* **Global ordering is preserved.** Appends run in one statement under a PostgreSQL advisory lock (`CPES` mode), so the sequence order equals the commit order on every server, and aggregate commands are mutually excluded cluster-wide by distributed locks.
+* **Global ordering is preserved.** Appends run in one statement under a PostgreSQL advisory lock (`CPES` mode), so the sequence order equals the commit order on every server. Two commands on one aggregate can never both store an event decided from the same state: the database refuses the second one (the aggregate fence), and the server runs it again on the new state. Contended aggregates are serialised cluster-wide by distributed locks, which servers take in turn.
 
 {% hint style="warning" %}
-**Use `evento.es.mode=CPES` with more than one server** (it is the value the server ships with). `APES` relies on a time window that does not hold across servers.
+**Use `evento.es.mode=CPES` with more than one server** (the default). `APES` relies on a time window that does not hold across servers, and is deprecated since 2.6.
 {% endhint %}
 
 ## Topologies
