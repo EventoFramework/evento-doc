@@ -27,15 +27,19 @@ public @interface AggregateCommandHandler {
 	 * @return {@code true} if the method is an initializer, otherwise {@code false}.
 	 */
 	boolean init() default false;
+
+	/**
+	 * The events a handler that returns DomainEvents may produce (3.0).
+	 */
+	Class<? extends DomainEvent>[] produces() default {};
 }
 ```
-
-Usa il codice con cautela.content\_copy
 
 * **`@Retention(RetentionPolicy.RUNTIME)`:** This ensures that the annotation information is retained at runtime, allowing Evento to access it during application execution.
 * **`@Target(ElementType.METHOD)`:** This specifies that the annotation can only be applied to method declarations within your Aggregate Root class.
 * **`@Handler`:** This indicates that the annotated method is a handler for domain commands.
 * **`init (default false)`:** This optional parameter allows you to mark a specific command handler as an initializer for the Aggregate. Initializers are responsible for creating a new Aggregate instance.
+* **`produces` (3.0):** for a handler that returns `DomainEvents`, the events it may produce (see [Returning several events](#returning-several-events)).
 
 #### Implementing `@AggregateCommandHandler` Methods
 
@@ -44,7 +48,7 @@ An `@AggregateCommandHandler` method must adhere to a specific structure to effe
 * **Domain Command as the First Parameter:** The first parameter of the method must be a subtype of the `DomainCommand` class representing the specific command being handled.
 * **Aggregate State as the Second Parameter:** The second parameter of the method should be of the type `AggregateState` for the corresponding Aggregate. This provides access to the current state of the Aggregate.
 * **Optional Additional Parameters:** Depending on your specific requirements, you might include additional parameters like `CommandGateway` for sending follow-up commands or `CommandMessage` for accessing details about the received command.
-* **Return Type: Domain Event Object:** The `@AggregateCommandHandler` method must return a subtype of the `DomainEvent` class. This returned event object signifies the outcome of processing the command and encapsulates the state change resulting from the command's execution.
+* **Return Type: Domain Event Object:** The `@AggregateCommandHandler` method must return a subtype of the `DomainEvent` class, or `DomainEvents` when the command produces several (3.0, below). This returned event object signifies the outcome of processing the command and encapsulates the state change resulting from the command's execution.
 
 #### Processing Flow within an `@AggregateCommandHandler` Method
 
@@ -110,7 +114,28 @@ The provided code examples showcase two `@AggregateCommandHandler` methods:
 * **`handle` method for `DemoCreateCommand`:** This method validates the `DemoCreateCommand` and, upon successful validation, creates a `DemoCreatedEvent` reflecting the new Aggregate state.
 * **`handle` method for `DemoUpdateCommand`:** This method validates the `DemoUpdateCommand` and, if valid, creates a `DemoUpdatedEvent` representing the updated state.
 
-### ptional Parameters for `@AggregateCommandHandler` Methods
+### Returning several events
+
+Since 3.0 a command may produce more than one event: return `DomainEvents.of(...)` and list the event classes in `produces`, so the catalog knows them without running the handler.
+
+```java
+@AggregateCommandHandler(init = true, produces = {OrderPlaced.class, DiscountApplied.class})
+DomainEvents handle(PlaceOrder command) {
+    var placed = new OrderPlaced(command.getOrderId(), command.getItems());
+    if (command.getCoupon() == null) return DomainEvents.of(placed);
+    return DomainEvents.of(placed, new DiscountApplied(command.getOrderId(), command.getCoupon()));
+}
+```
+
+* The events are applied to the aggregate state in order, each through its `@EventSourcingHandler`, so the second sees the state after the first. No event may follow the one that deletes the aggregate.
+* The server stores them **all or none**, in one transaction: consecutive sequence numbers (nothing from another aggregate between them) and consecutive aggregate versions. If another command moved the aggregate meanwhile, the aggregate fence (see [Domain Command](../../payload-and-messages/command/domain-command.md), `getLockId()`) refuses all of them.
+* The caller of `send` is answered with the **last** event. With an idempotency key, the key is recorded on the last event, and a retry is answered with it.
+* Consumers receive them as separate events, in order.
+* It needs 3.0 servers: a bundle refuses to answer with several events through an older server (no `events:1` capability), which would keep only the last. Upgrade the servers first.
+
+Prefer one event when one fact happened; return several when the command really records several facts that consumers react to separately. In tests, `AggregateFixture` gives them with `events()` and checks them with `expectEvents(...)`.
+
+### Optional Parameters for `@AggregateCommandHandler` Methods
 
 While the core structure of an `@AggregateCommandHandler` method involves the `DomainCommand` and `AggregateState` parameters, there are several optional parameters you can leverage to enhance command handling capabilities:
 
