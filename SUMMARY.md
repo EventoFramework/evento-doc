@@ -120,6 +120,7 @@
   * [Cluster Configuration](evento-server/evento-server-cluster/cluster-configuration.md)
   * [Upgrading to 2.5](evento-server/evento-server-cluster/upgrading-to-2-5.md)
   * [Upgrading to 2.6](evento-server/evento-server-cluster/upgrading-to-2-6.md)
+  * [Compatibility Policy](evento-server/evento-server-cluster/compatibility.md)
 
 ## EVENTO GUI
 
