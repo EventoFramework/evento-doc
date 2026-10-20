@@ -49,6 +49,10 @@ services:
     depends_on:
       - database  # Ensure database is ready before starting Evento Server
     environment:
+      # A local try-out. Since 3.0 the server refuses to start without a bus token, bus TLS, a
+      # payload allowlist, non-default passwords and explicit CORS origins: set those for
+      # production (see Security) and remove this line.
+      - EVENTO_SERVER_SECURITY_PROFILE=dev
       - evento_cluster_name=evento-server  # Set your cluster name
       - evento_performance_capture_rate=0.1  # Capture telemetry data every 0.1 seconds (adjust as needed)
       - evento_telemetry_ttl=365  # Keep telemetry data for a year

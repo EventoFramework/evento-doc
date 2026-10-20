@@ -9,7 +9,7 @@ For durable consumer state on PostgreSQL, use the JDBC implementations of the fi
 ## Dependency
 
 ```gradle
-implementation group: 'com.eventoframework.evento-consumer-state-store', name: 'evento-consumer-state-store-jdbc', version: '2.5.2'
+implementation group: 'com.eventoframework.evento-consumer-state-store', name: 'evento-consumer-state-store-jdbc', version: '3.0.0'
 ```
 
 ## Schema migration

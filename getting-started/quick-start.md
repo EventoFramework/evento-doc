@@ -70,7 +70,7 @@ You can find the library on [Maven Central](https://central.sonatype.com/):  [ht
 #### Gradle
 
 ```gradle
-implementation group: 'com.eventoframework', name: 'evento-bundle', version: '2.5.2'
+implementation group: 'com.eventoframework', name: 'evento-bundle', version: '3.0.0'
 ```
 
 #### Maven&#x20;
@@ -79,7 +79,7 @@ implementation group: 'com.eventoframework', name: 'evento-bundle', version: '2.
 <dependency>
     <groupId>com.eventoframework</groupId>
     <artifactId>evento-bundle</artifactId>
-    <version>2.5.2</version>
+    <version>3.0.0</version>
 </dependency>
 ```
 
