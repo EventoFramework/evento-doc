@@ -91,6 +91,7 @@
   * [@Observer](evento-framework/component/observer.md)
 * [Dead Event Queues](evento-framework/dead-event-queues.md)
 * [Testing with Fixtures](evento-framework/testing-with-fixtures.md)
+* [Scheduling and Deadlines with Quartz](evento-framework/scheduling-with-quartz.md)
 * [EventoBundle](evento-framework/eventobundle/README.md)
   * [EventoServerMessageBusConfiguration](evento-framework/eventobundle/eventoservermessagebusconfiguration.md)
   * [ConsumerStateStore](evento-framework/eventobundle/consumerstatestore/README.md)
