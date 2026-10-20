@@ -54,6 +54,7 @@ The server keeps no query answers (queries are routed "straight": not cached, no
 
 * `management.endpoints.web.exposure.include`: Actuator endpoints exposed over HTTP; the server ships with `health,info,prometheus,metrics`, so Prometheus can scrape bus and JVM metrics from `/actuator/prometheus`.
 * Bus capacity meters: `evento.server.bus.executor.{pool.size,max,active,queue.depth}` and the counter `evento.server.bus.executor.saturated` — the one to alert on. See [Throughput and Capacity](throughput-and-capacity.md).
+* Consumer lag (2.6), from the server's answer to every consumer fetch, tagged `bundle`, `component`, `context`: `evento.consumer.lag.seconds` (age of the oldest event the consumer has not processed yet, growing while it is stuck: the one to alert on), `evento.consumer.lag.events` (CPES: newest sequence number minus the consumer's position, counting every context), `evento.consumer.position`, `evento.consumer.fetch.age.seconds` (time since its last fetch: a consumer that stopped). With several servers use `min by (bundle, component, context)`. `evento.consumer.lag.expiry` (default `PT15M`): series of consumers that no longer fetch through this server go away.
 * `management.endpoint.health.probes.enabled`: Enables Kubernetes-style liveness/readiness probes under `/actuator/health/{liveness,readiness}`. Health and info are the only endpoints that don't require authentication.
 
 &#x20;**Event Store:**

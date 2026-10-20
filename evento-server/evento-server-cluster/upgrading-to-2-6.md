@@ -4,7 +4,7 @@ description: Rollout order and behaviour changes for 2.6 (query path, payload ve
 
 # Upgrading to 2.6
 
-2.6 changes the query path (streamed, paged and locally answered queries, read-your-writes, compression, bounded server memory), adds [payload versioning](../../evento-framework/payload-and-messages/payload-versioning.md) fences aggregate appends in the database, runs aggregate commands without the lock and with group commit, and deprecates APES. There is **one additive schema change** (section 5). Wire changes are additive and negotiated in the handshake (capabilities `stream:1` and `revision:1`): 2.5 and 2.6 bundles and servers interoperate in any mix, with the exceptions below.
+2.6 changes the query path (streamed, paged and locally answered queries, read-your-writes, compression, bounded server memory), adds [payload versioning](../../evento-framework/payload-and-messages/payload-versioning.md) fences aggregate appends in the database, runs aggregate commands without the lock and with group commit, and deprecates APES. There is **one additive schema change** (section 5), and the server now migrates its schema with Flyway (section 6). Wire changes are additive and negotiated in the handshake (capabilities `stream:1` and `revision:1`): 2.5 and 2.6 bundles and servers interoperate in any mix, with the exceptions below.
 
 ## 1. Servers first, then the bundles
 
@@ -48,7 +48,11 @@ Every event of an aggregate command now carries the aggregate's version, in a ne
 **Commands without a lock no longer fork the aggregate.** If a `DomainCommand` overrides `getLockId()` to return `null`, two concurrent commands on one aggregate used to both succeed from the same state. Now the second one loses the fence, nothing of it is stored, and the server runs it again on the new state under the aggregate lock: its caller gets the answer computed on the current state, which may be a refusal by the domain. `AggregateConflictException` is answered only when 5 runs within the deadline all lost (`event=aggregate_fence_conflict`, `evento.server.commands.fence.conflicts`).
 {% endhint %}
 
-## 6. Aggregate commands run without the lock
+## 6. The schema is migrated by Flyway
+
+With `spring.sql.init.mode=always` (the default) the server keeps its schema with Flyway: the first 2.6 server creates the history table `evento_es_schema_history`, takes an existing database in at version 0 and runs the migrations V1-V5, which find what is already there and add what is missing (section 5 included), without blocking appends. The database user of the server needs the right to create that table. Servers starting together still migrate once. Later versions add migrations; there is nothing to do by hand. With `spring.sql.init.mode=never` nothing changes: the server touches no schema.
+
+## 7. Aggregate commands run without the lock
 
 With the fence in place (section 5) the server no longer takes the aggregate lock for every command (`evento.server.commands.optimistic=true`): it loads the story, runs the handler and stores the event, and the fence refuses the event if another command got there first. That command then runs again on the new story, under the lock. An aggregate that is contended (another command for it in flight on the server, or a refused event on it in the last 2 s) takes the lock from the start, so a hot aggregate still queues instead of losing races. The lock cost three round trips to the database per command and a lock connection for the whole run; without it one server stores several times more commands a second.
 
@@ -57,16 +61,16 @@ With the fence in place (section 5) the server no longer takes the aggregate loc
 * `evento.server.commands.optimistic=false` takes the lock for every command, as in 2.5. A command whose `getLockId()` names another key than its aggregate keeps that lock.
 * Metrics: `evento.server.commands.optimistic`, `evento.server.commands.fence.retries`.
 
-## 7. Capacity defaults
+## 8. Capacity defaults
 
 * **Group commit.** Appends that arrive together are written in one statement and one commit (`evento.es.append.batch.writers`, `evento.es.append.batch.max-size`). Under CPES the batch's events get consecutive numbers, so the commit order is still the sequence order.
 * **`evento.server.bus.business-executor-max-size` is `cores × 32`** (was `cores × 8`). If you set it explicitly, review it.
 * **Lock waits queue in PostgreSQL.** A command waiting for an aggregate another server holds now waits in PostgreSQL's queue, on a connection of the lock pool (at most half of it; the rest poll as before), so servers take turns on a hot aggregate instead of one server keeping it. Size `evento.lock.pool.maximum-size` for the locks held at once plus the contended aggregates waiting.
 
-## 8. APES is deprecated
+## 9. APES is deprecated
 
 On one server CPES is now as fast as APES, and with several servers APES consumers can skip events. A server started with `evento.es.mode=APES` logs `event=es_mode_deprecated`. To move an APES store to CPES, stop every server and start them with `evento.es.mode=CPES`: the sequence goes on above the newest APES id. See [Event Store Modes](../setup-evento-server/evento-event-store-modes-apes-and-cpes.md).
 
-## 9. Licence: everything public
+## 10. Licence: everything public
 
 The server and the web console move from AGPL-3.0 (or commercial) to **Apache-2.0 with the Commons Clause**, and single sign-on and the audit trail, until now a separate commercial distribution, are part of the server: the same jar and image for everyone. Running, changing and using Evento, also commercially, needs no licence; selling Evento itself (hosting it for others, reselling it, consulting or training about it) needs a written authorisation. The client libraries stay Apache-2.0. See [Licensing](../../licensing.md).

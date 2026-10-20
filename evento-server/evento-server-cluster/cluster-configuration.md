@@ -32,7 +32,7 @@ Server properties can also be set from the environment with Spring Boot's rule (
 | `evento.es.fetch.max.age.ms` | 30000 | staleness gate on fetches; ≤ 0 disables it |
 | `evento.es.aggregate.{state,events}.cache.size` / `.expiry` | 1024 / 150000 ms | per-server caches, not invalidated across servers |
 | `evento.es.schema.enforce-primary-key` | `true` | add the `es__events` primary key on boot; `false` is the escape hatch when duplicates exist |
-| `spring.sql.init.mode` | `always` | run `schema.sql` (and the 2.5 migrations) at boot, serialized across servers by an advisory lock; with `never`, apply the scripts in `db/upgrade/` yourself |
+| `spring.sql.init.mode` | `always` | migrate the schema with Flyway at boot (history table `evento_es_schema_history`), serialized across servers by an advisory lock; with `never`, the server changes no schema: apply the scripts in `db/upgrade/` yourself |
 
 ### Connections and locks
 
