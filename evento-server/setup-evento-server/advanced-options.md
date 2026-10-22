@@ -41,6 +41,7 @@ The Evento server relies on a variety of configuration properties to govern its 
 * `evento.server.bus.business-executor-saturation-warn-interval`: Throttle for the `event=bus_business_executor_saturated` warning (default `10s`).
 * `evento.es.fetch.concurrency`: Concurrent `EventFetchRequest` handlers (default `4`). Often the real ceiling on a consumer-heavy cluster; each fetch holds a full result set on heap, so raise it against measured headroom.
 * `evento.es.head.poll.ms`: How often the server reads its event store's head to tell its 3.0 bundles which events were appended (default `50`). Their consumers at the head wait for that notice instead of polling, which removes the empty fetches that this concurrency limit would otherwise queue the useful ones behind. One indexed query a tick, whatever the number of consumers; reading the database keeps it right in a cluster. `0` turns it off: the server then does not offer the `head:1` capability and the consumers poll.
+* `evento.server.leave.grace-ms`: How long after a bundle instance disconnects this server cleans up after it (default `30000`): its presence, its consumer rows and, for the last instance of an ephemeral bundle, the bundle. An instance that joined another server in the meantime (a fail-back, a failover, a restart) is found there and left alone, so its consumers never disappear from the catalog while it moves. `0` cleans up at once.
 
 **Memory Bounds (3.0):**
 
