@@ -36,6 +36,7 @@ The client libraries (`evento-bundle`, `evento-common`, the transports, the cons
 * **Logging goes through SLF4J only.** The libraries no longer bring Log4j: an application that relied on it (directly, or through a `log4j2.xml` it never declared a dependency for) must add its own SLF4J backend (Logback, `log4j-slf4j2-impl`...) or it logs nothing. Spring Boot applications already have one.
 * **`hibernate-validator` is no longer pulled in** by `evento-bundle`. If your code uses `jakarta.validation` through it, declare it yourself, or the build fails.
 * A payload that cannot be serialized now **fails the send** with an `IllegalArgumentException` that names the class; 2.5 logged the error and sent a null payload.
+* **Size the consumer state-store pool for the consumers.** A `JdbcConsumerLock` keeps a consumer's lock, and its connection, between fetch cycles, so that a lane stays on one replica: give the pool of the consumer state store **one connection per consumer of the instance plus a few** for the checkpoint writes (a bundle with 17 projectors: 24). A smaller pool still works: the locks then take at most `max - max(2, max / 4)` connections, the consumers take turns as in 2.5, and the bundle logs `event=consumer_lock_pool_bound` once. The bound is read from a pool that tells its maximum size (HikariCP); with another pool pass it to `new JdbcConsumerLock(dataSource, dialect, affinity, maxHeld)`.
 
 ## 3. Queries are "straight"
 
@@ -61,7 +62,9 @@ Nothing has to change in the bundles' code. Then, where useful:
 
 A bundle now answers the queries it handles itself, without the server (`setLocalQueryShortCircuit(false)` to turn it off). Tracing, metrics and the GUI see these queries as before.
 
-Code that asserts the exact capability set of a bundle's handshake must expect `stream:1`, `revision:1` and `events:1`.
+**Consumers at the head no longer poll.** A 3.0 server tells its 3.0 bundles when the event store has grown, and which events were appended (`evento:events-appended`, every `evento.es.head.poll.ms`, 50 ms by default; 0 turns it off): a consumer at the head waits for a notice about an event it handles, up to its fetch delay (`setSssFetchDelay`, 1 s by default) as a safety net. In 2.5 an idle consumer fetched again every few milliseconds, which at rest kept the event store busy (on a hundred consumers, hundreds of queries a second) and under load queued the useful fetches behind the empty ones. With a 2.5 server, or for a 2.5 bundle, the consumers poll as before. An event whose stored name no handler declares (renamed through an upcaster) reaches its consumer at the fetch delay.
+
+Code that asserts the exact capability set of a bundle's handshake must expect `stream:1`, `revision:1`, `events:1` and `head:1`.
 
 Removing a bundle from the catalog in the console (`DELETE /api/bundle/{id}`) now needs the `ADMIN` role.
 
