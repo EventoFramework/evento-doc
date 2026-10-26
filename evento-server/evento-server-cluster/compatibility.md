@@ -6,7 +6,7 @@ description: Semantic versioning, which server and bundle versions work together
 
 What a new Evento version may change, which versions work together, in which order to upgrade, and
 how long a version is supported. It applies from **3.0.0**. Each release's upgrade guide
-([2.5](upgrading-to-2-5.md), [3.0](upgrading-to-3-0.md)) lists the details of that release; this
+(such as [Upgrading to 3.0](upgrading-to-3-0.md)) lists the details of that release; this
 page is the rule they follow.
 
 ## 1. Version numbers

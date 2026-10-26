@@ -15,14 +15,8 @@ implementation group: 'com.eventoframework.evento-consumer-state-store', name: '
 ## Schema migration
 
 {% hint style="info" %}
-**Changed in Evento v2.1.1.** The JDBC store now **auto-creates its schema on first connection** — no manual migration step is needed. `JdbcConsumerStateStore` runs `FlywayMigrator.migrate(dataSource, dialect)` once on first connect (idempotent, tracked in a dedicated `evento_v2_schema_history` table) via the default `autoMigrate=true`. To opt out — e.g. when you apply the schema out-of-band with your own Flyway run that includes `SqlDialect.migrationLocation()` — use the 3-arg constructor `new JdbcConsumerStateStore(dataSource, dialect, false)`. On versions **before 2.1.1** you must still run the migration yourself before constructing the store.
+The JDBC store **auto-creates its schema on first connection** — no manual migration step is needed. `JdbcConsumerStateStore` runs `FlywayMigrator.migrate(dataSource, dialect)` once on first connect (idempotent, tracked in a dedicated `evento_v2_schema_history` table) via the default `autoMigrate=true`. To opt out — e.g. when you apply the schema out-of-band with your own Flyway run that includes `SqlDialect.migrationLocation()` — use the 3-arg constructor `new JdbcConsumerStateStore(dataSource, dialect, false)`.
 {% endhint %}
-
-On Evento **before v2.1.1**, run the bundled Flyway migrations against your `DataSource` once at startup, before constructing the store:
-
-```java
-FlywayMigrator.migrate(dataSource, SqlDialect.POSTGRES);
-```
 
 `JdbcConsumerLock` uses Postgres advisory locks (`pg_try_advisory_lock(hashtext(id))`) for the cross-JVM exclusive zone, and `JdbcSagaStateStore` stores saga state as JSONB with a flat `associations` column for fast `->> ?` lookups.
 

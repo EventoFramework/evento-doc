@@ -1,6 +1,8 @@
 # Table of contents
 
 * [Introduction](README.md)
+* [Evento 3](evento-3.md)
+* [How Evento Is Tested](testing-and-verification.md)
 * [Licensing](licensing.md)
 * [Architecture Overview](architecture-overview/README.md)
   * [Distributed Systems & Microservices](architecture-overview/distributed-systems-and-microservices.md)
@@ -121,7 +123,6 @@
   * [Exactly-once Commands](evento-server/evento-server-cluster/exactly-once-commands.md)
   * [Cells and Locality](evento-server/evento-server-cluster/cells-and-locality.md)
   * [Cluster Configuration](evento-server/evento-server-cluster/cluster-configuration.md)
-  * [Upgrading to 2.5](evento-server/evento-server-cluster/upgrading-to-2-5.md)
   * [Upgrading to 3.0](evento-server/evento-server-cluster/upgrading-to-3-0.md)
   * [Compatibility Policy](evento-server/evento-server-cluster/compatibility.md)
 

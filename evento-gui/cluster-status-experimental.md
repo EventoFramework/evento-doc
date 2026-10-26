@@ -17,7 +17,7 @@ The Bundle Instances section displays all connected bundles within your cluster.
 * **Instance IDs:** A list of the unique identifiers for each bundle instance.
 
 {% hint style="info" %}
-**Changed in Evento v2.** The Spawn Instance / Kill Instance actions were removed. Evento Server no longer starts or stops bundle processes — that is owned by your orchestrator (e.g. Kubernetes or Nomad). This page is now a read-only view of the instances currently connected to the cluster.
+Evento Server does not start or stop bundle processes — that is owned by your orchestrator (e.g. Kubernetes or Nomad). This page is a read-only view of the instances currently connected to the cluster.
 {% endhint %}
 
 In a cluster each server shows **its own view**: the instances connected to it. To see which zone each instance announced (for `locality-preferred` routing), call `GET /api/cluster-status/zones` on that server.
@@ -47,5 +47,5 @@ The Consumers section provides a list of all active consumers within your cluste
 The Cluster Status page, with its Bundle Instances and Consumers sections, offers a valuable tool for managing and monitoring your Evento cluster. By effectively utilizing this information, you can optimize performance, troubleshoot issues, and ensure the overall health of your system.
 
 {% hint style="info" %}
-Consumers register (and re-register) automatically every time a bundle establishes a session with the server. If the list is empty, make sure both the server and the bundles run Evento **2.3.1 or later** — earlier 2.x servers silently dropped consumer registrations.
+Consumers register (and re-register) automatically every time a bundle establishes a session with the server.
 {% endhint %}

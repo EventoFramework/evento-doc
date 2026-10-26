@@ -4,6 +4,10 @@ description: Building Reactive Microservices with Clarity and Efficiency
 
 # Introduction
 
+{% hint style="success" %}
+**Evento 3 is available.** See [everything it gives you](evento-3.md) and [how it is tested](testing-and-verification.md).
+{% endhint %}
+
 The Evento Framework empowers you to design and develop state-of-the-art, distributed JavaEE applications using [Reactive Systems](https://www.reactivemanifesto.org/en) principles and the [RECQ architectural patterns](broken-reference). This framework streamlines the creation of enterprise-grade microservices that are:
 
 * **Responsive:** Deliver a seamless user experience with fast and efficient communication patterns.

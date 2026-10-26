@@ -29,7 +29,7 @@ services:
     depends_on:
       - evento-db
     environment:
-      # A local try-out: since 3.0 the server defaults to the prod profile and does not start
+      # A local try-out: the server defaults to the prod profile and does not start
       # without a bus token, bus TLS, a payload allowlist and non-default passwords. dev lists what
       # is missing and starts. See Security before going to production.
       - EVENTO_SERVER_SECURITY_PROFILE=dev
@@ -52,7 +52,7 @@ services:
 ```
 
 {% hint style="info" %}
-In Evento v2, bundles register themselves with the server at runtime over the message bus — there is no JAR upload and no deployment script, so no upload volume or spawn-script bind is needed. Deploying and scaling bundle instances is handled by your orchestrator (e.g. Kubernetes or Nomad).
+Bundles register themselves with the server at runtime over the message bus — there is no JAR upload and no deployment script, so no upload volume or spawn-script bind is needed. Deploying and scaling bundle instances is handled by your orchestrator (e.g. Kubernetes or Nomad).
 {% endhint %}
 
 ***

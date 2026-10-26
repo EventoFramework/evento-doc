@@ -3,7 +3,7 @@
 Consumer state — how far each projector, observer, and saga has progressed, plus saga instances, dead events, and dedupe windows — is what lets event consumers resume exactly where they left off after a restart without missing or reprocessing events.
 
 {% hint style="warning" %}
-**Rewritten in Evento v2.** The single v1 abstract `ConsumerStateStore` class (with its monolithic `consumeEventsFor*` / `enterExclusiveZone` / saga-state methods) has been **replaced by five small, focused SPIs**. Each concern is now independently implementable and testable. The v1 `MysqlConsumerStateStore` / `PostgresConsumerStateStore` classes are gone; durable persistence is provided by the single `evento-consumer-state-store-jdbc` module (Postgres **and** MySQL).
+Consumer state is defined by **five small, focused SPIs**, each independently implementable and testable. Durable persistence is provided by the `evento-consumer-state-store-jdbc` module (Postgres **and** MySQL).
 {% endhint %}
 
 ## The five SPIs (`evento-common`)
@@ -34,7 +34,7 @@ EventoBundle.Builder.builder()
 
 When `setConsumerEngineConfigBuilder` is omitted, the bundle defaults to `ConsumerEngineConfig::inMemory` at startup.
 
-With the JDBC store, the `evento_v2_*` schema is auto-created on first connection as of v2.1.1 — no manual migration step is needed (see [PostgresConsumerStateStore](postgresconsumerstatestore.md)).
+With the JDBC store, the `evento_v2_*` schema is auto-created on first connection — no manual migration step is needed (see [PostgresConsumerStateStore](postgresconsumerstatestore.md)).
 
 ## Implementations
 

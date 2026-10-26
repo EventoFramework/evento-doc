@@ -1,12 +1,12 @@
 # Evento Event Store Modes: APES and CPES
 
-The event store numbers every event it stores; consumers read events in that order and remember the last number they processed. `evento.es.mode` chooses how the numbers are made. **CPES is the default and the mode to use. APES is deprecated since 3.0.**
+The event store numbers every event it stores; consumers read events in that order and remember the last number they processed. `evento.es.mode` chooses how the numbers are made. **CPES is the default and the mode to use. APES is deprecated.**
 
 #### CPES Mode (default)
 
 CPES (Consistent and Partitionable Event Store) takes consecutive numbers from one PostgreSQL sequence, under a global advisory lock held until the commit. The order of the numbers is therefore the order of the commits, on any number of servers: a consumer reads every event as soon as it is committed, with no delay and without ever skipping one.
 
-Since 3.0 appends that arrive together are written in one statement and one transaction (group commit): the batch takes the lock once and its events get consecutive numbers, so the lock no longer limits throughput the way one commit per event did. On a 4-core machine one server stores about 3,900 commands a second (one new aggregate each, 128 in flight, p99 about 60 ms).
+Appends that arrive together are written in one statement and one transaction (group commit): the batch takes the lock once and its events get consecutive numbers, so the lock no longer limits throughput the way one commit per event did. On a 4-core machine one server stores about 3,900 commands a second (one new aggregate each, 128 in flight, p99 about 60 ms).
 
 #### APES Mode (deprecated)
 

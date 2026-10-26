@@ -4,7 +4,7 @@ description: Several Evento Servers on one PostgreSQL event store, from one site
 
 # Evento Server Cluster
 
-Evento Server can run as a **cluster**: several server instances share one PostgreSQL event store and one component catalog, and bundles move between them when a server dies or comes back. Since **2.5.0** the cluster mode is production-ready: bundles fail over *and* fail back on their own, commands can be made exactly-once across retries and servers, distributed locks are bounded, and requests are routed to the closest handler.
+Evento Server can run as a **cluster**: several server instances share one PostgreSQL event store and one component catalog, and bundles move between them when a server dies or comes back. Bundles fail over *and* fail back on their own, commands can be made exactly-once across retries and servers, distributed locks are bounded, and requests are routed to the closest handler.
 
 This section explains how the cluster works and how to deploy it:
 
@@ -14,7 +14,6 @@ This section explains how the cluster works and how to deploy it:
 | [Exactly-once Commands](exactly-once-commands.md) | idempotency keys, keys derived for sagas/projectors/observers, the service outcome store, caller deadlines |
 | [Cells and Locality](cells-and-locality.md) | one server per site, zones and `locality-preferred` routing, presence and the shared catalog |
 | [Cluster Configuration](cluster-configuration.md) | every server property and bundle setting that matters in a cluster, with defaults |
-| [Upgrading to 2.5](upgrading-to-2-5.md) | rollout order, first-boot schema migrations, connection sizing |
 
 ## How a cluster works
 
@@ -25,7 +24,7 @@ This section explains how the cluster works and how to deploy it:
 * **Global ordering is preserved.** Appends run in one statement under a PostgreSQL advisory lock (`CPES` mode), so the sequence order equals the commit order on every server. Two commands on one aggregate can never both store an event decided from the same state: the database refuses the second one (the aggregate fence), and the server runs it again on the new state. Contended aggregates are serialised cluster-wide by distributed locks, which servers take in turn.
 
 {% hint style="warning" %}
-**Use `evento.es.mode=CPES` with more than one server** (the default). `APES` relies on a time window that does not hold across servers, and is deprecated since 3.0.
+**Use `evento.es.mode=CPES` with more than one server** (the default). `APES` relies on a time window that does not hold across servers, and is deprecated.
 {% endhint %}
 
 ## Topologies
@@ -47,16 +46,7 @@ Server HA is **active/passive for the bus**, not load balancing between servers:
 
 ## Measured behaviour
 
-The cluster mode was validated on a three-continent lab (7 regions, simulated WAN at 80–150 ms RTT to the event-store primary, chaos scenarios against 2.4.6 and 2.5.0):
-
-| Measure | 2.4.6 | 2.5.0 |
-|---|---|---|
-| Commands confirmed, 7 regions × 20 orders/min | 227/319 | **492/492** |
-| Cell left without its server: first acknowledged command | never (0/18) | **10.3 s** |
-| Requests in flight on a dead server, failed only after ≥ 25 s | 24/24 | **0** (`BrokerChangedException` at once) |
-| Payments executed twice across server failures | yes | **0** (idempotency keys + outcome store) |
-| Cold starts needing a catalog repair | 7/7 | **0/7** |
-| Consumers wiped by a stale server after a pause | 10 | **0** |
+The cluster mode is validated on a three-continent lab (7 regions, simulated WAN at 80–150 ms RTT to the event-store primary) with nineteen chaos scenarios: servers killed, frozen and restarted, a region cut off the network, database failovers, cold starts, clock skew and retry storms. In every one of them no acknowledged command is lost, nothing is executed twice, no aggregate forks, the read models converge and the catalog keeps every live bundle and consumer; during a region partition the other regions keep acknowledging all their commands. Details in [How Evento Is Tested](../../testing-and-verification.md).
 
 The latency of a command is dominated by round trips to the event-store primary: p50 ≈ 7 ms locally, ≈ 0.1–0.3 s in the primary's cell, ≈ 0.7 s at 80 ms RTT and ≈ 1.2 s at 150 ms RTT. Put the primary in the cell with the most writes.
 
@@ -66,7 +56,7 @@ The latency of a command is dominated by round trips to the event-store primary:
 * [ ] Every bundle: the full list of server addresses, its own (or the site's active) server first, and `withExpectedClusterName(...)`.
 * [ ] Every cell hosts every handler its callers use (commands, queries, and commands sent by sagas).
 * [ ] Callers treat `BrokerChangedException` / `RequestTimeoutException` as *indeterminate* and retry commands **with an idempotency key**.
-* [ ] PostgreSQL `max_connections` ≥ servers × 30 + the bundles' pools (see [Upgrading to 2.5](upgrading-to-2-5.md)).
+* [ ] PostgreSQL `max_connections` ≥ servers × 30 + the bundles' pools: each server uses an application pool of 20 and a lock pool of 10 (`spring.datasource.hikari.maximum-pool-size`, `evento.lock.pool.maximum-size`).
 * [ ] PostgreSQL 12 or later, JDK 25.0.3 or later.
 
 **Security:** all servers share one database, so protect it like the event store it is, and set `evento.server.bus.auth-token` so that only your bundles can join the bus.

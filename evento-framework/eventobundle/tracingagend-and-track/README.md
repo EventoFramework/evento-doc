@@ -16,7 +16,7 @@ The provided code snippet showcases the `TracingAgent` class, which serves as th
 * **Tracking:** The `track` method enables monitoring the execution of specific transactions. It accepts a `Transaction` object that encapsulates the logic to be tracked and returns the result.
 
 {% hint style="info" %}
-**Changed in Evento v2.** The default `TracingAgent` is an honest no-op: it performs correlation pass-through and executes the tracked transaction without emitting any spans. It no longer integrates with an autoscaling protocol (autoscaling was removed in v2 — scaling is an external concern owned by your orchestrator, e.g. Kubernetes or Nomad). Since 3.0, [OpenTelemetry](opentelemetry.md) is available as an optional module; you can still provide a custom `TracingAgent` (such as the example Sentry agent) for another backend.
+The default `TracingAgent` is an honest no-op: it performs correlation pass-through and executes the tracked transaction without emitting any spans. Scaling is an external concern owned by your orchestrator (e.g. Kubernetes or Nomad). Since 3.0, [OpenTelemetry](opentelemetry.md) is available as an optional module; you can still provide a custom `TracingAgent` (such as the example Sentry agent) for another backend.
 {% endhint %}
 
 **Leveraging Annotations for Tracking:**

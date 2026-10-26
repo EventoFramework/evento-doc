@@ -50,7 +50,7 @@ We configure the `setInjector` method with `factory::getBean`. This essentially 
 
 Evento instantiates components by reflection and wires their dependencies through the **constructor**, resolved by the configured injector. Field injection annotations (Spring's `@Autowired`, JSR-330's `@Inject`) on component fields are therefore **not** allowed: the framework never processes them, so an annotated field would silently stay `null`.
 
-As of **v2.1.1**, this fails fast — at component registration the framework throws an `IllegalStateException` with a message telling you to switch to constructor injection if any component field is annotated with `@Autowired` / `@Inject`.
+This fails fast — at component registration the framework throws an `IllegalStateException` with a message telling you to switch to constructor injection if any component field is annotated with `@Autowired` / `@Inject`.
 
 Declare the dependency as a constructor parameter instead:
 
@@ -66,7 +66,7 @@ public class DemoProjector {
   }
 }
 
-// WRONG — field injection is rejected at startup (v2.1.1+)
+// WRONG — field injection is rejected at startup
 @Projector(version = 3)
 public class DemoProjector {
 

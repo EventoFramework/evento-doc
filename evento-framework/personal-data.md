@@ -6,8 +6,6 @@ description: Keep personal data in an immutable event store and still honour the
 
 Events are never changed or deleted, and the GDPR (and similar laws) gives people the right to have their personal data erased. Evento reconciles the two with **crypto-shredding**: personal data is stored encrypted with a key of its own person, the *data subject*, and erasing it means deleting that key. The events stay, with everything that is not personal; what was personal can no longer be read by anyone, in the event store, in snapshots, or in backups.
 
-Available since 3.0.
-
 ## Marking personal data
 
 Mark the fields with `@PersonalData`, and the field that says whose they are with `@DataSubject`:

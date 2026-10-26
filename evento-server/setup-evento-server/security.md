@@ -12,7 +12,7 @@ Evento's hardening is opt-in in 2.x, so existing deployments keep working. Since
 evento.server.security.profile=prod     # EVENTO_SERVER_SECURITY_PROFILE
 ```
 
-* `prod`, **the default since 3.0**, does not start, before opening the bus port, until every check passes, and lists the failing ones.
+* `prod`, **the default**, does not start, before opening the bus port, until every check passes, and lists the failing ones.
 * `dev` logs at startup the checks that fail (`event=security_profile_dev`) and starts: for development, tests and demos (`EVENTO_SERVER_SECURITY_PROFILE=dev`).
 
 | Check | How to pass it |

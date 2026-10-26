@@ -4,7 +4,7 @@ description: Idempotency keys, derived keys for consumers, the service outcome s
 
 # Exactly-once Commands
 
-In a distributed system a command can time out, or its server can die, after it was applied. The caller then sees an **indeterminate** outcome (`RequestTimeoutException`, `BrokerChangedException`) and the only safe retry is one the system can recognise as the same command. Since 2.5.0 Evento does this with **idempotency keys**, checked by the server on whichever node the retry lands.
+In a distributed system a command can time out, or its server can die, after it was applied. The caller then sees an **indeterminate** outcome (`RequestTimeoutException`, `BrokerChangedException`) and the only safe retry is one the system can recognise as the same command. Evento does this with **idempotency keys**, checked by the server on whichever node the retry lands.
 
 ## Idempotency keys
 
@@ -92,7 +92,7 @@ Side effects **outside** that database (a payment provider, an e-mail) are not c
 
 ## Caller deadlines
 
-Every request carries the caller's remaining time budget. Since 2.5.0 the server turns it into a local deadline and **drops a command unexecuted** when the deadline has passed while it was queued, waiting for the aggregate lock, before the forward, or before the append (an aggregate handler that answered too late). Each drop logs `event=request_expired_dropped stage=…` and counts in `evento.server.requests.expired{stage}`.
+Every request carries the caller's remaining time budget. The server turns it into a local deadline and **drops a command unexecuted** when the deadline has passed while it was queued, waiting for the aggregate lock, before the forward, or before the append (an aggregate handler that answered too late). Each drop logs `event=request_expired_dropped stage=…` and counts in `evento.server.requests.expired{stage}`.
 
 Before, under load every timed-out command was still stored, and a saga retrying a "failed" payment could apply it several times. The caller normally does not see the drop — its own timer has already fired with `RequestTimeoutException` — but nothing runs for a caller that gave up. Do not branch on `RequestExpiredException`.
 

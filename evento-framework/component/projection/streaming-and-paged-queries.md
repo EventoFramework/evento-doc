@@ -116,7 +116,7 @@ Answers of 32 KiB or more are compressed end to end (DEFLATE) when that saves at
 
 ## Why: what an answer costs the server
 
-Since 3.0 the server does not keep query answers at all (queries are idempotent reads: a caller that lost its session simply asks again), and its memory buffers are bounded in bytes. Measured on one server for a single 64 MiB answer:
+The server does not keep query answers at all (queries are idempotent reads: a caller that lost its session simply asks again), and its memory buffers are bounded in bytes. Measured on one server for a single 64 MiB answer:
 
 | Mode | Caller time | Server heap retained afterwards | Server CPU |
 |---|---|---|---|

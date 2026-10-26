@@ -4,7 +4,7 @@ description: How a bundle moves to another server, and back, without losing trac
 
 # Bundle Failover and Fail-back
 
-A bundle connects to one server at a time. Since 2.5.0 it uses **every** address it is given: it fails over along the list when its server dies, and fails back to the first address once that server is healthy again.
+A bundle connects to one server at a time. It uses **every** address it is given: it fails over along the list when its server dies, and fails back to the first address once that server is healthy again.
 
 ## Endpoint list
 
@@ -23,8 +23,8 @@ EventoBundle.Builder.builder()
     .start();
 ```
 
-{% hint style="warning" %}
-**Upgrading from 2.4.x:** older bundles silently ignored addresses 2..n, so a bundle whose server died stayed stranded next to healthy ones. A 2.5.0 bundle really uses the list, and by default fails back to the first entry: put the bundle's local server first.
+{% hint style="info" %}
+A bundle fails back to the first entry by default: put the bundle's local server first.
 {% endhint %}
 
 * A session that fails **before** it is ready moves to the next endpoint (round robin, backoff counted per pass over the list). `start()` fails only once every endpoint was tried.
@@ -51,7 +51,7 @@ Reconnecting to the **same** server keeps the 2.x behaviour: pending requests su
 
 ## Fail-back
 
-After a failover a bundle used to stay on the fallback server until that session dropped, so after a server restart a whole cell kept crossing the WAN, and callers and handlers of one cell could end up on different servers. With two or more endpoints a 2.5.0 bundle comes back on its own:
+After a failover a bundle does not stay on the fallback server: left there, a whole cell would keep crossing the WAN after a server restart, and callers and handlers of one cell could end up on different servers. With two or more endpoints a bundle comes back on its own:
 
 1. While connected to any endpoint but 0, it **probes** endpoint 0 every 5 s with a TCP connect and a transport `Ping`. A probe sends no `Hello`: it never registers the bundle or steals a session. The server answers probes only once it is **ready** (Spring `ACCEPTING_TRAFFIC`: JPA and the event store up), not as soon as its port is open.
 2. When endpoint 0 has answered every probe for the **stability window** (30 s) plus a random per-instance **jitter** (0–10 s), the bundle switches: new outbound requests are refused (`RequestNotSentException`, safe to retry), the bundle disables itself on the current server, waits up to the **drain timeout** (10 s) for requests in flight in both directions, then closes the session and dials endpoint 0 without backoff. Requests still pending after the drain fail with `BrokerChangedException`.

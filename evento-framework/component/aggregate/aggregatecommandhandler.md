@@ -29,7 +29,7 @@ public @interface AggregateCommandHandler {
 	boolean init() default false;
 
 	/**
-	 * The events a handler that returns DomainEvents may produce (3.0).
+	 * The events a handler that returns DomainEvents may produce.
 	 */
 	Class<? extends DomainEvent>[] produces() default {};
 }
@@ -39,7 +39,7 @@ public @interface AggregateCommandHandler {
 * **`@Target(ElementType.METHOD)`:** This specifies that the annotation can only be applied to method declarations within your Aggregate Root class.
 * **`@Handler`:** This indicates that the annotated method is a handler for domain commands.
 * **`init (default false)`:** This optional parameter allows you to mark a specific command handler as an initializer for the Aggregate. Initializers are responsible for creating a new Aggregate instance.
-* **`produces` (3.0):** for a handler that returns `DomainEvents`, the events it may produce (see [Returning several events](#returning-several-events)).
+* **`produces`:** for a handler that returns `DomainEvents`, the events it may produce (see [Returning several events](#returning-several-events)).
 
 #### Implementing `@AggregateCommandHandler` Methods
 
@@ -116,7 +116,7 @@ The provided code examples showcase two `@AggregateCommandHandler` methods:
 
 ### Returning several events
 
-Since 3.0 a command may produce more than one event: return `DomainEvents.of(...)` and list the event classes in `produces`, so the catalog knows them without running the handler.
+A command may produce more than one event: return `DomainEvents.of(...)` and list the event classes in `produces`, so the catalog knows them without running the handler.
 
 ```java
 @AggregateCommandHandler(init = true, produces = {OrderPlaced.class, DiscountApplied.class})

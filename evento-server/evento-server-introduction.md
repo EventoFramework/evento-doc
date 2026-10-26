@@ -17,7 +17,7 @@ This publish-subscribe pattern decouples applications, promoting loose coupling.
 
 #### Bundle Registration: The Foundation for Execution
 
-Evento Server acts as the central registry for the units that make up your distributed system. These units are known as **bundles**. In Evento v2, a bundle **registers itself at runtime** when it connects to the server over the message bus — there is no JAR upload or static descriptor file. At startup each bundle scans its own bytecode (ASM-based self-discovery) and publishes its discovery metadata to the server, including:
+Evento Server acts as the central registry for the units that make up your distributed system. These units are known as **bundles**. A bundle **registers itself at runtime** when it connects to the server over the message bus — there is no JAR upload or static descriptor file. At startup each bundle scans its own bytecode (ASM-based self-discovery) and publishes its discovery metadata to the server, including:
 
 * **Description:** A short and long-form explanation of the bundle's purpose and functionality (from the bundle configuration and `@EventoDescription` annotations).
 * **RECQ Components and Invocations:** The specific RECQ components encapsulated within the bundle and the commands/queries they invoke, discovered automatically from the code — no separate CLI publish step.
@@ -56,7 +56,7 @@ By analyzing this data, developers gain valuable insights into application behav
 #### Scaling: An External Concern
 
 {% hint style="info" %}
-**Changed in Evento v2.** The built-in autoscaling protocol was removed. Evento Server no longer spawns or kills bundle instances and bundles no longer send "bored"/"suffering" scaling signals. Instead, the framework **emits performance metrics only** (via the telemetry server and Micrometer/Prometheus), and the decision to scale up or down is delegated to your orchestrator — for example Horizontal Pod Autoscaling in Kubernetes, or Nomad — driven by those metrics.
+Evento Server does not spawn or kill bundle instances: the framework **emits performance metrics** (via the telemetry server and Micrometer/Prometheus), and the decision to scale up or down is delegated to your orchestrator — for example Horizontal Pod Autoscaling in Kubernetes, or Nomad — driven by those metrics.
 {% endhint %}
 
 By exposing detailed performance telemetry rather than owning the lifecycle itself, Evento Server stays focused on routing and coordination while leaving elasticity to the platform best suited to it.

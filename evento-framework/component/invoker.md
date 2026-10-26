@@ -153,5 +153,5 @@ The provided `DemoInvoker` class demonstrates how `@Invoker` is used:
 By understanding `@Invoker`, you can effectively design facades that simplify interactions with your Evento applications, adhering to the principles of the RECQ architecture.
 
 {% hint style="info" %}
-**Retrying commands safely (2.5.0).** A command that times out (`RequestTimeoutException`) or whose server changed (`BrokerChangedException`) may or may not have been applied. Send it with an idempotency key — `getCommandGateway().sendIdempotent(command, requestId)` — and retry with the same key: the server answers a duplicate with the stored event instead of running it again. See [Exactly-once Commands](../../evento-server/evento-server-cluster/exactly-once-commands.md).
+**Retrying commands safely.** A command that times out (`RequestTimeoutException`) or whose server changed (`BrokerChangedException`) may or may not have been applied. Send it with an idempotency key — `getCommandGateway().sendIdempotent(command, requestId)` — and retry with the same key: the server answers a duplicate with the stored event instead of running it again. See [Exactly-once Commands](../../evento-server/evento-server-cluster/exactly-once-commands.md).
 {% endhint %}

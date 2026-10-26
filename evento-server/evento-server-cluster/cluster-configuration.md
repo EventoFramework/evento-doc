@@ -25,7 +25,7 @@ Server properties can also be set from the environment with Spring Boot's rule (
 | Property | Default | Meaning |
 |---|---|---|
 | `spring.datasource.url` | `jdbc:postgresql://localhost:5432/evento` | the shared event store; with a PostgreSQL HA pair use a multi-host URL with `targetServerType=primary` |
-| `evento.es.mode` | `CPES` | **must be `CPES` with more than one server**; `APES` is deprecated since 3.0 ([Event Store Modes](../setup-evento-server/evento-event-store-modes-apes-and-cpes.md)) |
+| `evento.es.mode` | `CPES` | **must be `CPES` with more than one server**; `APES` is deprecated ([Event Store Modes](../setup-evento-server/evento-event-store-modes-apes-and-cpes.md)) |
 | `evento.es.append.batch.writers` / `evento.es.append.batch.max-size` | -1 (2 under CPES) / 256 | group commit: appends that arrive together share one statement and one commit; `0` writers turns it off |
 | `evento.server.commands.optimistic` | `true` | aggregate commands run without the lock, protected by the aggregate fence; a command that loses it runs again under the lock |
 | `evento.es.fetch.concurrency` | 4 | concurrent event fetches per server |
@@ -77,7 +77,7 @@ Peak per server: 20 + 10 = **30 connections**. Three servers fit PostgreSQL's de
 | `setHeartbeatReadIdle(Duration)` | 45 s | how long a silent server goes unnoticed |
 | `setDefaultRequestTimeout(Duration)` | 30 s | request timeout, which is also the deadline the server enforces |
 | `setMaxInFlightRequests(int)` | 2048 | outstanding requests per bundle |
-| `setMaxInboundRequests(int)` | 0 (no bound) | requests the bundle handles at once; one more is refused at once with `TooManyPendingRequestsException`, not executed (3.0) |
+| `setMaxInboundRequests(int)` | 0 (no bound) | requests the bundle handles at once; one more is refused at once with `TooManyPendingRequestsException`, not executed |
 | `setServiceCommandOutcomeStore(ServiceCommandOutcomeStore)` | none | exactly-once for keyed service commands (shared by all instances) |
 | `setComponentContexts(Class, String...)` | every context | one consumer engine per context |
 

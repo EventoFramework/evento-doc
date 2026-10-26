@@ -2,7 +2,7 @@
 
 #### Signing In: Username and Password
 
-When you open the Evento GUI, you are greeted by a branded login page. Since Evento Server v2.2, authentication uses a standard **username and password** over **HTTP Basic auth** — there are no tokens to generate, no application logs to scrape, and no token expiry.
+When you open the Evento GUI, you are greeted by a branded login page. Authentication uses a standard **username and password** over **HTTP Basic auth** — there are no tokens to generate, no application logs to scrape, and no token expiry.
 
 <figure><img src="../.gitbook/assets/image (52).png" alt=""><figcaption><p>The Evento GUI login page</p></figcaption></figure>
 
