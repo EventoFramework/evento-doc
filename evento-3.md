@@ -11,7 +11,7 @@ description: Everything Evento 3 gives you, in one page
 * **Seven RECQ components**, each an annotated Java class: [Aggregates](evento-framework/component/aggregate/README.md), [Services](evento-framework/component/service/README.md), [Projectors](evento-framework/component/projector/README.md), [Projections](evento-framework/component/projection/README.md), [Sagas](evento-framework/component/saga/README.md), [Observers](evento-framework/component/observer.md) and [Invokers](evento-framework/component/invoker.md). Bundles announce their components to the server on their own: no deployment descriptors.
 * **Commands, events and queries** as plain payload classes, with [versioning and upcasting](evento-framework/payload-and-messages/payload-versioning.md): a class can change shape or name and the history written with the old one is still read.
 * **Several events from one command**, stored atomically ([returning several events](evento-framework/component/aggregate/aggregatecommandhandler.md#returning-several-events)).
-* **Any Java stack**: plain Java, Spring, Micronaut or Quarkus; a [Spring Boot starter](evento-framework/eventobundle/spring-boot-starter.md) for Boot 4 and 3.5. Client libraries need Java 21; the server runs on Java 25 with virtual threads.
+* **Any Java stack**: plain Java, Spring, Micronaut or Quarkus; a [Spring Boot starter](evento-framework/eventobundle/spring-boot-starter.md) for Boot 4 and 3.5. Everything runs on Java 25 with virtual threads.
 
 ## Correct under failure
 

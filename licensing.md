@@ -18,6 +18,6 @@ All of Evento is public, with every feature: the server, the web console with [s
 
 The Commons Clause makes the server source-available rather than open source in the sense of the Open Source Definition; the client libraries are not affected by it.
 
-The client libraries run on **Java 21** or later; the server image ships its own JVM.
+The client libraries run on **Java 25** or later; the server image ships its own JVM.
 
 The full texts are in the repository: [LICENSE.txt](https://github.com/EventoFramework/evento-framework/blob/main/LICENSE.txt) (which module has which licence, and what is allowed), [LICENSE-COMMERCIAL.txt](https://github.com/EventoFramework/evento-framework/blob/main/LICENSE-COMMERCIAL.txt) (the authorisation agreement), [TRADEMARKS.md](https://github.com/EventoFramework/evento-framework/blob/main/TRADEMARKS.md). Contributions are accepted under the [Contributor License Agreement](https://github.com/EventoFramework/evento-framework/blob/main/CLA.md).

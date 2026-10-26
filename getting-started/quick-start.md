@@ -62,7 +62,7 @@ Bundles register themselves with the server at runtime over the message bus — 
 To develop RECQ components you need the [Broken link](/broken/pages/nTG67pbLHFvPaevz3gWh "mention") Bundle Library.
 
 {% hint style="danger" %}
-Since Evento 3.0 the client libraries (`evento-bundle` and the others your application depends on) require [Java 21](https://openjdk.org/projects/jdk/21/) or newer; the Evento Server image ships its own JVM (Java 25).
+The client libraries (`evento-bundle` and the others your application depends on) require [Java 25](https://openjdk.org/projects/jdk/25/) or newer; the Evento Server image ships its own JVM.
 {% endhint %}
 
 You can find the library on [Maven Central](https://central.sonatype.com/):  [https://central.sonatype.com/artifact/com.eventoframework/evento-bundle](https://central.sonatype.com/artifact/com.eventoframework/evento-bundle)

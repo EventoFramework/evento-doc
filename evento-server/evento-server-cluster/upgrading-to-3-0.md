@@ -32,7 +32,7 @@ Deploy them only once every server is on 3.0.
 
 The client libraries (`evento-bundle`, `evento-common`, the transports, the consumer state store) changed what they bring into your application:
 
-* **Java 21 or later** is enough for them (the server needs 25).
+* **Java 25 or later**, as for 2.x.
 * **Logging goes through SLF4J only.** The libraries no longer bring Log4j: an application that relied on it (directly, or through a `log4j2.xml` it never declared a dependency for) must add its own SLF4J backend (Logback, `log4j-slf4j2-impl`...) or it logs nothing. Spring Boot applications already have one.
 * **`hibernate-validator` is no longer pulled in** by `evento-bundle`. If your code uses `jakarta.validation` through it, declare it yourself, or the build fails.
 * A payload that cannot be serialized now **fails the send** with an `IllegalArgumentException` that names the class; 2.5 logged the error and sent a null payload.

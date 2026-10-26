@@ -99,7 +99,7 @@ try (var broker = EventoTestBroker.start()) {
 }
 ```
 
-* **`EventoServerContainer`** (`evento-test`, with Testcontainers in the test's dependencies): the real server image, on a PostgreSQL the test starts. The full server (persistence, locks, web console API), out of process: it works with tests on Java 21 and any Spring Boot version.
+* **`EventoServerContainer`** (`evento-test`, with Testcontainers in the test's dependencies): the real server image, on a PostgreSQL the test starts. The full server (persistence, locks, web console API), out of process: it works with tests on an older JDK and any Spring Boot version.
 
 ```java
 var network = Network.newNetwork();

@@ -13,7 +13,7 @@ A framework that promises exactly-once commands, failover and consumers that nev
 * unit and integration tests over **real TCP connections**, not mocks, between bundles and servers;
 * the event store, the catalog and the consumer state store against **PostgreSQL 16 and 17 and MySQL 8.4**, in containers;
 * multi-server tests: several complete servers on one database, bundles moving between them, stale sessions, concurrent discoveries;
-* the client libraries on **Java 21** as well as Java 25, and the Spring Boot starter on Boot 4 and 3.5;
+* the Spring Boot starter on Boot 4 and 3.5;
 * a containerised server started from the image that is released.
 
 ## Chaos lab: three regions, nineteen scenarios
