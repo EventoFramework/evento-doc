@@ -104,7 +104,7 @@ try (var broker = EventoTestBroker.start()) {
 ```java
 var network = Network.newNetwork();
 var postgres = new PostgreSQLContainer<>("postgres:16").withNetwork(network).withNetworkAliases("pg");
-var evento = new EventoServerContainer()   // ghcr.io/eventoframework/evento-server:<this version>
+var evento = new EventoServerContainer()   // eventoframework/evento-server:<this version>
         .withNetwork(network)
         .withDatabase("jdbc:postgresql://pg:5432/" + postgres.getDatabaseName(),
                 postgres.getUsername(), postgres.getPassword())
