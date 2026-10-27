@@ -4,7 +4,7 @@ description: Bus authentication and TLS, payload allowlist, and the production p
 
 # Security
 
-Evento's hardening is opt-in in 2.x, so existing deployments keep working. Since Evento **3.0** a single property tells the server whether it runs in development or in production, and refuses to start in production while a piece of hardening is missing.
+A single property tells the server whether it runs in development or in production, and the server refuses to start in production while a piece of hardening is missing.
 
 ## The security profile
 
@@ -73,10 +73,54 @@ TLS authenticates the channel, the token authorizes the bundle: production uses 
 
 ## Payload allowlist
 
-Evento stores and transmits payloads with their class name, and Jackson instantiates the class it reads. Left open (the 2.x default), any `Serializable` class on the classpath can be named, which is the classic deserialization gadget risk. Restrict it to your packages:
+Evento stores and transmits payloads with their class name, and Jackson instantiates the class it reads. Left open, any `Serializable` class on the classpath can be named, which is the classic deserialization gadget risk. Restrict it to your packages:
 
 ```properties
 EVENTO_SERIALIZATION_ALLOWED_PACKAGES=com.acme.orders,com.acme.shared.api
 ```
 
 Then only `com.evento.*`, the JDK value types (`java.util`, `java.time`, `java.math`) and those packages are accepted; anything else is refused before its class is loaded. The server needs it too, since it reads stored payloads. On a bundle, `setRestrictPayloadTypes(true)` allows its base package, and `setAllowedPayloadPackages(...)` more (starter: `evento.bundle.serialization.*`).
+
+## A complete example: the live demo
+
+The [live demo](https://www.eventoframework.com/demo/) runs the `prod` profile in public, with one Docker Compose file ([`docker-compose.prod.yml`](https://github.com/EventoFramework/evento-www/blob/main/docker-compose.prod.yml)). The server:
+
+```yaml
+evento-server:
+  image: eventoframework/evento-server:3.0.0
+  environment:
+    EVENTO_SERVER_SECURITY_PROFILE: prod
+    EVENTO_SERVER_BUS_AUTH_TOKEN: ${EVENTO_BUS_TOKEN}            # openssl rand -hex 32
+    EVENTO_SERVER_BUS_TLS_ENABLED: "true"
+    EVENTO_SERVER_BUS_TLS_CERT_CHAIN: /certs/bus.crt
+    EVENTO_SERVER_BUS_TLS_PRIVATE_KEY: /certs/bus.key           # PKCS#8
+    EVENTO_SERIALIZATION_ALLOWED_PACKAGES: com.eventoframework.demo.todo
+    EVENTO_SERVER_WEB_CORS_ALLOWED_ORIGINS: https://gui.eventoframework.com
+    EVENTO_SERVER_PERSONAL_DATA_MASTER_KEY: ${EVENTO_PERSONAL_DATA_MASTER_KEY}   # openssl rand -base64 32
+    spring_datasource_password: ${DEMO_DB_PASSWORD}
+    SPRING_SECURITY_USER_NAME: guest
+    SPRING_SECURITY_USER_PASSWORD: ${GUI_PASSWORD}
+    SPRING_SECURITY_USER_ROLES: WEB                               # reads the console, changes nothing
+  volumes:
+    - ./deploy/tls:/certs:ro
+```
+
+and the bundle, a Spring Boot application with the starter:
+
+```properties
+evento.bundle.servers=evento-server:3030
+evento.bundle.auth-token=${EVENTO_BUNDLE_AUTH_TOKEN}
+evento.bundle.tls.enabled=true
+evento.bundle.tls.trust-certs=/certs/bus.crt
+evento.bundle.serialization.restrict=true
+```
+
+The bus is reachable only on the Compose network, so a self-signed certificate for the internal name `evento-server` is enough:
+
+```bash
+openssl req -x509 -newkey rsa:3072 -nodes -days 3650 -subj "/CN=evento-server" \
+  -addext "subjectAltName=DNS:evento-server" -keyout bus-rsa.key -out bus.crt
+openssl pkcs8 -topk8 -nocrypt -in bus-rsa.key -out bus.key
+```
+
+The server logs `event=security_profile profile=prod checks=passed` and `event=bus_tls_enabled` when it starts. The public guest can read every page of the console; a change it attempts is refused (403) and recorded in the [audit trail](../../evento-gui/gui-auth.md).
