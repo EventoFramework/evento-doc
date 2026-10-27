@@ -73,7 +73,7 @@ EventoBundle.Builder.builder()
     .setFailbackDrainTimeout(Duration.ofSeconds(10))
 ```
 
-`setFailbackEnabled(false)` restores the 2.4 behaviour (stay on the fallback until the session drops).
+`setFailbackEnabled(false)` keeps a bundle on the fallback until its session drops.
 
 {% hint style="info" %}
 **Fail-back needs the address list.** With a single address behind a load balancer (a VIP with the active server as primary and the others as backup), new connections go back to the primary, but sessions already open on a backup stay there: the bundle has no "endpoint 0" to probe. Restart the bundles left on the backup, or prefer the list.

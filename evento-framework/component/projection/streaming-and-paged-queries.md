@@ -45,7 +45,7 @@ queryGateway.stream(query, QueryOptions.defaults()
 * The **timeout** of a stream bounds each wait for the next frame, not the whole stream: a long export that keeps flowing does not time out.
 * **Closing** the stream early (leaving the `for`, an exception), the caller disconnecting, the answering bundle disconnecting, or a caller that stops granting credit for the timeout: each ends the stream on both sides and closes the handler's source.
 * A failure of the handler while streaming surfaces as a `QueryStream.QueryStreamException` thrown by the iteration.
-* A handler that cannot stream (a bundle older than 3.0, or a session through a 2.5 server) answers whole, and the stream simply iterates that answer: callers can adopt `stream` before every bundle is upgraded.
+* A handler that cannot stream answers whole, and the stream simply iterates that answer: callers can adopt `stream` before every handler does.
 
 ## Producing lazily: `Streamed<View>`
 
@@ -120,8 +120,7 @@ The server does not keep query answers at all (queries are idempotent reads: a c
 
 | Mode | Caller time | Server heap retained afterwards | Server CPU |
 |---|---|---|---|
-| Classic answer, 2.5 | 634 ms | 65 MiB (kept for replay) | 266 ms |
-| Classic answer, 3.0 | 602 ms | ~0 | 281 ms |
+| Classic answer | 602 ms | ~0 | 281 ms |
 | Stream through the server | 243 ms | ~0 | 547 ms |
 | Direct stream | 153 ms | 0 | 0 |
 

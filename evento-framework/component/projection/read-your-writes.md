@@ -60,7 +60,7 @@ Tokens combine with `merge`.
 * The answering bundle **wakes its projectors** instead of letting them finish their idle pause, so the wait is about the time it takes to process the event, not the polling interval. When another instance holds the projector's lane, it reads the shared checkpoint.
 * If the projectors do not catch up, the query fails with `ConsistencyTimeoutException` (naming the projector that lagged) just before the caller's deadline, rather than answer stale.
 * With projectors dispatched to an [executor](../../eventobundle/parallel-consumers.md) (`@EventHandler(executor = …)`), the guarantee needs `CheckpointMode.WATERMARK`: by default the checkpoint advances when a task starts, not when it completes.
-* A gateway implementation written before 3.0 refuses a consistency requirement (and `sendTracked`) instead of silently ignoring it.
+* A gateway implementation that does not support it refuses a consistency requirement (and `sendTracked`) instead of silently ignoring it.
 
 {% hint style="info" %}
 Read-your-writes waits only for **projectors**. It does not make a federated query (a query handler that asks other queries) consistent across services: see the warning in [@QueryHandler](queryhandler.md).

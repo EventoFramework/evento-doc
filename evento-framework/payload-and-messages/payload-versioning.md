@@ -23,7 +23,7 @@ This is the strategy of Axon Framework (`@Revision` + an upcaster chain applied 
 
 ## Declaring a revision
 
-Annotate the payload class with `@Revision(n)`. A class without the annotation is revision `0`, and so is everything written before 3.0: existing stores need no migration.
+Annotate the payload class with `@Revision(n)`. A class without the annotation is revision `0`, and so is everything already stored: existing stores need no migration.
 
 ```java
 import com.evento.common.versioning.Revision;

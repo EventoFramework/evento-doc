@@ -49,7 +49,7 @@ Register the console at the provider as a confidential web client with the redir
 #### Roles
 
 * `WEB` reads the console: dashboard, catalog, flows, cluster status, consumers, event store.
-* `ADMIN` is needed for every change: retrying, deleting or replaying dead events, and removing a bundle from the catalog (`DELETE /api/bundle/{id}`, which before 3.0 needed only `WEB`).
+* `ADMIN` is needed for every change: retrying, deleting or replaying dead events, and removing a bundle from the catalog (`DELETE /api/bundle/{id}`).
 
 The Basic user gets both roles; with OIDC they come from the provider's groups.
 

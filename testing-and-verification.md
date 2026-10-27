@@ -8,7 +8,7 @@ A framework that promises exactly-once commands, failover and consumers that nev
 
 ## Automated test suite
 
-**1,130 automated tests**, run on every change by continuous integration:
+**1,135 automated tests**, run on every change by continuous integration:
 
 * unit and integration tests over **real TCP connections**, not mocks, between bundles and servers;
 * the event store, the catalog and the consumer state store against **PostgreSQL 16 and 17 and MySQL 8.4**, in containers;
@@ -46,7 +46,7 @@ On Evento 3 every invariant holds in every scenario. During a region partition t
 
 ## Rolling upgrades
 
-The same lab runs servers and bundles of the previous release line and of Evento 3 together, in every order, and upgrades a running cluster one server and one bundle at a time on a database created by the previous release. Every step keeps the invariants above.
+The same lab runs servers and bundles of different versions together, in every order, and upgrades a running cluster one server and one bundle at a time on a database that already holds data. Every step keeps the invariants above.
 
 ## Highly available consumers
 
@@ -54,8 +54,40 @@ One consumer per context, each in **three replicas** with their own connection p
 
 ## Real applications
 
-Before release, Evento 3 ran the full test suites of two production systems built on it: a marketplace (1,382 tests, and a clean start on an empty database with its data seeders) and a manufacturing-execution system (153 end-to-end tests across eleven services, all passing on the first run).
+Before release, Evento 3 ran the full test suites of two production systems built on it: a marketplace (1,385 tests, and a clean start on an empty database with its data seeders) and a manufacturing-execution system (153 end-to-end tests across eleven services).
+
+## Benchmarks
+
+Tests say that nothing breaks; benchmarks say what it costs. Each number below was measured on Evento 3 and can be reproduced from the repository.
+
+**Write throughput.** One server on a 4-core machine with PostgreSQL (CPES, the default event-store mode, with group commit) stores about **3,900 commands a second**, each creating a new aggregate, with 128 commands in flight and a p99 latency of about 60 ms. APES, the deprecated mode, is no faster on one server.
+
+**Command latency, phase by phase.** Every aggregate command is timed by the server from its arrival to its reply (queue, lock, history, handler, append, reply), and the same timers are exported as metrics in production.
+
+| Where the command runs | p50 | p95 | p99 |
+|---|---:|---:|---:|
+| One machine, existing aggregate, 1 command in flight | 7.2 ms | 10.6 ms | 18.7 ms |
+| One machine, existing aggregate, 8 in flight | 19.3 ms | 22.2 ms | 27.3 ms |
+| Lab, Europe (event-store primary in the region) | 97 ms | 175 ms | 249 ms |
+| Lab, Americas (80 ms from the primary) | 595 ms | 752 ms | 821 ms |
+| Lab, Asia-Pacific (150 ms from the primary) | 1,008 ms | 1,234 ms | 1,459 ms |
+
+On one machine the time goes mostly to the commit of the append. Across regions it is the number of round trips to the event-store primary times the distance, with a synchronous replica in another region: which is why a write-heavy context belongs in the region of its primary (see [Cells and Locality](evento-server/evento-server-cluster/cells-and-locality.md)).
+
+**Synchronous replication across availability zones.** With a synchronous standby 10 ms away, every commit waits for the standby, and under CPES the global append lock waits with it. Measured, this is the one case where APES stores more commands a second, and it needs several servers, where APES is unsafe for consumers: hence CPES as the default and APES deprecated (see [Event Store Modes](evento-server/setup-evento-server/evento-event-store-modes-apes-and-cpes.md)).
+
+**What a query answer costs the server**, for a single 64 MiB answer:
+
+| Mode | Caller time | Server heap kept afterwards | Server CPU |
+|---|---:|---:|---:|
+| Classic answer | 602 ms | ~0 | 281 ms |
+| Stream through the server | 243 ms | ~0 | 547 ms |
+| Direct stream between bundles | 153 ms | 0 | 0 |
+
+The server keeps no query answer once it is delivered, and streaming carries a large answer in less than half the time (see [Streaming and Paged Queries](evento-framework/component/projection/streaming-and-paged-queries.md)).
+
+**Measured in the chaos lab too:** the WAN latency sweep raises the latency between regions step by step and checks that every invariant still holds, and the watermark scenario measures what keeping consumers aligned costs a server under load.
 
 ## Reproduce it
 
-Everything above lives in the [framework repository](https://github.com/EventoFramework/evento-framework): the test suites, the chaos lab (`evento-lab-cluster`, with the reports of each run under `results/`) and the microservices lab (`evento-lab-microservices`).
+Everything above lives in the [framework repository](https://github.com/EventoFramework/evento-framework): the test suites, the chaos lab (`evento-lab-cluster`, with the reports of each run under `results/`), the microservices lab (`evento-lab-microservices`) and the benchmarks (`QueryPathBenchmarkIT` and `CommandLatencyBenchmarkIT` in `evento-server`, run with `EVENTO_RUN_BENCH=true`, and the write-throughput harness under `benchmarks/`).
