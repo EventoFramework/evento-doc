@@ -6,7 +6,7 @@ description: Consuming events in parallel with bounded executors
 
 By default a consumer is strictly sequential: it fetches a batch of events, hands one to the handler, **waits for it to return**, records the checkpoint, and moves on. That is the right default — it makes ordering and delivery guarantees simple — but it means throughput is capped by handler latency, even for handlers whose effect does not depend on order.
 
-Since Evento **2.4.0** an `@EventHandler` can name a *consumer executor* and be dispatched to it, so events are handled **in parallel** up to that executor's capacity.
+An `@EventHandler` can name a *consumer executor* and be dispatched to it, so events are handled **in parallel** up to that executor's capacity.
 
 ## Declaring an executor
 

@@ -6,7 +6,7 @@ description: Large query answers without filling the Evento Server's memory
 
 A classic query answer travels as **one message**: the projection builds the whole `Multiple<View>`, the Evento Server receives it whole and forwards it whole, and the caller holds it whole before it can read the first view. For a few kilobytes that is the right trade-off; for an export of hundreds of megabytes it means the whole result sits in the memory of three processes at once, the server among them.
 
-Since Evento **2.6** queries have three more options, which can be combined:
+Since Evento **3.0** queries have three more options, which can be combined:
 
 * **Streamed queries** — the caller pulls the views as it consumes them, with flow control end to end: no hop ever holds more than a small window of the result.
 * **Direct streams** — the views travel from the answering bundle to the caller on a direct connection, and never cross the Evento Server.
@@ -45,7 +45,7 @@ queryGateway.stream(query, QueryOptions.defaults()
 * The **timeout** of a stream bounds each wait for the next frame, not the whole stream: a long export that keeps flowing does not time out.
 * **Closing** the stream early (leaving the `for`, an exception), the caller disconnecting, the answering bundle disconnecting, or a caller that stops granting credit for the timeout: each ends the stream on both sides and closes the handler's source.
 * A failure of the handler while streaming surfaces as a `QueryStream.QueryStreamException` thrown by the iteration.
-* A handler that cannot stream (a bundle older than 2.6, or a session through a 2.5 server) answers whole, and the stream simply iterates that answer: callers can adopt `stream` before every bundle is upgraded.
+* A handler that cannot stream answers whole, and the stream simply iterates that answer: callers can adopt `stream` before every handler does.
 
 ## Producing lazily: `Streamed<View>`
 
@@ -116,12 +116,11 @@ Answers of 32 KiB or more are compressed end to end (DEFLATE) when that saves at
 
 ## Why: what an answer costs the server
 
-Since 2.6 the server does not keep query answers at all (queries are idempotent reads: a caller that lost its session simply asks again), and its memory buffers are bounded in bytes. Measured on one server for a single 64 MiB answer:
+The server does not keep query answers at all (queries are idempotent reads: a caller that lost its session simply asks again), and its memory buffers are bounded in bytes. Measured on one server for a single 64 MiB answer:
 
 | Mode | Caller time | Server heap retained afterwards | Server CPU |
 |---|---|---|---|
-| Classic answer, 2.5 | 634 ms | 65 MiB (kept for replay) | 266 ms |
-| Classic answer, 2.6 | 602 ms | ~0 | 281 ms |
+| Classic answer | 602 ms | ~0 | 281 ms |
 | Stream through the server | 243 ms | ~0 | 547 ms |
 | Direct stream | 153 ms | 0 | 0 |
 

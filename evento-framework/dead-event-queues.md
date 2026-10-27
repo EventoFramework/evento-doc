@@ -4,7 +4,7 @@ Consistent consumers (Projectors, Sagas, and Observers) process events from the 
 
 ## Permanent vs Transient Failures
 
-Since Evento **2.1.1** the consumer engine distinguishes two kinds of handler failure:
+The consumer engine distinguishes two kinds of handler failure:
 
 * **Permanent failures** (a bug, invalid data, a violated invariant): the event is moved to the consumer's **dead event queue** together with the exception, and the consumer advances past it. This protects liveness — one poison event cannot stall the stream.
 * **Transient failures** (a downed collaborator, a connection timeout, a refused or reset connection): dead-lettering these would silently *lose* work that would have succeeded moments later. Instead, the consumer's checkpoint is left in place and the event is **redelivered with exponential backoff** until the dependency recovers. Exactly-once processing is preserved across the retries by the dedupe store.

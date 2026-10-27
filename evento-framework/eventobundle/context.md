@@ -27,7 +27,7 @@ return new DemoCreatedEvent(
 In this example, the context is read from the `metadata` accompanying the command and assigned to the newly created `DemoCreatedEvent`. The context is just a `String` you compute yourself — from metadata, from the command's data, or a constant. When no context is set, events belong to the default context (`com.evento.common.utils.Context.DEFAULT`); consumers subscribed to `Context.WILDCARD` (`"*"`) receive events from every context.
 
 {% hint style="warning" %}
-`*` is the **only** wildcard. `Context.ALL` is a deprecated alias of `Context.WILDCARD` (since 2.5.0): it is `"*"`, not a context named `"ALL"`. The literal string `"ALL"` is an ordinary context — a natural name for events every region needs — and a consumer configured with `"ALL"` reads only events whose context is `"ALL"`. Since 2.5.0 servers match `_` and `%` in context names literally (before, `SUD_AMERICA` also matched `SUDXAMERICA`).
+`*` is the **only** wildcard. `Context.ALL` is a deprecated alias of `Context.WILDCARD`; it is `"*"`, not a context named `"ALL"`. The literal string `"ALL"` is an ordinary context — a natural name for events every region needs — and a consumer configured with `"ALL"` reads only events whose context is `"ALL"`. Servers match `_` and `%` in context names literally: `SUD_AMERICA` does not match `SUDXAMERICA`.
 {% endhint %}
 
 **Context and Event Partitioning:**

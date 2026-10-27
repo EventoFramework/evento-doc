@@ -49,6 +49,10 @@ services:
     depends_on:
       - database  # Ensure database is ready before starting Evento Server
     environment:
+      # A local try-out. The server refuses to start without a bus token, bus TLS, a
+      # payload allowlist, non-default passwords and explicit CORS origins: set those for
+      # production (see Security) and remove this line.
+      - EVENTO_SERVER_SECURITY_PROFILE=dev
       - evento_cluster_name=evento-server  # Set your cluster name
       - evento_performance_capture_rate=0.1  # Capture telemetry data every 0.1 seconds (adjust as needed)
       - evento_telemetry_ttl=365  # Keep telemetry data for a year
@@ -63,9 +67,9 @@ services:
 ```
 
 {% hint style="info" %}
-**Changed in Evento v2.** Bundles are no longer uploaded to the server as JARs. They register themselves at runtime over the message bus (self-discovery), so there is no upload directory, no `privileged: true`, and no deployment script. Deploying and scaling bundle instances is owned by your orchestrator (e.g. Kubernetes or Nomad).
+Bundles are not uploaded to the server: they register themselves at runtime over the message bus (self-discovery), so there is no upload directory, no `privileged: true`, and no deployment script. Deploying and scaling bundle instances is owned by your orchestrator (e.g. Kubernetes or Nomad).
 {% endhint %}
 
 {% hint style="info" %}
-**Running more than one server?** All instances share the same database and the same `evento_cluster_name`, and each needs a unique `evento_cluster_node_server_id`. Since 2.5.0 the first server to boot migrates the schema; size PostgreSQL `max_connections` for 30 connections per server. See [Evento Server Cluster](../evento-server-cluster/README.md).
+**Running more than one server?** All instances share the same database and the same `evento_cluster_name`, and each needs a unique `evento_cluster_node_server_id`. The first server to boot migrates the schema; size PostgreSQL `max_connections` for 30 connections per server. See [Evento Server Cluster](../evento-server-cluster/README.md).
 {% endhint %}

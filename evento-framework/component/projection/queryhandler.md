@@ -33,8 +33,8 @@ A well-structured `@QueryHandler` method typically adheres to the following patt
 3. **Return Type:** The return type of the `@QueryHandler` method is the `QueryResponse` declared by the query:
    * `Single<View>`: Used for queries that expect a single response object of a specific view type (e.g., `DemoView`).
    * `Multiple<View>`: Used for queries that expect a collection of view objects of a specific type (e.g., retrieving a list of `DemoView` objects).
-   * `Page<View>` (2.6): One page of a larger result, by page number or by cursor. See [Streamed and Paged Queries](streaming-and-paged-queries.md).
-   * `Streamed<View>` (2.6): A lazy result, produced only as fast as a streaming caller consumes it (an export, a database cursor). See [Streamed and Paged Queries](streaming-and-paged-queries.md).
+   * `Page<View>`: One page of a larger result, by page number or by cursor. See [Streamed and Paged Queries](streaming-and-paged-queries.md).
+   * `Streamed<View>`: A lazy result, produced only as fast as a streaming caller consumes it (an export, a database cursor). See [Streamed and Paged Queries](streaming-and-paged-queries.md).
 
 {% hint style="info" %}
 Any query, whatever its handler returns, can be consumed as a stream by the caller with `QueryGateway.stream(...)`, and can require to reflect a command just sent with `QueryOptions.after(token)`: see [Streamed and Paged Queries](streaming-and-paged-queries.md) and [Read Your Writes](read-your-writes.md). A query asked by the same bundle that handles it is answered in process, with the same tracing and metrics as a remote one.

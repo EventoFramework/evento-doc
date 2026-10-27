@@ -1,43 +1,34 @@
 # Evento Event Store Modes: APES and CPES
 
-The Evento Event Store operates in two distinct modes: APES (Available and Partitionable Event Store) and CPES (Consistent and Partitionable Event Store). These modes are fundamentally different in their approach to event sequencing and consistency, each with its own trade-offs.
+The event store numbers every event it stores; consumers read events in that order and remember the last number they processed. `evento.es.mode` chooses how the numbers are made. **CPES is the default and the mode to use. APES is deprecated.**
 
-#### APES Mode
+#### CPES Mode (default)
 
-APES prioritizes availability and partition tolerance. It employs a [snowflake algorithm](https://en.wikipedia.org/wiki/Snowflake\_ID) to generate event sequence numbers. To mitigate potential inconsistencies due to network latency and clock skew, a "fetch delay" mechanism is introduced. This delay ensures that events are not fetched immediately after creation, allowing for sufficient time for synchronization across the cluster.
+CPES (Consistent and Partitionable Event Store) takes consecutive numbers from one PostgreSQL sequence, under a global advisory lock held until the commit. The order of the numbers is therefore the order of the commits, on any number of servers: a consumer reads every event as soon as it is committed, with no delay and without ever skipping one.
 
-**Key Characteristics:**
+Appends that arrive together are written in one statement and one transaction (group commit): the batch takes the lock once and its events get consecutive numbers, so the lock no longer limits throughput the way one commit per event did. On a 4-core machine one server stores about 3,900 commands a second (one new aggregate each, 128 in flight, p99 about 60 ms).
 
-* **High Availability:** APES can tolerate failures and continue to process events.
-* **Eventual Consistency:** Eventual consistency guarantees that all replicas will eventually converge to the same state, but there might be temporary inconsistencies.
-* **Performance:** APES generally offers higher performance due to the lack of strict consistency guarantees.
-* **Use Cases:** Ideal for applications that can tolerate some degree of eventual inconsistency and prioritize high throughput.
+#### APES Mode (deprecated)
 
-#### CPES Mode
+APES (Available and Partitionable Event Store) numbers events with [Snowflake ids](https://en.wikipedia.org/wiki/Snowflake\_ID) taken by each server from its own clock, and commits in parallel. Because an id is taken before its commit, a consumer cannot read up to the newest id it sees: it reads only ids older than `evento.es.fetch.delay` (69 ms), and an event whose commit comes later than that after its id was taken is **skipped** by consumers that already read past it. With several servers the ids also come from several clocks and from node ids derived from the MAC address.
 
-CPES emphasizes strong consistency and partition tolerance. It utilizes an auto-increment sequence shared across all cluster nodes to generate unique event identifiers. This ensures strict ordering of events across the system.
+#### Why APES is deprecated
 
-**Key Characteristics:**
+Measured in 3.0 (benchmarks B1 and B2 in the Evento repository, `benchmarks/axon-comparison`):
 
-* **Strong Consistency:** Events are processed in the exact order they are generated, providing strong consistency guarantees.
-* **Limited Availability:** In high-load scenarios, CPES might experience reduced availability due to contention for the sequence number.
-* **Performance:** CPES typically has lower throughput compared to APES due to the overhead of maintaining strong consistency.
-* **Use Cases:** Suitable for applications that require strict data integrity and are willing to sacrifice some performance for consistency.
+* **On one server APES is no faster.** With group commit CPES stores as many commands a second (3,907 against 3,852 at 128 in flight) and has the better tail latency when commands share aggregates.
+* **APES is faster only with synchronous replication across availability zones.** PostgreSQL releases a transaction's locks only after the synchronous standby has confirmed it, so under CPES every batch holds the global lock for the standby's round trip too. With 10 ms between zones APES stored 2 to 3 times more commands a second at low concurrency.
+* **That case needs several servers, where APES is unsafe** for consumers, for the reasons above.
 
-#### CAP Theorem and Trade-offs
+Where APES is safe it brings nothing, and where it brings something it is not safe. It still works; it will be removed in a later major version. A server started in APES logs `event=es_mode_deprecated`.
 
-The choice between APES and CPES is influenced by the CAP theorem (Consistency, Availability, Partition Tolerance), which states that it's impossible for a distributed system to simultaneously guarantee all three properties.
+#### Moving an APES store to CPES
 
-* **APES:** Prioritizes Availability and Partition Tolerance, sacrificing strong Consistency.
-* **CPES:** Prioritizes Consistency and Partition Tolerance, sacrificing Availability in high-load scenarios.
+1. Stop **every** server.
+2. Start them with `evento.es.mode=CPES`.
 
-#### Choosing the Right Mode
+The first CPES server finds the sequence behind the newest stored number and moves it above (under the global lock, logged `event=es_mode_switched`). New events then sort after every APES event, and consumer checkpoints stay valid. On a store CPES has always numbered nothing happens.
 
-Selecting the appropriate Event Store mode depends on the specific requirements of your application:
-
-* **High throughput and acceptable eventual consistency:** APES is the preferred choice.
-* **Strict data integrity and consistency:** CPES is the recommended option.
-
-It's essential to carefully evaluate the trade-offs between consistency, availability, and performance to make an informed decision. In some cases, it might be possible to combine elements of both modes through hybrid approaches or application-level compensating transactions.
-
-By understanding the fundamental differences between APES and CPES, you can select the optimal Event Store mode for your Evento application.
+{% hint style="warning" %}
+Never run APES and CPES servers on the same store: an APES server takes ids millions above the numbers CPES gives, and a CPES consumer that read one of them skips the CPES events committed below it. If the newest id is less than a minute old at the switch, the server logs `event=es_mode_switch_while_apes_active` (ERROR): check that no APES server is still running.
+{% endhint %}

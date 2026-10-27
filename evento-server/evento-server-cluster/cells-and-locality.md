@@ -65,7 +65,7 @@ EventoBundle.Builder.builder()
     .setComponentContexts(OrderProjector.class, "EUROPA", "AFRICA", "ALL")
 ```
 
-`setComponentContexts` starts **one consumer engine per context** (own consumer id, checkpoint and lock). Use **one generic component and configuration-driven contexts**, not one class per region. `*` (`Context.WILDCARD`) is the only wildcard and reads every context; `"ALL"` is an ordinary context name, a natural choice for events that every region needs (a price list), consumed by one global lane. Since 2.5.0 `_` and `%` in context names are matched literally (`SUD_AMERICA` no longer matches `SUDXAMERICA`).
+`setComponentContexts` starts **one consumer engine per context** (own consumer id, checkpoint and lock). Use **one generic component and configuration-driven contexts**, not one class per region. `*` (`Context.WILDCARD`) is the only wildcard and reads every context; `"ALL"` is an ordinary context name, a natural choice for events that every region needs (a price list), consumed by one global lane. `_` and `%` in context names are matched literally (`SUD_AMERICA` does not match `SUDXAMERICA`).
 
 ## Sizing and limits
 

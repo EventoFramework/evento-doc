@@ -3,7 +3,7 @@
 The in-memory consumer state implementation keeps all consumer state — checkpoints, locks, saga instances, dead events, and dedupe windows — in concurrent in-process collections. Because nothing is persisted, state is lost on application restart, which makes it ideal for development, tests, and demos where durability is not a concern.
 
 {% hint style="warning" %}
-**Changed in Evento v2.** There is no longer a single `InMemoryConsumerStateStore` class wired via `setConsumerStateStoreBuilder`. The in-memory backing is now the set of in-memory implementations of the five consumer SPIs, composed for you by `ConsumerEngineConfig.inMemory(...)`. See [ConsumerStateStore](README.md) for the SPI overview.
+The in-memory backing is the set of in-memory implementations of the five consumer SPIs, composed for you by `ConsumerEngineConfig.inMemory(...)`. See [ConsumerStateStore](README.md) for the SPI overview.
 {% endhint %}
 
 ## In-memory implementations (`evento-common`)

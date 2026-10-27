@@ -27,6 +27,10 @@ Think of a restaurant order. The order itself (**Message**) specifies what's bei
 * **Data-Centric:** Payloads primarily focus on data representation. They don't contain any logic or functionality themselves. The receiving component interprets the data within the payload to perform the desired action or fulfill the request.
 * **Serialization:** Evento Framework might utilize serialization mechanisms (like converting payloads to a byte stream) for efficient storage or transmission within messages.
 
+{% hint style="warning" %}
+**Payload classes must be top-level classes, and their simple names unique in a system.** Evento routes a payload by its class name without the package (the part after the last dot): that name is the key of the handler registry on the server, in the catalog, in the event store (`event_name`) and on the wire. A nested class (`Order.Created`, whose binary name is `Order$Created`) does not match the name its handler registered (`Created`), so it is never routed. This will not change: routing by another name would change the key of every stored event and of every running bundle at once. Use top-level classes; two payloads in different packages need different simple names.
+{% endhint %}
+
 **Understanding Messages and Payloads is Crucial:**
 
 By grasping how Messages and Payloads work together, you can effectively design and implement communication channels within your event-driven applications built with Evento Framework. Messages ensure structured communication, while Payloads carry the essential data that drives actions and information retrieval.

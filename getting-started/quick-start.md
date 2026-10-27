@@ -29,6 +29,10 @@ services:
     depends_on:
       - evento-db
     environment:
+      # A local try-out: the server defaults to the prod profile and does not start
+      # without a bus token, bus TLS, a payload allowlist and non-default passwords. dev lists what
+      # is missing and starts. See Security before going to production.
+      - EVENTO_SERVER_SECURITY_PROFILE=dev
       # Cluster name visualized on the GUI
       - evento_cluster_name=evento-server
       # Capture rate for internal telemetry
@@ -48,7 +52,7 @@ services:
 ```
 
 {% hint style="info" %}
-In Evento v2, bundles register themselves with the server at runtime over the message bus — there is no JAR upload and no deployment script, so no upload volume or spawn-script bind is needed. Deploying and scaling bundle instances is handled by your orchestrator (e.g. Kubernetes or Nomad).
+Bundles register themselves with the server at runtime over the message bus — there is no JAR upload and no deployment script, so no upload volume or spawn-script bind is needed. Deploying and scaling bundle instances is handled by your orchestrator (e.g. Kubernetes or Nomad).
 {% endhint %}
 
 ***
@@ -58,7 +62,7 @@ In Evento v2, bundles register themselves with the server at runtime over the me
 To develop RECQ components you need the [Broken link](/broken/pages/nTG67pbLHFvPaevz3gWh "mention") Bundle Library.
 
 {% hint style="danger" %}
-Evento Framework v2 requires [Java 25](https://openjdk.org/projects/jdk/25/) or newer.
+The client libraries (`evento-bundle` and the others your application depends on) require [Java 25](https://openjdk.org/projects/jdk/25/) or newer; the Evento Server image ships its own JVM.
 {% endhint %}
 
 You can find the library on [Maven Central](https://central.sonatype.com/):  [https://central.sonatype.com/artifact/com.eventoframework/evento-bundle](https://central.sonatype.com/artifact/com.eventoframework/evento-bundle)
@@ -66,7 +70,7 @@ You can find the library on [Maven Central](https://central.sonatype.com/):  [ht
 #### Gradle
 
 ```gradle
-implementation group: 'com.eventoframework', name: 'evento-bundle', version: '2.5.2'
+implementation group: 'com.eventoframework', name: 'evento-bundle', version: '3.0.0'
 ```
 
 #### Maven&#x20;
@@ -75,14 +79,14 @@ implementation group: 'com.eventoframework', name: 'evento-bundle', version: '2.
 <dependency>
     <groupId>com.eventoframework</groupId>
     <artifactId>evento-bundle</artifactId>
-    <version>2.5.2</version>
+    <version>3.0.0</version>
 </dependency>
 ```
 
 
 
 {% hint style="info" %}
-Evento framework is independent of any other structured known framework like [Spring](https://spring.io/), [Micronaut ](https://micronaut.io/)or [Quarkus](https://quarkus.io/), so you can implement a RECQ application using your preferred technology even plain [JavaEE](https://it.wikipedia.org/wiki/Jakarta_EE).
+Evento framework is independent of any other structured known framework like [Spring](https://spring.io/), [Micronaut ](https://micronaut.io/)or [Quarkus](https://quarkus.io/), so you can implement a RECQ application using your preferred technology even plain [JavaEE](https://it.wikipedia.org/wiki/Jakarta_EE). For Spring Boot there is an optional [starter](../evento-framework/eventobundle/spring-boot-starter.md).
 {% endhint %}
 
 ***

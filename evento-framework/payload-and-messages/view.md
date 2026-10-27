@@ -234,8 +234,8 @@ The `QueryResponse` class serves as an abstract base class for all query respons
 
 * `Single<T>`: Used for responses containing a single `View` object.
 * `Multiple<T>`: Used for responses containing a collection of `View` objects (e.g., list of todos).
-* `Page<T>` (2.6): One page of a larger result, with `PageRequest` in the query (offset or cursor).
-* `Streamed<T>` (2.6): A lazy result streamed to the caller with flow control.
+* `Page<T>`: One page of a larger result, with `PageRequest` in the query (offset or cursor).
+* `Streamed<T>`: A lazy result streamed to the caller with flow control.
 
 The last two, and streaming any query with `QueryGateway.stream(...)`, are described in [Streamed and Paged Queries](../component/projection/streaming-and-paged-queries.md).
 
