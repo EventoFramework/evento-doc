@@ -47,7 +47,7 @@ When the bundle reconnects to a **different** server, the requests it had sent t
 
 A request the bundle refused **before writing anything** (between two sessions, or while draining for a fail-back) fails with **`RequestNotSentException`** (`SendFailedException` on the low-level client): nothing was executed, so it is always safe to retry.
 
-Reconnecting to the **same** server keeps the 2.x behaviour: pending requests survive the reconnect.
+Reconnecting to the **same** server keeps pending requests: they survive the reconnect.
 
 ## Fail-back
 
