@@ -8,7 +8,7 @@ A framework that promises exactly-once commands, failover and consumers that nev
 
 ## Automated test suite
 
-**1,135 automated tests**, run on every change by continuous integration:
+**Over 1,000 automated tests**, run on every change by continuous integration:
 
 * unit and integration tests over **real TCP connections**, not mocks, between bundles and servers;
 * the event store, the catalog and the consumer state store against **PostgreSQL 16 and 17 and MySQL 8.4**, in containers;
