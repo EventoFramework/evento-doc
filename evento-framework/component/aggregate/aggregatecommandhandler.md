@@ -132,6 +132,8 @@ DomainEvents handle(PlaceOrder command) {
 * The caller of `send` is answered with the **last** event. With an idempotency key, the key is recorded on the last event, and a retry is answered with it.
 * Consumers receive them as separate events, in order.
 * It needs 3.0 servers: a bundle refuses to answer with several events through an older server (no `events:1` capability), which would keep only the last. Upgrade the servers first.
+* `produces` is a contract (3.0.1): an event of a class outside it fails the command, before anything is stored. A handler that returns `DomainEvents` without `produces` fails at start-up.
+* The catalog, the application graph and the flows show every event in `produces` (3.0.1), and the performance evaluation weighs each by how often the command produces it: in the example `DiscountApplied` gets the share of orders with a coupon (see [Performance Evaluation](../../../evento-gui/flows/performance-evaluation.md)).
 
 Prefer one event when one fact happened; return several when the command really records several facts that consumers react to separately. In tests, `AggregateFixture` gives them with `events()` and checks them with `expectEvents(...)`.
 
