@@ -13,7 +13,7 @@ Server properties can also be set from the environment with Spring Boot's rule (
 | Property | Default | Meaning |
 |---|---|---|
 | `evento.cluster.name` (`EVENTO_CLUSTER_NAME`) | `evento-server` | announced to bundles in the handshake; **the same on every server of a cluster, different per deployment** |
-| `evento.cluster.node.server.id` | `iris-evento-server` | becomes `evento.server.bus.server-instance-id`; **unique per server** (requests in flight and presence rely on it; a WARN is logged while the shipped id is used) |
+| `evento.cluster.node.server.id` | `evento-server` | becomes `evento.server.bus.server-instance-id`; **unique per server** (requests in flight and presence rely on it; a WARN is logged while the shipped id is used) |
 | `evento.server.instance.id` | `server-0` | id used by the consumer service; unique per server |
 | `evento.server.bus.port` | `3030` | bundle message-bus port |
 | `evento.server.bus.pick-strategy` (`EVENTO_SERVER_BUS_PICK_STRATEGY`) | `random` | `random`, `first`, or `locality-preferred` (same zone as the caller, then any) |
