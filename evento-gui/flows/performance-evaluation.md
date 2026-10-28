@@ -17,6 +17,16 @@ The performance evaluation feature leverages a powerful combination of data sour
 
 By analyzing this combined data, Evento builds a performance evaluation model. This model acts as a virtual representation of your application's performance characteristics.
 
+#### How the model weighs each step
+
+The model is an open queueing network: each handler, the server's gateway and the event store are stations, and each arrow carries the mean number of visits to its target per visit to its source.
+
+* **Commands and queries a handler sends:** how many of each it sends per execution, measured.
+* **Events a command produces (3.0.1):** one arrow per event the handler declares (its return type, or every class in `produces` for a handler that returns `DomainEvents`), weighted by how many events of that type one command produces on average, measured from every execution, zeros included. Below 1 for an event produced only sometimes (a service that may answer without an event, a discount applied to some orders), above 1 for one produced several times (one reservation per item). Until there are measurements the weight is 1.
+* **The page labels** a weight up to 1 as a percentage and a weight above 1 as a multiplier (`× 3.00 per request`). The throughput an arrow carries is the source's throughput times its weight, so a consumer that receives three events per command receives three times the command rate, and the analysis can show it as the bottleneck.
+
+Before 3.0.1 every command was modelled as producing exactly one event, its return type, every time.
+
 #### Optimizing Throughput: Throughput Settings and Bottleneck Detection
 
 The performance evaluation page within the Evento GUI offers functionalities to leverage the power of the performance evaluation model:
