@@ -31,7 +31,7 @@ By analyzing these connections, you gain insights into how data flows and events
 
 The Evento GUI allows you to interact with the Application Graph, providing further details about each element:
 
-* **Hovering Over Elements:** Hovering over a handler enlarges its bubble and highlights its message paths — **downstream** invocations in orange and **upstream** callers in teal — so you can trace at a glance what a handler triggers and what triggers it.
+* **Hovering Over Elements:** Hovering over a handler enlarges its bubble and highlights its message paths — **downstream** invocations in red and **upstream** callers in green — so you can trace at a glance what a handler triggers and what triggers it.
 * **Handler Search:** A floating search box matches handlers by payload or component name (shown as `payload — component · bundle`). Selecting a result flies the view to that handler and pins its highlight — the label stays readable at any zoom and the up/downstream paths stay lit until you dismiss it (background tap, clearing the search bar, or Escape).
 * **Clicking on Elements:** Clicking on a circle might navigate you to a dedicated page with detailed information about the selected element. For bundles, you might see a list of their components. For components, you might see a description of their purpose and the handlers they contain.
 
